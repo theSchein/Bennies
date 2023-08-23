@@ -33,15 +33,19 @@ export default NextAuth({
         }),
     ],
     callbacks: {
-        jwt:  ({ token, user}) => {
+        jwt:  ({ token, user }) => {
             // first time user logs in
             if(user) {
                 token.id = user.id;
+                token.username = user.username;
+                token.email_address = user.email_address;
             }
             return token;
         },
         session:  ({ session, token }) => {
             if(token) {
+                session.username = token.username;  // Use token here instead of user
+                session.email_address = token.email_address;  // Use token here
                 session.id = token.id;
             } 
             return session;
@@ -52,4 +56,8 @@ export default NextAuth({
         secret: "test",
         encryption: true,
     },
+    pages: {
+        signIn: "/signin",
+        signOut: "/signout"
+      },
 });
