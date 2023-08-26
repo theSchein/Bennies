@@ -7,7 +7,7 @@ export default function Home() {
     <>
 
     <h1>WAGMI</h1>
-    <Link href="/login"> 
+    <Link href="/signin"> 
     Login
     </Link>
     

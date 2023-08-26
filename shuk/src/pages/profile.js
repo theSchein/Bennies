@@ -1,9 +1,21 @@
 import { getSession, useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import { Profile } from '../components/Profile';
+import WagmiWallet from "../components/WagmiWallet";
+import CustomButton from "../components/CustomButton";
 
 
 function ProfilePage(){
 
   const { data: session } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!session) {
+        router.push('/signin');
+    }
+}, [session]);
 
   if (!session) {
       return <div>Loading...</div>; // or render a loading spinner
@@ -11,8 +23,16 @@ function ProfilePage(){
 
   return (
     <>
-    <div>Profile Page</div>
+    <WagmiWallet>
     <div>welcome: {session.username}</div>   
+
+    <div> Connect your wallet and find art</div>
+
+    <Profile/>
+    <div>Profile Page</div>
+    <CustomButton>Connect Wallet</CustomButton>
+
+    </WagmiWallet>
     </>
   );
 }
