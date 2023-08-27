@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 import { Profile } from '../components/Profile';
 import WagmiWallet from "../components/WagmiWallet";
 import CustomButton from "../components/CustomButton";
-import UpdateWallet from '../components/UpdateWallet';
 import Check from '../components/Check';
 
 function ProfilePage(){

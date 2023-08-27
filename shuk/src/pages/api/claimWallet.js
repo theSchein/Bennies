@@ -17,6 +17,13 @@ export default async (req, res) => {
   // Extract wallet info from request, for instance:
   const { address } = req.body;
 
+  const existingEntry = await db.oneOrNone('SELECT * FROM Wallets WHERE user_id = $1 AND wallet_address = $2', [session.user_id, address]);
+
+  if (existingEntry) {
+    res.status(200).json({ error: 'Wallet already exists.' });
+    return;
+  }
+
   // Database interaction
   try {
     await db.none('INSERT INTO Wallets(user_id, wallet_address) VALUES($1, $2)', [session.user_id, address]);
