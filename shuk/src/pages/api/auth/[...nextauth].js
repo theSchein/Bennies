@@ -4,6 +4,9 @@ import db from "../../../lib/db";
 import bcryptjs from "bcryptjs";
 
 export default NextAuth({
+    session: {
+        jwt: true,
+      },
     providers: [
         CredentialsProvider({
       // The name to display on the sign-in form (e.g. 'Sign in with...')
@@ -23,10 +26,9 @@ export default NextAuth({
                 const isValid = await bcryptjs.compare(credentials.password, user.password);
                 if (!isValid) {
                     throw new Error("Could not log you in!");
-                    return Promise.resolve(null);
+                    //return Promise.resolve(null);
                 } 
                 
-                console.log("login successful");
                   return Promise.resolve(user);
 
             }
@@ -36,25 +38,25 @@ export default NextAuth({
         jwt:  ({ token, user }) => {
             // first time user logs in
             if(user) {
-                token.id = user.id;
+                token.user = user;
+                token.user_id = user.user_id;
                 token.username = user.username;
                 token.email_address = user.email_address;
             }
             return token;
+            //return {...token, ...user};
         },
         session:  ({ session, token }) => {
             if(token) {
+                session.user = token.user;  // Add property to session, like an access_token
                 session.username = token.username;  // Use token here instead of user
                 session.email_address = token.email_address;  // Use token here
-                session.id = token.id;
+                session.user_id = token.user_id;
+
             } 
             return session;
+            // return {...session, ...token};
         },
-    },
-    secret: "test",
-    jwt: {
-        secret: "test",
-        encryption: true,
     },
     pages: {
         signIn: "/signin",

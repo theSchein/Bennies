@@ -3,7 +3,7 @@ import '../styles/globals.css'
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) { 
     return (
-        <SessionProvider session={session}>
+        <SessionProvider session={pageProps.session}>
         <Component {...pageProps} />
         </SessionProvider>
     )

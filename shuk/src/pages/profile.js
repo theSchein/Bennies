@@ -4,12 +4,14 @@ import { useEffect } from 'react';
 import { Profile } from '../components/Profile';
 import WagmiWallet from "../components/WagmiWallet";
 import CustomButton from "../components/CustomButton";
-
+import UpdateWallet from '../components/UpdateWallet';
+import Check from '../components/Check';
 
 function ProfilePage(){
 
   const { data: session } = useSession();
   const router = useRouter();
+
 
   useEffect(() => {
     if (!session) {
@@ -21,6 +23,9 @@ function ProfilePage(){
       return <div>Loading...</div>; // or render a loading spinner
   }
 
+  console.log("profile session data " + session.user_id);
+
+
   return (
     <>
     <WagmiWallet>
@@ -30,7 +35,6 @@ function ProfilePage(){
 
     <Profile/>
     <div>Profile Page</div>
-    <CustomButton>Connect Wallet</CustomButton>
 
     </WagmiWallet>
     </>
