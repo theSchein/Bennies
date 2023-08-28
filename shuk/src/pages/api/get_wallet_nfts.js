@@ -34,7 +34,6 @@ export default async function (req, res) {
     }
 
       for (let nft of nfts.ownedNfts) {
-        console.log(nft.tokenId);
         const existingEntry = await db.oneOrNone('SELECT contract_address_token_id FROM nfts WHERE contract_address_token_id = $1', [nft.contract.address + nft.tokenId]);
         if (!existingEntry) {
         await db.none(`
@@ -50,7 +49,7 @@ export default async function (req, res) {
             VALUES($1, $2, $3, $4, $5, $6, $7, $8)
             `, [nft.contract.address + nft.tokenId, 
                 nft.contract.address, 
-                nft.contractDeployer,
+                nft.contract.contractDeployer,
                 nft.title,
                 nft.tokenType,
                 nft.tokenUri,
