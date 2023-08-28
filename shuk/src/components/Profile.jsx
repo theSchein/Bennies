@@ -35,6 +35,28 @@ export function Profile() {
     }
   };
 
+  const fetchNFTs = async () => {
+    if (!session) {
+      console.log("No active session found!");
+      return;
+  }
+    try {
+      const response = await fetch('/api/get_wallet_nfts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ address }),
+        credentials: 'include'
+      });
+      const data = await response.json();
+
+    } catch (error) {
+      console.error("Failed to claim wallet:", error);
+    }
+  };
+
+
   useEffect(() => {
     if (isConnected && address) {
 
@@ -52,6 +74,9 @@ export function Profile() {
 
 
         <button onClick={disconnect}>Disconnect</button>
+
+        <button onClick={fetchNFTs}>Fetch NFTs</button>
+
       </div>
     )
   }
@@ -74,6 +99,7 @@ export function Profile() {
 
 
       ))}
+
 
       {error && <div>{error.message}</div>}
     </div>

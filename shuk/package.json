@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@web3modal/react": "^2.7.1",
+    "alchemy-sdk": "^2.10.0",
     "autoprefixer": "10.4.15",
     "bcryptjs": "^2.4.3",
     "jsonwebtoken": "^9.0.1",
