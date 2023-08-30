@@ -4,7 +4,7 @@ import db from '../../lib/db';
 
 
 const config = {
-  apiKey: "KKpcwdH4IZ8mfWdIZdDQtBc9GETkcaoX",
+  apiKey: process.env.ALCHEMY_API_KEY,
   network: Network.ETH_MAINNET,
 };
 const alchemy = new Alchemy(config);
