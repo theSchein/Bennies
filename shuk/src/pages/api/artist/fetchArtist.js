@@ -1,13 +1,13 @@
-import db from '../../lib/db';
+import db from '../../../lib/db';
 
 export default async (req, res) => {
   if (req.method === 'GET') {
-    const user_id = req.query.user_id;
+    const  { artist_id } = req.query;
 
     try {
-      const artistPage = await db.oneOrNone('SELECT * FROM artist_pages WHERE artist_id = $1', [artist_id]);
-      if (artistPage) {
-        res.status(200).json(artistPage);
+      const artistData = await db.oneOrNone('SELECT * FROM artists WHERE artist_id = $1', [artist_id]);
+      if (artistData) {
+        res.status(200).json(artistData);
       } else {
         res.status(404).json({ error: 'ArtistPage not found' });
       }
