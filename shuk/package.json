@@ -9,6 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.14.7",
     "@web3modal/react": "^2.7.1",
     "alchemy-sdk": "^2.10.0",
     "autoprefixer": "10.4.15",

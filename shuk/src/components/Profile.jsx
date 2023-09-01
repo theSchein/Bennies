@@ -3,6 +3,9 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { createContext, useContext } from 'react';
 
+import ArtistForm from '../components/newArtist';
+
+
 
 const WalletAddressContext = createContext();
 
@@ -116,7 +119,7 @@ export function Profile() {
         <button onClick={fetchArtistEligibility}>Check Eligibility</button>
 
         <div>
-      {isEligible ? <button onCLick={null}>You're eligible to create an artist page!</button>  : "You're not eligible to create an artist page."}
+      {isEligible ? <ArtistForm onCLick={null}>You're eligible to create an artist page!</ArtistForm>  : "You're not eligible to create an artist page."}
     </div>
 
         </WalletAddressContext.Provider>
