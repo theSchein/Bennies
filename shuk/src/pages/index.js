@@ -1,5 +1,5 @@
 import Link from "next/link";
-
+import Search from "../components/Search";
 
 
 export default function Home() {
@@ -10,6 +10,11 @@ export default function Home() {
     <Link href="/signin"> 
     Login
     </Link>
+
+    <div> Search</div>
+
+    <Search/>
+
     
     </>
   );

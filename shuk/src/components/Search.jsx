@@ -1,0 +1,54 @@
+import * as React from 'react';
+
+import { useState, useEffect } from 'react';
+
+function SearchComponent() {
+    const [searchTerm, setSearchTerm] = useState('');
+    const [suggestions, setSuggestions] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        if (searchTerm.trim() === '') {
+            setSuggestions([]);  // Clear suggestions if search term is empty
+            return;
+        }
+
+        const fetchSuggestions = async () => {
+            setLoading(true);
+            setError(null);
+
+            try {
+                const response = await fetch(`/api/search?query=${encodeURIComponent(searchTerm)}`);
+                const data = await response.json();
+                setSuggestions(data.results || []);
+            } catch (err) {
+                setError('Failed to fetch suggestions');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchSuggestions();
+    }, [searchTerm]);
+
+    return (
+        <div>
+            <input
+                type="text"
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+                placeholder="Search..."
+            />
+            {loading && <div>Loading...</div>}
+            {error && <div>{error}</div>}
+            <ul>
+                {suggestions.map(suggestion => (
+                    <li key={suggestion.id}>{suggestion.name}</li>
+                ))}
+            </ul>
+        </div>
+    );
+}
+
+export default SearchComponent;
