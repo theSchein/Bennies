@@ -1,5 +1,5 @@
 import * as React from 'react';
-
+import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react';
 
 function SearchComponent() {
@@ -7,6 +7,7 @@ function SearchComponent() {
     const [suggestions, setSuggestions] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const router = useRouter()
 
     useEffect(() => {
         if (searchTerm.trim() === '') {
@@ -32,6 +33,12 @@ function SearchComponent() {
         fetchSuggestions();
     }, [searchTerm]);
 
+    const handleClick = (e) => {
+        e.preventDefault()
+        router.push('/searchResults?query='+searchTerm)
+      }
+
+
     return (
         <div>
             <input
@@ -47,6 +54,7 @@ function SearchComponent() {
                     <li key={suggestion.id}>{suggestion.name}</li>
                 ))}
             </ul>
+            <button onClick={handleClick}>Submit</button>
         </div>
     );
 }
