@@ -1,6 +1,6 @@
 // pages/nft/[slug].js
 import db from '../../lib/db';
-
+import CommentSection from '../../components/comment/Comments';
 
 export default function NftPage({ nft }) {
     return (
@@ -8,6 +8,7 @@ export default function NftPage({ nft }) {
             <h1>{nft.nft_name}</h1>
             <p>Description: {nft.nft_description}</p>
             {/* Render other NFT details */}
+            <CommentSection nft={nft} />
         </div>
     );
 }
