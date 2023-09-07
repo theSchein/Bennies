@@ -15,15 +15,16 @@ function CommentSection({nft}) {
     async function fetchComments() {
       try {
     // Fetch comments when the component mounts
-      const response = fetch('/api/comments/fetchComments?nft_id='+nft_id)
+      const response = await fetch('/api/comments/fetchComments?nft_id='+nft_id)
       const data = await response.json();
-      setComments(data.comments);
+      setComments(data);
       } catch (error) {
         console.error("There was an error fetching the comments", error);
       }
     }
     fetchComments();
   }, [nft_id]);
+
 
 
 //   const handleDelete = (comment) => {
@@ -53,7 +54,7 @@ function CommentSection({nft}) {
     <div>
         <h2>Add some comments</h2>
       <CommentForm onSubmit={handleSubmit} text={text} setText={setText} />
-      {/* <CommentList comments={comments} /> */}
+      <CommentList comments={comments} />
     </div>
   );
 }

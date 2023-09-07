@@ -1,14 +1,17 @@
 import React from 'react';
 
 function CommentList({ comments }) {
+
+  // console.log(JSON.stringify(comments, null, 2) )
+
   return (
     <div className="comment-list">
       {comments.map(comment => (
-        <div key={comment.comment_id} className="comment-item">
-          <p><strong>{comment.Commenter}</strong>: {comment.CommentText}</p>
-          <p>{comment.CommentDate}</p>
-          <button >Delete</button>
-        </div>
+  <div key={comment.comment_id}>
+  <strong>{comment.commenter}</strong>
+  <p>{comment.text}</p>
+  <span>{new Date(comment.commentdate).toLocaleDateString()}</span>
+</div>
       ))}
     </div>
   );

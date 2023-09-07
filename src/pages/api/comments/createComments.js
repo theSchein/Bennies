@@ -11,8 +11,7 @@ export default async (req, res) => {
         // Not authenticated
         return res.status(401).json({ error: 'Not authenticated from the session' });
       }
-      console.log('lets see what we got: '+ JSON.stringify(req.body, null, 2));
-
+                       
       const { nft_id, text, parentCommentId } = req.body.data;
 
       if (!user_id || !nft_id || !text) {
