@@ -8,8 +8,6 @@ export async function getServerSideProps({ params }) {
     // Fetch the NFT data based on the slug from your database/API
     const nft = await db.one('SELECT * FROM nfts WHERE nft_id = $1', [slug[0]]);
 
-    console.log('slug:' + slug[1]);
-
     return { props: { nft } };
 }
 
