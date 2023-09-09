@@ -30,7 +30,6 @@ export default async function handler(req, res) {
 
     const values = [nftId];
     const result = await db.query(query, values);
-    console.log('result : ' + JSON.stringify(result.rows, null, 2));
 
     if (!result || !Array.isArray(result) || result.length === 0) {
       return res.status(404).json({ message: 'No comments found for this NFT.' });

@@ -5,6 +5,8 @@ import CommentList from './CommentList';
 function CommentSection({nft}) {
   const [comments, setComments] = useState([]);
   const [text, setText] = useState('');
+  const [reloadComments, setReloadComments] = useState(false);
+
 
   const nft_id = nft.nft_id
   const parentCommentId = null
@@ -23,7 +25,7 @@ function CommentSection({nft}) {
       }
     }
     fetchComments();
-  }, [nft_id]);
+  }, [nft_id, reloadComments]);
 
 
 
@@ -47,6 +49,7 @@ function CommentSection({nft}) {
       .then(data => {
         setText('');
         setComments(prevComments => [...prevComments, data]);
+        setReloadComments(!reloadComments); // Toggle the state
       });
   }
 

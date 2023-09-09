@@ -20,9 +20,9 @@ export default async (req, res) => {
 
 try {
     const query = `
-      INSERT INTO Comments(user_id, nft_id, text, parent_comment_id, CommentDate)
+      INSERT INTO Comments(user_id, nft_id, text, parent_comment_id, commentdate)
       VALUES($1, $2, $3, $4, NOW())
-      RETURNING comment_id;
+      RETURNING comment_id, parent_comment_id, user_id, text, commentdate;
     `;
 
     const values = [user_id, nft_id, text, parentCommentId || null];
