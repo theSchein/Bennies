@@ -15,8 +15,8 @@ export default async (req, res) => {
         }
 
        // Fetch a broader set of data or a predefined subset
-       const nftData = await db.any(`SELECT * FROM nfts`); // Fetch all NFTs limits need added later
-       const artistData = await db.any(`SELECT * FROM artists`);
+       const nftData = await db.any(`SELECT * FROM nfts LIMIT 10000`); // Fetch all NFTs limits need added later
+       const artistData = await db.any(`SELECT * FROM artists LIMIT 10000`);
 
 
         // Configure fuse.js options for nfts and artists
