@@ -1,59 +1,55 @@
-import { getSession, useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
-import { useEffect } from 'react';
-import { Profile } from '../components/Profile';
+import { getSession, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { Profile } from "../components/Profile";
 import WagmiWallet from "../components/WagmiWallet";
 
-function ProfilePage(){
+function ProfilePage() {
+    const { data: session } = useSession();
+    const router = useRouter();
 
-  const { data: session } = useSession();
-  const router = useRouter();
+    useEffect(() => {
+        if (!session) {
+            router.push("/signin");
+        }
+    }, [session]);
 
-
-  useEffect(() => {
     if (!session) {
-        router.push('/signin');
+        return <div>Loading...</div>; // or render a loading spinner
     }
-}, [session]);
 
-  if (!session) {
-      return <div>Loading...</div>; // or render a loading spinner
-  }
+    console.log("profile session data " + session.user_id);
 
-  console.log("profile session data " + session.user_id);
+    return (
+        <>
+            <WagmiWallet>
+                <div>welcome: {session.username}</div>
 
+                <div> Connect your wallet and find art</div>
 
-  return (
-    <>
-    <WagmiWallet>
-    <div>welcome: {session.username}</div>   
-
-    <div> Connect your wallet and find art</div>
-
-    <Profile/>
-    <div>Profile Page</div>
-
-    </WagmiWallet>
-    </>
-  );
+                <Profile />
+                <div>Profile Page</div>
+            </WagmiWallet>
+        </>
+    );
 }
 
 export async function getServerSideProps(context) {
-  const session = await getSession({ req: context.req });
-  //console.log(session.email_address);
+    const session = await getSession({ req: context.req });
+    //console.log(session.email_address);
 
-  if (!session) {
+    if (!session) {
+        return {
+            redirect: {
+                destination: "/signin",
+                permanent: false,
+            },
+        };
+    }
+
     return {
-      redirect: {
-        destination: '/signin',
-        permanent: false,
-      },
+        props: { session },
     };
-  }
-
-  return {
-    props: { session },
-  };
 }
 
 export default ProfilePage;
