@@ -2,10 +2,10 @@ import { useState, useRef } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
 
-async function createUser(email, password) {
-  const response = await fetch('/api/auth/signup', {
+async function createUser(email_address, username, password) {
+  const response = await fetch('/api/auth/register', {
     method: 'POST',
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ email_address, username, password }),
     headers: {
       'Content-Type': 'application/json',
     },
@@ -22,6 +22,7 @@ async function createUser(email, password) {
 
 function AuthForm() {
   const emailInputRef = useRef();
+  const usernameInputRef = useRef();
   const passwordInputRef = useRef();
 
   const [isLogin, setIsLogin] = useState(true);
@@ -52,7 +53,8 @@ function AuthForm() {
       }
     } else {
       try {
-        const result = await createUser(enteredEmail, enteredPassword);
+        const enteredUsername = usernameInputRef.current.value;
+        const result = await createUser(enteredEmail, enteredUsername, enteredPassword);
         console.log(result);
       } catch (error) {
         console.log(error);
@@ -68,6 +70,11 @@ function AuthForm() {
           <label htmlFor='email'>Your Email</label>
           <input type='email' id='email' required ref={emailInputRef} />
         </div>
+        {!isLogin ?
+        <div> 
+          <label htmlFor='username'>Your Username</label>  
+          <input type= 'username' id='username' required ref={usernameInputRef} />    
+          </div> : null}
         <div>
           <label htmlFor='password'>Your Password</label>
           <input
