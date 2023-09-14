@@ -59,9 +59,7 @@ function AuthForm() {
                     enteredUsername,
                     enteredPassword,
                 );
-                console.log(result);
             } catch (error) {
-                console.log(error);
             }
         }
     }

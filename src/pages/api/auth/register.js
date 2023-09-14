@@ -7,7 +7,6 @@ export default async (req, res) => {
 
         // Check username, email_address, and password
         if (!username || !email_address || !password) {
-            console.log("One or more required fields are missing");
             res.status(400).json({
                 error: "One or more required fields are missing",
             });
@@ -38,7 +37,6 @@ export default async (req, res) => {
                 success: true,
                 message: "User registered successfully",
             });
-            console.log("User registered successfully");
         } catch (error) {
             if (error.code === "23505") {
                 // This is the error code for a unique violation in PostgreSQL

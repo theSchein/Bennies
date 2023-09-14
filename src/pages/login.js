@@ -19,7 +19,6 @@ function LoginPage() {
 
             if (response.status === 200) {
                 const data = await response.json();
-                console.log("Token:", data.token);
 
                 // You can store this token for further authentication or navigate the user to a dashboard or another protected route.
             } else {

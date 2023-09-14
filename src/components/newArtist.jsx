@@ -57,7 +57,6 @@ export default function ArtistForm() {
             const responseData = await response.json();
 
             if (responseData.success) {
-                console.log("Artist info saved successfully!");
                 setArtistBio("");
                 setArtistPicture("");
                 setArtistSales("");

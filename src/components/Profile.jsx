@@ -5,10 +5,10 @@ import {
     useEnsAvatar,
     useEnsName,
 } from "wagmi";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { createContext, useContext } from "react";
-
+import Image from "next/image";
 import ArtistForm from "../components/newArtist";
 
 const WalletAddressContext = createContext();
@@ -26,9 +26,8 @@ export function Profile() {
     const { data: session } = useSession();
     const [isEligible, setIsEligible] = useState(null);
 
-    const claimWallet = async () => {
+    const claimWallet = useCallback(async () => {
         if (!session) {
-            console.log("No active session found!");
             return;
         }
         try {
@@ -45,11 +44,10 @@ export function Profile() {
         } catch (error) {
             console.error("Failed to claim wallet:", error);
         }
-    };
+    }, [session, address]) ;
 
     const fetchNFTs = async () => {
         if (!session) {
-            console.log("No active session found!");
             return;
         }
         try {
@@ -69,7 +67,6 @@ export function Profile() {
 
     const fetchArtistEligibility = async () => {
         if (!session) {
-            console.log("No active session found!");
             return;
         }
         try {
@@ -91,14 +88,14 @@ export function Profile() {
         if (isConnected && address) {
             claimWallet(address);
         }
-    }, [isConnected, address]);
+    }, [isConnected, address, claimWallet]);
 
     if (isConnected) {
         return (
             <>
                 <div>
                     <WalletAddressContext.Provider value={address}>
-                        <img src={ensAvatar} alt="ENS Avatar" />
+                        <Image src={ensAvatar} alt="ENS Avatar" />
                         <div>{ensName ? `${ensName} (${address})` : address}</div>
                         <div>Connected to {connector.name}</div>
 
@@ -113,7 +110,7 @@ export function Profile() {
                         <div>
                             {isEligible ? (
                                 <ArtistForm onCLick={null}>
-                                    You're eligible to create an artist page!
+                                   You are eligible to create an artist page!
                                 </ArtistForm>
                             ) : (
                                 "You're not eligible to create an artist page."

@@ -35,7 +35,7 @@ const SearchResults = () => {
             {error && <div>Error: {error}</div>}
             <h2>NFTs</h2>
             {data.nfts.map((nft) => (
-                <Link href={`/nft/${nft.nft_id}/${nft.nft_name}`}>
+                <Link key={nft.nft_id} href={`/nft/${nft.nft_id}/${nft.nft_name}`}>
                     <div key={nft.nft_id}>
                         <h3>{nft.nft_name}</h3>
                         <p>Contract Address: {nft.contract_address}</p>
@@ -46,7 +46,7 @@ const SearchResults = () => {
             ))}
             <h2>Artists</h2>
             {data.artists.map((artists) => (
-                <Link href={`/artist/${artists.artist_id}/${artists.artist_name}`}>
+                <Link key={artist.artist_id} href={`/artist/${artists.artist_id}/${artists.artist_name}`}>
                     <div key={artists.artist_id}>
                         <h3>{artists.artist_name}</h3>
                         <p>Description: {artists.nft_description}</p>

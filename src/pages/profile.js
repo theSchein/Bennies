@@ -12,13 +12,11 @@ function ProfilePage() {
         if (!session) {
             router.push("/signin");
         }
-    }, [session]);
+    }, [session, router]);
 
     if (!session) {
         return <div>Loading...</div>; // or render a loading spinner
     }
-
-    console.log("profile session data " + session.user_id);
 
     return (
         <>

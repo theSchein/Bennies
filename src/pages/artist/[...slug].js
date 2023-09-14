@@ -1,5 +1,6 @@
 // pages/artist/[...slug].js
 import db from "../../lib/db";
+import Image from "next/image";
 
 export async function getServerSideProps({ params }) {
     const { slug } = params;
@@ -15,7 +16,7 @@ function ArtistPage({ artist }) {
     return (
         <div>
             <h1>{artist.artist_name}</h1>
-            <img src={artist.artist_picture} alt={artist.name} />
+            <Image src={artist.artist_picture} alt={artist.name} />
             <p>{artist.artist_bio}</p>
             <p>{artist.artist_sales_link}</p>
             <p>{artist.artist_media_link}</p>
