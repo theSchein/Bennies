@@ -4,7 +4,7 @@ import Search from "../components/Search";
 export default function Home() {
     return (
         <>
-            <h1>{"Ben's cute lil app"}</h1>
+            <h1 className="bg-primary text-quaternary font-heading text-4xl">{"Ben's cute lil app"}</h1>
             <Link href="/signin">Login</Link>
 
             <div> Search</div>

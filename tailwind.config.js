@@ -7,12 +7,17 @@ module.exports = {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+      fontFamily: {
+        'heading': ['Metropolis', 'sans-serif'],
+        'body': ['Josefin Sans', 'sans-serif'],
       },
+      colors: {
+        'primary': '#F0F5F9',
+        'secondary': '#C9D6DF',
+        'tertiary': '#52616B',
+        'quaternary': '#1E2022',
     },
   },
+},
   plugins: [],
 }
