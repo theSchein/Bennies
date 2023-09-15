@@ -1,9 +1,11 @@
 import Link from "next/link";
 import Search from "../components/Search";
+import ResponsiveAppBar from "../components/navbar/navbar";
 
 export default function Home() {
     return (
         <>
+        <ResponsiveAppBar/>
             <h1 className="bg-primary text-quaternary font-heading text-4xl">{"Ben's cute lil app"}</h1>
             <Link href="/signin">Login</Link>
 
