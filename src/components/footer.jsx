@@ -6,8 +6,6 @@ function Footer() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle the form submission logic here, e.g., send the data to an API or email service.
-    console.log('Contact Info Submitted:', email, message);
     setEmail('');
     setMessage('');
   };
@@ -17,7 +15,7 @@ function Footer() {
       <div className="container mx-auto">
         <div className="flex justify-between items-center">
           <div>
-            <h3 className="text-xl font-heading font-bold">Let's get in touch</h3>
+            <h3 className="text-xl font-heading font-bold">{"Let's get in touch"}</h3>
             <p>Email: ben@scheinberg.xyz</p>
             <p>Phone: (814) 215-3331</p>
           </div>
