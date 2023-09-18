@@ -1,8 +1,9 @@
 import * as React from "react";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
+import SearchPresentation from "./SearchPresentation";
 
-function SearchComponent() {
+function SearchContainer() {
     const [searchTerm, setSearchTerm] = useState("");
     const [suggestions, setSuggestions] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -11,7 +12,7 @@ function SearchComponent() {
 
     useEffect(() => {
         if (searchTerm.trim() === "") {
-            setSuggestions([]); // Clear suggestions if search term is empty
+            setSuggestions([]);
             return;
         }
 
@@ -41,23 +42,15 @@ function SearchComponent() {
     };
 
     return (
-        <div>
-            <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search..."
-            />
-            {loading && <div>Loading...</div>}
-            {error && <div>{error}</div>}
-            <ul>
-                {suggestions.map((suggestion) => (
-                    <li key={suggestion.id}>{suggestion.name}</li>
-                ))}
-            </ul>
-            <button onClick={handleClick}>Submit</button>
-        </div>
+        <SearchPresentation 
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            suggestions={suggestions}
+            loading={loading}
+            error={error}
+            handleClick={handleClick}
+        />
     );
 }
 
-export default SearchComponent;
+export default SearchContainer;
