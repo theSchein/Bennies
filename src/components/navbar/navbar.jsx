@@ -26,6 +26,7 @@ function Navbar() {
         <AppBar
             position="static"
             className="bg-quaternary text-primary font-heading shadow-none border-none w-full"
+            style={{ background: '#1E2022' }}
         >
             <Container maxWidth="xl">
                 <Toolbar disableGutters className="bg-quaternary">
