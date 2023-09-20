@@ -28,15 +28,36 @@ function Navbar() {
             className="bg-quaternary text-primary font-heading shadow-none border-none w-full"
         >
             <Container maxWidth="xl">
-                <Toolbar disableGutters>
+                <Toolbar disableGutters className="bg-quaternary">
                     <DiamondIcon
                         sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
                     />
-                    <Typography variant="h5" noWrap component="a" href="/">
+                    <Typography
+                        variant="h5"
+                        noWrap
+                        component="a"
+                        href="/"
+                        sx={{
+                            mr: 2,
+                            display: { xs: "none", md: "flex" },
+                            flexGrow: 1,
+                            fontFamily: "metropolis",
+                            fontWeight: 700,
+                            letterSpacing: ".3rem",
+                            color: "inherit",
+                            textDecoration: "none",
+                        }}
+                    >
                         DISCOVRY
                     </Typography>
 
-                    <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+                    <Box
+                        sx={{
+                            flexGrow: 1,
+                            display: { xs: "flex", md: "none" },
+                            color: "inherit",
+                        }}
+                    >
                         <Menu
                             id="menu-appbar"
                             anchorEl={anchorElNav}
