@@ -1,5 +1,4 @@
 import * as React from "react";
-import Link from "next/link";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -26,16 +25,10 @@ function Navbar() {
     return (
         <AppBar
             position="static"
-            className="bg-quaternary text-primary font-heading"
+            className="bg-quaternary text-primary font-heading shadow-none border-none w-full"
         >
-            <Container
-                maxWidth="xl"
-                className="bg-quaternary text-primary font-heading"
-            >
-                <Toolbar
-                    disableGutters
-                    className="bg-quaternary text-primary font-heading"
-                >
+            <Container maxWidth="xl">
+                <Toolbar disableGutters>
                     <DiamondIcon
                         sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
                     />
