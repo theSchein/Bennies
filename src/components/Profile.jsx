@@ -44,7 +44,7 @@ export function Profile() {
         } catch (error) {
             console.error("Failed to claim wallet:", error);
         }
-    }, [session, address]) ;
+    }, [session, address]);
 
     const fetchNFTs = async () => {
         if (!session) {
@@ -110,7 +110,7 @@ export function Profile() {
                         <div>
                             {isEligible ? (
                                 <ArtistForm onCLick={null}>
-                                   You are eligible to create an artist page!
+                                    You are eligible to create an artist page!
                                 </ArtistForm>
                             ) : (
                                 "You're not eligible to create an artist page."

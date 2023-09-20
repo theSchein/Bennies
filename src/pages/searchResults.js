@@ -30,27 +30,47 @@ const SearchResults = () => {
     }, [query]);
 
     return (
-        <div>
-            <h1>Search: {query}</h1>
-            {error && <div>Error: {error}</div>}
-            <h2>NFTs</h2>
+        <div className="p-4 bg-primary">
+            <h1 className="text-quaternary font-heading text-3xl mb-4">
+                Search: {query}
+            </h1>
+            {error && <div className="text-red-500 mb-4">Error: {error}</div>}
+            <h2 className="text-quaternary font-heading text-2xl mb-4">NFTs</h2>
             {data.nfts.map((nft) => (
-                <Link key={nft.nft_id} href={`/nft/${nft.nft_id}/${nft.nft_name}`}>
-                    <div key={nft.nft_id}>
-                        <h3>{nft.nft_name}</h3>
-                        <p>Contract Address: {nft.contract_address}</p>
-                        <p>Deployer Address: {nft.deployer_address}</p>
-                        <p>Description: {nft.nft_description}</p>
-                    </div>
+                <Link
+                    key={nft.nft_id}
+                    href={`/nft/${nft.nft_id}/${nft.nft_name}`}
+                    className="block mb-4 p-4 bg-secondary rounded shadow hover:shadow-lg transition-shadow duration-300"
+                >
+                    <h3 className="text-quaternary font-heading text-xl mb-2">
+                        {nft.nft_name}
+                    </h3>
+                    <p className="text-quaternary mb-1">
+                        Contract Address: {nft.contract_address}
+                    </p>
+                    <p className="text-quaternary mb-1">
+                        Deployer Address: {nft.deployer_address}
+                    </p>
+                    <p className="text-quaternary">
+                        Description: {nft.nft_description}
+                    </p>
                 </Link>
             ))}
-            <h2>Artists</h2>
-            {data.artists.map((artists) => (
-                <Link key={artist.artist_id} href={`/artist/${artists.artist_id}/${artists.artist_name}`}>
-                    <div key={artists.artist_id}>
-                        <h3>{artists.artist_name}</h3>
-                        <p>Description: {artists.nft_description}</p>
-                    </div>
+            <h2 className="text-quaternary font-heading text-2xl mb-4 mt-6">
+                Artists
+            </h2>
+            {data.artists.map((artist) => (
+                <Link
+                    key={artist.artist_id}
+                    href={`/artist/${artist.artist_id}/${artist.artist_name}`}
+                    className="block mb-4 p-4 bg-secondary rounded shadow hover:shadow-lg transition-shadow duration-300"
+                >
+                    <h3 className="text-quaternary font-heading text-xl mb-2">
+                        {artist.artist_name}
+                    </h3>
+                    <p className="text-quaternary">
+                        Description: {artist.nft_description}
+                    </p>
                 </Link>
             ))}
         </div>

@@ -42,7 +42,7 @@ function SearchContainer() {
     };
 
     return (
-        <SearchPresentation 
+        <SearchPresentation
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             suggestions={suggestions}

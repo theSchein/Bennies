@@ -6,7 +6,7 @@ export default function Home() {
     return (
         <div className="bg-primary text-quaternary min-h-screen font-body flex flex-col items-center justify-start py-8">
             <h1 className="font-heading text-4xl mb-6">{"DISCOVRY"}</h1>
-            
+
             <div className="w-full max-w-2xl p-4 bg-primary rounded shadow-lg">
                 <div className="text-center mb-6">
                     <div className="font-bold text-2xl mb-2">Search</div>
@@ -16,7 +16,9 @@ export default function Home() {
                 <div className="mb-6">
                     <h2 className="font-bold text-xl mb-2">About</h2>
                     <p>
-                        {"This is a cute lil app that I made, the goal is for this repo to mature into the IMbD of NFTs"}
+                        {
+                            "This is a cute lil app that I made, the goal is for this repo to mature into the IMbD of NFTs"
+                        }
                     </p>
                 </div>
 

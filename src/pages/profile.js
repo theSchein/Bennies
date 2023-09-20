@@ -19,22 +19,20 @@ function ProfilePage() {
     }
 
     return (
-        <>
+        <div className="min-h-screen bg-primary flex items-left justify-center py-6 px-4 sm:px-6 lg:px-8">
             <WagmiWallet>
-                <div>welcome: {session.username}</div>
-
-                <div> Connect your wallet and find art</div>
+                <div className="text-quaternary font-heading text-2xl mb-4">
+                    Welcome, {session.username}
+                </div>
 
                 <Profile />
-                <div>Profile Page</div>
             </WagmiWallet>
-        </>
+        </div>
     );
 }
 
 export async function getServerSideProps(context) {
     const session = await getSession({ req: context.req });
-    //console.log(session.email_address);
 
     if (!session) {
         return {

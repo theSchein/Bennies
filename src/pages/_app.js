@@ -4,11 +4,11 @@ import "../styles/globals.css";
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
     return (
-        <Layout>
         <SessionProvider session={pageProps.session}>
-            <Component {...pageProps} />
+            <Layout>
+                <Component {...pageProps} />
+            </Layout>
         </SessionProvider>
-        </Layout>
     );
 }
 
