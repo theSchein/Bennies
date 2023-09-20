@@ -17,7 +17,7 @@ export default function Home() {
                     <h2 className="font-bold text-xl mb-2">About</h2>
                     <p>
                         {
-                            "This is a cute lil app that I made, the goal is for this repo to mature into the IMbD of NFTs"
+                            "The goal is for this repo to mature into an authoritative source to explore and discover digital content that has been verified onchain"
                         }
                     </p>
                 </div>
@@ -28,7 +28,7 @@ export default function Home() {
                         <li>{"Authentication"}</li>
                         <li>{"Connecting your wallet and collecting nft data"}</li>
                         <li>{"Creating an artist page (if you deployed an nft)"}</li>
-                        <li>{"NFT pages"}</li>
+                        <li>{"Database connection in the cloud (not yet decentralized)"}</li>
                     </ul>
                 </div>
 
@@ -37,6 +37,7 @@ export default function Home() {
                     <ul className="list-disc pl-5">
                         <li>{"Building a database of nfts"}</li>
                         <li>{"Better search functionilty"}</li>
+                        <li>{"NFT Pages with photos and comments"}</li>
                         <li>{"everything else.... "}</li>
                     </ul>
                 </div>
