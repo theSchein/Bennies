@@ -1,3 +1,12 @@
+import db from "../../../lib/db";
+const { Alchemy, Network } = require("alchemy-sdk");
+
+const config = {
+    apiKey: process.env.ALCHEMY_API_KEY,
+    network: Network.ETH_MAINNET,
+};
+
+const alchemy = new Alchemy(config);
 let isMoralisStarted = false;
 
 export default async function (req, res) {
@@ -10,10 +19,17 @@ export default async function (req, res) {
     const chain = EvmChain.ETHEREUM;
 
     if (!isMoralisStarted) {
-        await Moralis.start({
-          apiKey: process.env.MORALIS_API_KEY,
-        });
-        isMoralisStarted = true;
+        try {
+            await Moralis.start({
+              apiKey: process.env.MORALIS_API_KEY,
+            });
+            isMoralisStarted = true;
+        } catch (error) {
+            if (!error.message.includes("Modules are started already")) {
+                console.error("Error initializing Moralis:", error);
+                return res.status(500).json({ message: "Internal Server Error.", error: error.message });
+            }
+        }
     }
 
     console.log("Moralis started:" + isMoralisStarted);
@@ -27,14 +43,16 @@ export default async function (req, res) {
     try {
         let cursor = null;
         let nftDetails = [];
-
+    
         do {
             const response = await Moralis.EvmApi.nft.getContractNFTs({
-              address: contract, // Use the contract variable
+              address: contract,
               chain,
               cursor: cursor,
             });
 
+
+    
             for (const NFT of response.result) {
                 const metadata = typeof NFT.metadata === 'string' ? JSON.parse(NFT.metadata) : NFT.metadata;
                 let image = NFT && NFT.metadata ? NFT.metadata.image : "Blank";
@@ -42,22 +60,83 @@ export default async function (req, res) {
                     image = image.replace("ipfs://", "https://ipfs.io/ipfs/");
                 }
 
+                console.log('-------------------------'); // Separator for clarity
+                console.log(`contract_address: ${contract}`);
+                console.log(`token_id: ${NFT.tokenId}`);
+                console.log(`nft_name: ${metadata.name}`);
+                console.log(`token_type: ${NFT.contractType}`);
+                console.log(`token_uri: ${NFT.tokenUri}`);
+                console.log(`media_link: ${image}`);
+                console.log(`Spam: ${NFT.possibleSpam}`);
+                console.log('-------------------------'); // Separator for clarity
+
+
+
+                //console.log("Getting NFT metadata for " + JSON.stringify(response.result, null, 2));
+
+                const load = await alchemy.nft.getNftMetadata(String(contract), String(NFT.tokenId))
+                console.log("NFT metadata: " + JSON.stringify(load, null, 2));
+                const deployer = load.contract.contractDeployer
+                const desciption = load.description
+
                 nftDetails.push({
                     contract_address: contract,
-                    token_id: NFT.token_id,
+                    token_id: NFT.tokenId,
                     nft_name: metadata ? metadata.name : "Unknown",
                     token_type: NFT.contractType,
                     token_uri: NFT.tokenUri,
                     media_link: image,
+                    deployer_address: deployer,
+                    nft_desciption: desciption,
                     spam: NFT.possibleSpam
                 });
             }
-
             cursor = response.pagination.cursor;
         } while (cursor != "" && cursor != null);
-
-        return res.status(200).json(nftDetails);
-
+        
+        // Add/Update NFT data in database
+        for (let nft of nftDetails) {
+            console.log(nft.nft_name);
+            const existingEntry = await db.oneOrNone(
+                "SELECT contract_address_token_id FROM nfts WHERE contract_address_token_id = $1",
+                [nft.contract_address + nft.token_id],
+            );
+            if (!existingEntry) {
+                console.log("Adding NFT to database: " + nft.nft_name);
+                await db.none(
+                    `
+                    INSERT INTO nfts(
+                        contract_address_token_id,
+                        contract_address, 
+                        nft_name,
+                        token_type, 
+                        token_uri_gateway,
+                        media_url, 
+                        deployer_address,
+                        nft_description,
+                        token_id)
+                        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)
+                    `,
+                    [
+                        nft.contract_address + nft.token_id,
+                        nft.contract_address,
+                        nft.nft_name,
+                        nft.token_type,
+                        nft.token_uri,
+                        nft.media_link,
+                        nft.deployer_address,
+                        nft.nft_description,
+                        nft.token_id,
+                    ],
+                );
+            }
+        }
+        // Send the response after processing all the NFTs
+        return res.status(200).json({
+            success: true,
+            message: "NFTs added to database",
+        });
+    
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Internal Server Error.", error: error.message });

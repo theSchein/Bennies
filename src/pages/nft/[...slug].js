@@ -1,12 +1,11 @@
 // pages/nft/[...slug].js
 import db from "../../lib/db";
 import CommentSection from "../../components/comment/Comments";
+import Image from 'next/image';  // <-- Import the Image component
 
 export async function getServerSideProps({ params }) {
     const { slug } = params;
-    // Fetch the NFT data based on the slug from your database/API
     const nft = await db.one("SELECT * FROM nfts WHERE nft_id = $1", [slug[0]]);
-
     return { props: { nft } };
 }
 
@@ -20,7 +19,8 @@ export default function NftPage({ nft }) {
                 <p className="text-quaternary font-body text-lg">
                     Description: {nft.nft_description}
                 </p>
-                {/* Render other NFT details */}
+                <div className="relative w-full h-[300px]">  {/* Adjust height as needed */}
+                <Image src={nft.media_url} alt={nft.nft_name} layout="fill" objectFit="contain" />                </div>
                 <CommentSection nft={nft} />
             </div>
         </div>

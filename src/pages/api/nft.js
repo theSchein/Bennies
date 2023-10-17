@@ -1,4 +1,3 @@
-import { getToken } from "next-auth/jwt";
 import db from "../../lib/db";
 const { Alchemy, Network } = require("alchemy-sdk");
 
@@ -9,16 +8,6 @@ const config = {
 const alchemy = new Alchemy(config);
 
 export default async function (req, res) {
-    if (req.method === "POST") {
-        const session = await getToken({ req });
-
-        if (!session) {
-            // Not authenticated
-            return res
-                .status(401)
-                .json({ error: "Not authenticated from the session" });
-        }
-
         try {
             const { address } = req.body;
 
@@ -47,7 +36,7 @@ export default async function (req, res) {
             contract_address_token_id,
             contract_address, 
             deployer_address,
-            nft_name,
+            nft_name, 
             token_type, 
             token_uri_gateway,
             nft_description,

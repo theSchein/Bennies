@@ -28,7 +28,7 @@ export default function Home() {
                         <li>{"Authentication"}</li>
                         <li>{"Connecting your wallet and collecting nft data"}</li>
                         <li>{"Creating an artist page (if you deployed an nft)"}</li>
-                        <li>{"Database connection in the cloud (not yet decentralized)"}</li>
+                        <li>{"Database connection in the cloud"}</li>
                     </ul>
                 </div>
 

@@ -5,7 +5,7 @@ const init = async () => {
   const address = "0x025B0A638768B49901565c39A0C141BDB52CC06f"; //Cryptopunks contract address
   const chain = EvmChain.ETHEREUM;
   await Moralis.start({
-    apiKey: "YF3b7r01KWRAWzttcrmY67PHGvpaYAEp0YYnL0yT2uYQaqgUztrOIOMSQg0qfY1f",
+    apiKey: process.env.MORALIS_API_KEY,
   });
 
   let cursor = null;
