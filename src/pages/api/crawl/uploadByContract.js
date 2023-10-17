@@ -32,8 +32,6 @@ export default async function (req, res) {
         }
     }
 
-    console.log("Moralis started:" + isMoralisStarted);
-
     const contract = req.query.contract;
 
     if (!contract) {
@@ -60,22 +58,8 @@ export default async function (req, res) {
                     image = image.replace("ipfs://", "https://ipfs.io/ipfs/");
                 }
 
-                console.log('-------------------------'); // Separator for clarity
-                console.log(`contract_address: ${contract}`);
-                console.log(`token_id: ${NFT.tokenId}`);
-                console.log(`nft_name: ${metadata.name}`);
-                console.log(`token_type: ${NFT.contractType}`);
-                console.log(`token_uri: ${NFT.tokenUri}`);
-                console.log(`media_link: ${image}`);
-                console.log(`Spam: ${NFT.possibleSpam}`);
-                console.log('-------------------------'); // Separator for clarity
-
-
-
-                //console.log("Getting NFT metadata for " + JSON.stringify(response.result, null, 2));
 
                 const load = await alchemy.nft.getNftMetadata(String(contract), String(NFT.tokenId))
-                console.log("NFT metadata: " + JSON.stringify(load, null, 2));
                 const deployer = load.contract.contractDeployer
                 const desciption = load.description
 
@@ -96,13 +80,11 @@ export default async function (req, res) {
         
         // Add/Update NFT data in database
         for (let nft of nftDetails) {
-            console.log(nft.nft_name);
             const existingEntry = await db.oneOrNone(
                 "SELECT contract_address_token_id FROM nfts WHERE contract_address_token_id = $1",
                 [nft.contract_address + nft.token_id],
             );
             if (!existingEntry) {
-                console.log("Adding NFT to database: " + nft.nft_name);
                 await db.none(
                     `
                     INSERT INTO nfts(

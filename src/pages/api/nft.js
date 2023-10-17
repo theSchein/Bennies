@@ -8,6 +8,7 @@ const config = {
 const alchemy = new Alchemy(config);
 
 export default async function (req, res) {
+    if (req.method === "POST") {  // Assuming you're checking for a POST request
         try {
             const { address } = req.body;
 

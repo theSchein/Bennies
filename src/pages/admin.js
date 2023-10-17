@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function adminPage() {
+export default function AdminPage() {
   const [contract, setContract] = useState('');
   const [details, setDetails] = useState(null);
 

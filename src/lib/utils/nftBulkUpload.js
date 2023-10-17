@@ -16,13 +16,12 @@ const init = async () => {
       cursor: cursor,
     });
     
-    console.log(
-      `Got page ${response.page} of ${Math.ceil(
-        response.pagination.total / response.pagination.pageSize
-      )}, ${response.pagination.total} total`
-    );
+    // console.log(
+    //   `Got page ${response.page} of ${Math.ceil(
+    //     response.pagination.total / response.pagination.pageSize
+    //   )}, ${response.pagination.total} total`
+    // );
 
-    //console.log(JSON.stringify(response.result, null, 2));
 
     for (const NFT of response.result) {
 
@@ -33,15 +32,15 @@ const init = async () => {
             image = image.replace("ipfs://", "https://ipfs.io/ipfs/");
         }
 
-        console.log('-------------------------'); // Separator for clarity
-        console.log(`contract_address: ${address}`);
-        console.log(`token_id: ${NFT.token_id}`);
-        console.log(`nft_name: ${name}`);
-        console.log(`token_type: ${NFT.contractType}`);
-        console.log(`token_uri: ${NFT.tokenUri}`);
-        console.log(`media_link: ${image}`);
-        console.log(`Spam: ${NFT.possibleSpam}`);
-        console.log('-------------------------'); // Separator for clarity
+        // console.log('-------------------------'); // Separator for clarity
+        // console.log(`contract_address: ${address}`);
+        // console.log(`token_id: ${NFT.token_id}`);
+        // console.log(`nft_name: ${name}`);
+        // console.log(`token_type: ${NFT.contractType}`);
+        // console.log(`token_uri: ${NFT.tokenUri}`);
+        // console.log(`media_link: ${image}`);
+        // console.log(`Spam: ${NFT.possibleSpam}`);
+        // console.log('-------------------------'); // Separator for clarity
 
     }
     cursor = response.pagination.cursor;
