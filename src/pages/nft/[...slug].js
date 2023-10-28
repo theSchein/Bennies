@@ -19,8 +19,9 @@ export default function NftPage({ nft }) {
                 <p className="text-quaternary font-body text-lg">
                     Description: {nft.nft_description}
                 </p>
-                <div className="relative w-full h-[300px]">  {/* Adjust height as needed */}
-                <Image src={nft.media_url} alt={nft.nft_name} layout="fill" objectFit="contain" />                </div>
+                <div className="relative w-full h-[500px]">  {/* Adjust height as needed */}
+                <Image src={nft.media_url} alt={nft.nft_name} layout="fill" objectFit="contain" /> 
+               </div>
                 <CommentSection nft={nft} />
             </div>
         </div>
