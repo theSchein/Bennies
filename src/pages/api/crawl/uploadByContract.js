@@ -69,7 +69,9 @@ export default async function (req, res) {
                 const deployer = load.contract.contractDeployer
                 const description = load.description
 
-                console.log(description )
+                const owners = await alchemy.nft.getOwnersForNft(String(contract), String(NFT.tokenId));
+
+                console.log('owners' + owners.owners); 
 
                 nftDetails.push({
                     contract_address: contract,
@@ -80,7 +82,8 @@ export default async function (req, res) {
                     media_link: image,
                     deployer_address: deployer,
                     nft_description: description,
-                    spam: NFT.possibleSpam
+                    spam: NFT.possibleSpam,
+                    owner: owners.owners
                 });
                 await sleep(3000);
             }
@@ -99,6 +102,7 @@ export default async function (req, res) {
                     INSERT INTO nfts(
                         contract_address_token_id,
                         contract_address, 
+                        owners,
                         nft_name,
                         token_type, 
                         token_uri_gateway,
@@ -106,11 +110,12 @@ export default async function (req, res) {
                         deployer_address,
                         nft_description,
                         token_id)
-                        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)
+                        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
                     `,
                     [
                         nft.contract_address + nft.token_id,
                         nft.contract_address,
+                        nft.owner,
                         nft.nft_name,
                         nft.token_type,
                         nft.token_uri,

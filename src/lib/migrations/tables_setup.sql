@@ -66,6 +66,7 @@ CREATE TABLE nfts (
 	collection_id int4 NULL,
 	contract_address varchar(255) NULL,
 	deployer_address varchar(255) NULL,
+	owners text[], 
 	nft_name varchar(255) NULL,
 	token_type varchar(10) NULL,
 	token_uri_gateway varchar(255) NULL,
