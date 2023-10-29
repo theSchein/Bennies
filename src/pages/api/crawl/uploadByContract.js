@@ -9,6 +9,12 @@ const config = {
 const alchemy = new Alchemy(config);
 let isMoralisStarted = false;
 
+// to get around the rate limit
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+  
+
 export default async function (req, res) {
     if (req.method !== "GET") {
         return res.status(405).json({ message: "Method Not Allowed" });
@@ -59,21 +65,24 @@ export default async function (req, res) {
                 }
 
 
-                const load = await alchemy.nft.getNftMetadata(String(contract), String(NFT.tokenId))
+                const load = await alchemy.nft.getNftMetadata(String(contract), String(NFT.tokenId),String(NFT.contract_type));
                 const deployer = load.contract.contractDeployer
-                const desciption = load.description
+                const description = load.description
+
+                console.log(description )
 
                 nftDetails.push({
                     contract_address: contract,
                     token_id: NFT.tokenId,
-                    nft_name: metadata ? metadata.name : "Unknown",
+                    nft_name: load.title,
                     token_type: NFT.contractType,
                     token_uri: NFT.tokenUri,
                     media_link: image,
                     deployer_address: deployer,
-                    nft_desciption: desciption,
+                    nft_description: description,
                     spam: NFT.possibleSpam
                 });
+                await sleep(3000);
             }
             cursor = response.pagination.cursor;
         } while (cursor != "" && cursor != null);
