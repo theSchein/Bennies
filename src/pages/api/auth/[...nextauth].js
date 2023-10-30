@@ -30,7 +30,7 @@ export default NextAuth({
                     user.password,
                 );
                 if (!isValid) {
-                    throw new Error("Could not log you in!");
+                    throw new Error("Invalid Credentials!");
                     //return Promise.resolve(null);
                 }
 

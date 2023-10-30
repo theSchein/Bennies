@@ -71,8 +71,6 @@ export default async function (req, res) {
 
                 const owners = await alchemy.nft.getOwnersForNft(String(contract), String(NFT.tokenId));
 
-                console.log('owners' + owners.owners); 
-
                 nftDetails.push({
                     contract_address: contract,
                     token_id: NFT.tokenId,
