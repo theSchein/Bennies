@@ -5,15 +5,14 @@ import db from "../../../lib/db";
 export default async (req, res) => {
     if (req.method === "POST") {
         const session = await getToken({ req });
-        const user_id = session.user.user_id;
-
         if (!session) {
             // Not authenticated
             return res
                 .status(401)
                 .json({ error: "Not authenticated from the session" });
-        }
-
+        }    
+            
+        const user_id = session.user.user_id;
         const { nft_id, text, parentCommentId } = req.body.data;
 
         if (!user_id || !nft_id || !text) {

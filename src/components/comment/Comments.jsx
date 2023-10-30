@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
 import CommentForm from "./CommentForm.jsx";
 import CommentList from "./CommentList";
 
 function CommentSection({ nft }) {
+    const { data: session } = useSession();
     const [comments, setComments] = useState([]);
     const [text, setText] = useState("");
     const [reloadComments, setReloadComments] = useState(false);
@@ -47,14 +50,15 @@ function CommentSection({ nft }) {
             .then((data) => {
                 setText("");
                 setComments((prevComments) => [...prevComments, data]);
-                setReloadComments(!reloadComments); // Toggle the state
+                setReloadComments(!reloadComments);
             });
     };
 
     return (
         <div>
-            <h2>Add some comments</h2>
-            <CommentForm onSubmit={handleSubmit} text={text} setText={setText} />
+            
+            {session ? <div><h2>Commenting as {session.username} </h2>  <CommentForm onSubmit={handleSubmit} text={text} setText={setText} /> </div>: <Link href='/signin' className="text-black hover:underline">Sign in to comment</Link>}
+            
             <CommentList comments={comments} />
         </div>
     );
