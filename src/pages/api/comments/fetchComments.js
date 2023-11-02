@@ -33,7 +33,7 @@ export default async function handler(req, res) {
 
         if (!result || !Array.isArray(result) || result.length === 0) {
             return res
-                .status(404)
+                .status(200)
                 .json({ message: "No comments found for this NFT." });
         }
 

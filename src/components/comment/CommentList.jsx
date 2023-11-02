@@ -1,17 +1,15 @@
 import React from "react";
+import Comment from "./Comment";
+import { structureComments } from './CommentUtils';
 
-function CommentList({ comments }) {
-    // Check if comments exist and is an array
-    const validComments = Array.isArray(comments) ? comments : [];
+
+function CommentList({ comments, nft, addReply }) {
+    const structuredComments = structureComments(comments);
 
     return (
         <div className="comment-list">
-            {validComments.map((comment) => (
-                <div key={comment.comment_id}>
-                    <strong>{comment.commenter}</strong>
-                    <p>{comment.text}</p>
-                    <span>{new Date(comment.commentdate).toLocaleDateString()}</span>
-                </div>
+            {structuredComments.map((comment) => (
+                <Comment key={comment.comment_id} comment={comment} nft={nft} addReply={addReply} />
             ))}
         </div>
     );

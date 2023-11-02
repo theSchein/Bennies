@@ -1,7 +1,7 @@
 // pages/nft/[...slug].js
 import { useState } from "react";
 import db from "../../lib/db";
-import CommentSection from "../../components/comment/Comments";
+import CommentSection from "../../components/comment/CommentSection";
 import Image from 'next/image';  
 
 
