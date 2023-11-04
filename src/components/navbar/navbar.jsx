@@ -4,7 +4,10 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import DiamondIcon from "@mui/icons-material/Diamond";
 import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu"; // Import the MenuIcon for the hamburger menu
 import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem"; // Import MenuItem
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import { useSession } from "next-auth/react";
@@ -15,6 +18,10 @@ function Navbar() {
     const { data: session } = useSession();
     const [anchorElNav, setAnchorElNav] = React.useState(null);
 
+    const handleOpenNavMenu = (event) => {
+        setAnchorElNav(event.currentTarget);
+    };
+
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
     };
@@ -23,42 +30,24 @@ function Navbar() {
     const allPages = [...pages, authPage];
 
     return (
-        <AppBar
-            position="static"
-            className="bg-quaternary text-primary font-heading shadow-none border-none w-full"
-            style={{ background: '#1E2022' }}
-        >
+        <AppBar position="static" style={{ background: '#1E2022' }}>
             <Container maxWidth="xl">
-                <Toolbar disableGutters className="bg-quaternary">
-                    <DiamondIcon
-                        sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
-                    />
-                    <Typography
-                        variant="h5"
-                        noWrap
-                        component="a"
-                        href="/"
-                        sx={{
-                            mr: 2,
-                            display: { xs: "none", md: "flex" },
-                            flexGrow: 1,
-                            fontFamily: "metropolis",
-                            fontWeight: 700,
-                            letterSpacing: ".3rem",
-                            color: "inherit",
-                            textDecoration: "none",
-                        }}
-                    >
-                        DISCOVRY
-                    </Typography>
+                <Toolbar disableGutters>
+                    {/* Move the DiamondIcon outside of the Box to be visible on mobile */}
+                    <DiamondIcon sx={{ display: { xs: "flex", md: "flex" }, mr: 1 }} />
 
-                    <Box
-                        sx={{
-                            flexGrow: 1,
-                            display: { xs: "flex", md: "none" },
-                            color: "inherit",
-                        }}
-                    >
+                    {/* Hamburger menu icon for mobile */}
+                    <Box sx={{ display: { xs: "flex", md: "none" }, marginLeft: 'auto' }}>
+                        <IconButton
+                            size="large"
+                            aria-label="navigation menu"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={handleOpenNavMenu}
+                            color="inherit"
+                        >
+                            <MenuIcon />
+                        </IconButton>
                         <Menu
                             id="menu-appbar"
                             anchorEl={anchorElNav}
@@ -73,30 +62,24 @@ function Navbar() {
                             }}
                             open={Boolean(anchorElNav)}
                             onClose={handleCloseNavMenu}
-                            sx={{
-                                display: { xs: "block", md: "none" },
-                            }}
-                        ></Menu>
+                        >
+                            {allPages.map((page) => (
+                                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                                    <Typography textAlign="center" sx={{
+                                        fontFamily: "metropolis",
+                                        fontWeight: 700,
+                                        letterSpacing: ".1rem",
+                                        color: "inherit",
+                                        textDecoration: "none",
+                                    }}>
+                                        <a href={`/${page}`} style={{ textDecoration: 'none', color: 'inherit' }}>{page}</a>
+                                    </Typography>
+                                </MenuItem>
+                            ))}
+                        </Menu>
                     </Box>
-                    <DiamondIcon
-                        sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}
-                    />
-                    <Typography
-                        variant="h5"
-                        noWrap
-                        component="a"
-                        href="/"
-                        sx={{
-                            mr: 2,
-                            display: { xs: "flex", md: "none" },
-                            flexGrow: 1,
-                            fontFamily: "metropolis",
-                            fontWeight: 700,
-                            letterSpacing: ".3rem",
-                            color: "inherit",
-                            textDecoration: "none",
-                        }}
-                    ></Typography>
+
+                    {/* Desktop menu items */}
                     <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
                         {allPages.map((page) => (
                             <Button
