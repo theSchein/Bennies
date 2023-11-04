@@ -19,11 +19,16 @@ function CommentList({ comments, nft }) {
     // Recursive render function to render comments and their nested replies
     const renderComments = (comments, depth = 0) => {
         return comments.map((comment) => (
-            <div key={comment.comment_id} style={{ marginLeft: `${depth * 20}px` }}>
+            <div 
+                key={comment.comment_id} 
+                className="border-l-2 pl-4 my-2" 
+                style={{ marginLeft: `${depth * 20}px` }} // Keep the inline style for dynamic marginLeft
+            >
                 <Comment comment={comment} nft={nft} depth={depth} />
                 {comment.replies && renderComments(comment.replies, depth + 1)}
             </div>
         ));
+        
     };
 
     return (

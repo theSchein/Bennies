@@ -4,44 +4,45 @@ import SearchContainer from "@/components/search/SearchContainer";
 
 export default function Home() {
     return (
-        <div className="bg-primary text-quaternary min-h-screen font-body flex flex-col items-center justify-start py-8">
-            <h1 className="font-heading text-4xl mb-6">{"DISCOVRY"}</h1>
-
-            <div className="w-full max-w-2xl p-4 bg-primary rounded shadow-lg">
-                <div className="text-center mb-6">
-                    <div className="font-bold text-2xl mb-2">Search</div>
-                    <SearchContainer />
-                </div>
-
-                <div className="mb-6">
-                    <h2 className="font-bold text-xl mb-2">About</h2>
-                    <p>
-                        {
-                            "The goal is for this repo to mature into an authoritative source to explore and discover digital content that has been verified onchain"
-                        }
-                    </p>
-                </div>
-
-                <div className="mb-6">
-                    <h2 className="font-bold text-xl mb-2">{"Things that work"}</h2>
-                    <ul className="list-disc pl-5">
-                        <li>{"Authentication"}</li>
-                        <li>{"Connecting your wallet and collecting nft data"}</li>
-                        <li>{"Creating an artist page (if you deployed an nft)"}</li>
-                        <li>{"Database connection in the cloud"}</li>
-                    </ul>
-                </div>
-
-                <div className="mb-6">
-                    <h2 className="font-bold text-xl mb-2">{"Next Steps"}</h2>
-                    <ul className="list-disc pl-5">
-                        <li>{"Building a database of nfts"}</li>
-                        <li>{"Better search functionilty"}</li>
-                        <li>{"NFT Pages with photos and comments"}</li>
-                        <li>{"everything else.... "}</li>
-                    </ul>
-                </div>
+        <div className="bg-primary text-quaternary min-h-screen font-body flex flex-col items-center justify-center py-8">
+          <h1 className="font-heading text-6xl mb-10 text-quaternary tracking-wide">DISCOVRY</h1>
+      
+          <div className="w-full max-w-4xl p-8 bg-white rounded-lg shadow-xl">
+            <div className="mb-10">
+              <h2 className="font-bold text-3xl mb-4 text-center text-tertiary">Explore for NFTs</h2>
+              <div className="flex justify-center">
+                <SearchContainer />
+              </div>
             </div>
+      
+            <div className="mb-10">
+              <h2 className="font-bold text-2xl mb-4 text-tertiary">About DISCOVRY</h2>
+              <p className="text-lg leading-relaxed">
+                The goal is for this repo to mature into an authoritative source to explore and discover digital content that has been verified onchain.
+              </p>
+            </div>
+      
+            <div className="mb-10">
+              <h2 className="font-bold text-2xl mb-4 text-tertiary">Things that work</h2>
+              <ul className="list-disc pl-8 text-lg">
+                <li>Creating accounts</li>
+                <li>NFT Page with top level comments</li>
+                <li>Search Page by NFT name</li>
+                <li>NFTs and Comments in the cloud database</li>
+              </ul>
+            </div>
+      
+            <div className="mb-10">
+              <h2 className="font-bold text-2xl mb-4 text-tertiary">Next Steps</h2>
+              <ul className="list-disc pl-8 text-lg">
+                <li>Allow user to create artist page, if they made an NFT</li>
+                <li>Search by more than name (contract, user, content, etc.)</li>
+                <li>Nested Comments on NFT pages</li>
+                <li>Everything else...</li>
+              </ul>
+            </div>
+          </div>
         </div>
-    );
+      );
+      
 }

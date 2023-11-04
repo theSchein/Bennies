@@ -5,7 +5,6 @@ import CommentForm from "./CommentForm.jsx";
 import CommentList from "./CommentList.jsx";
 import { structureComments } from "./CommentUtils.jsx";
 
-
 // Main container that fetches comments and handles submission of top level comments
 function CommentSection({ nft }) {
     const { data: session } = useSession();
@@ -20,7 +19,9 @@ function CommentSection({ nft }) {
     useEffect(() => {
         async function fetchComments() {
             try {
-                const response = await fetch(`/api/comments/fetchComments?nft_id=${nft_id}`);
+                const response = await fetch(
+                    `/api/comments/fetchComments?nft_id=${nft_id}`,
+                );
                 const data = await response.json();
                 const structuredData = structureComments(data);
                 setComments(structuredData); // Assuming the API returns an array of comments
@@ -35,7 +36,9 @@ function CommentSection({ nft }) {
         setComments((currentComments) => {
             const updatedComments = currentComments.map((comment) => {
                 if (comment.comment_id === parentCommentId) {
-                    const updatedReplies = comment.replies ? [...comment.replies, newReply] : [newReply];
+                    const updatedReplies = comment.replies
+                        ? [...comment.replies, newReply]
+                        : [newReply];
                     return { ...comment, replies: updatedReplies };
                 }
                 return comment;
@@ -46,8 +49,6 @@ function CommentSection({ nft }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
-
 
         const data = {
             nft_id: nft.nft_id,
@@ -61,7 +62,7 @@ function CommentSection({ nft }) {
                 "Content-Type": "application/json",
                 credentials: "include",
             },
-            body: JSON.stringify({data}),
+            body: JSON.stringify({ data }),
         })
             .then((response) => response.json())
             .then((newComment) => {
@@ -73,16 +74,39 @@ function CommentSection({ nft }) {
     };
 
     return (
-        <div>
+        <div className="py-8 w-full max-w-2xl mx-auto">
+            {" "}
+            {/* Added padding y-8 and set max width */}
             {session ? (
-                <div>
-                    <h2>Commenting as {session.username}</h2>
-                    <CommentForm onSubmit={(e) => handleSubmit(e, null)} text={text} setText={setText} />
+                <div className="bg-gray-50 p-6 rounded-lg shadow space-y-4">
+                    {" "}
+                    {/* Added background, padding, rounded corners, and shadow */}
+                    <h2 className="text-lg font-semibold">
+                        Commenting as {session.username}
+                    </h2>
+                    <CommentForm
+                        onSubmit={(e) => handleSubmit(e, null)}
+                        text={text}
+                        setText={setText}
+                    />
                 </div>
             ) : (
-                <Link href="/signin">Sign in to comment</Link>
+                <div className="text-center py-4">
+                    {" "}
+                    {/* Centered text with padding */}
+                    <Link
+                        href="/signin"
+                        className="text-xl text-quaternary hover:text-primary transition-colors"
+                    >
+                        Sign in to comment
+                    </Link>
+                </div>
             )}
-            <CommentList comments={comments} nft={nft} addReply={addReplyToComment} />
+            <CommentList
+                comments={comments}
+                nft={nft}
+                addReply={addReplyToComment}
+            />
         </div>
     );
 }

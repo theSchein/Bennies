@@ -38,18 +38,27 @@ function Comment({ comment, addReply, nft, depth=0 }) {
     };
 
     return (
-        <div style={{ marginLeft: `${depth * 20}px`}} key={comment.comment_id}>            
-        <strong>{comment.commenter}</strong>
-            <p>{comment.text}</p>
-            <span>{new Date(comment.commentdate).toLocaleDateString()}</span>
-            <button onClick={() => setShowReplyForm(!showReplyForm)}>Reply</button>
-            {showReplyForm && (
-                <CommentForm
-                    onSubmit={handleNestedSubmit}
-                    text={nestedText}
-                    setText={setNestedText}
-                />
-            )}
+        <div className={`ml-${depth * 5} my-2 p-4 bg-gray-100 rounded-lg shadow`} key={comment.comment_id}>
+            <div className="flex justify-between items-center mb-2">
+                <strong className="font-semibold">{comment.commenter}</strong>
+                <span className="text-sm text-gray-600">{new Date(comment.commentdate).toLocaleDateString()}</span>
+            </div>
+            <p className="text-gray-800 mb-4">{comment.text}</p>
+            <div className="flex items-center">
+                <button 
+                    onClick={() => setShowReplyForm(!showReplyForm)}
+                    className="bg-gray-300 hover:bg-gray-400 text-gray-800 py-1 px-3 rounded transition-colors duration-200 ease-in-out text-sm font-medium mr-4"
+                >
+                    Reply
+                </button>
+                {showReplyForm && (
+                    <CommentForm
+                        onSubmit={handleNestedSubmit}
+                        text={nestedText}
+                        setText={setNestedText}
+                    />
+                )}
+            </div>
             {comment.parent_comment_id && (
                 <CommentList
                     comments={comment.replies}
@@ -60,6 +69,8 @@ function Comment({ comment, addReply, nft, depth=0 }) {
             )}
         </div>
     );
+    
+    
 }
 
 export default Comment;
