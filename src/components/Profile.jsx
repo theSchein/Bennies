@@ -93,28 +93,59 @@ export function Profile() {
     if (isConnected) {
         return (
             <>
-                <div>
+                <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6">
                     <WalletAddressContext.Provider value={address}>
-                        <Image src={ensAvatar} alt="ENS Avatar" />
-                        <div>{ensName ? `${ensName} (${address})` : address}</div>
-                        <div>Connected to {connector.name}</div>
+                        <div className="max-w-md w-full bg-white rounded-lg shadow-md p-6 space-y-4">
+                            <div className="flex justify-center">
+                                <Image
+                                    src={ensAvatar}
+                                    alt="ENS Avatar"
+                                    className="w-24 h-24 rounded-full"
+                                />
+                            </div>
+                            <div className="text-center text-lg font-medium">
+                                {ensName ? `${ensName} (${address})` : address}
+                            </div>
+                            <div className="text-center text-sm text-gray-600">
+                                {connector
+                                    ? `Connected to ${connector.name}`
+                                    : "Not connected"}
+                            </div>
 
-                        <button onClick={disconnect}>Disconnect</button>
+                            <div className="space-y-2">
+                                <button
+                                    onClick={disconnect}
+                                    className="w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition duration-300"
+                                >
+                                    Disconnect
+                                </button>
 
-                        <button onClick={fetchNFTs}>Fetch NFTs</button>
+                                {/* <button
+                                    onClick={fetchNFTs}
+                                    className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-300"
+                                >
+                                    Fetch NFTs
+                                </button> */}
 
-                        <button onClick={fetchArtistEligibility}>
-                            Check Eligibility
-                        </button>
+                                <button
+                                    onClick={fetchArtistEligibility}
+                                    className="w-full bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition duration-300"
+                                >
+                                    Check Eligibility
+                                </button>
+                            </div>
 
-                        <div>
-                            {isEligible ? (
-                                <ArtistForm onCLick={null}>
-                                    You are eligible to create an artist page!
-                                </ArtistForm>
-                            ) : (
-                                "You're not eligible to create an artist page."
-                            )}
+                            <div className="text-center p-4">
+                                {isEligible ? (
+                                    <div className="text-green-500 font-bold">
+                                        You are eligible to create an artist page!
+                                    </div>
+                                ) : (
+                                    <div className="text-red-500">
+                                        You're not eligible to create an artist page.
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </WalletAddressContext.Provider>
                 </div>
@@ -129,6 +160,9 @@ export function Profile() {
                     disabled={!connector.ready}
                     key={connector.id}
                     onClick={() => connect({ connector })}
+                    className={`bg-rainbow-gradient text-white font-bold py-2 px-4 rounded-full shadow-md transform transition hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed {
+                        !connector.ready && "cursor-not-allowed"
+                    }`}
                 >
                     {connector.name}
                     {!connector.ready && " (unsupported)"}

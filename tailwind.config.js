@@ -18,6 +18,9 @@ module.exports = {
         'quaternary': '#1E2022',
         'background': '#F0F5F9'
     },
+    backgroundImage: {
+      'rainbow-gradient': 'linear-gradient(to right, #FF0000, #FF9A00, #D0DE21, #4FDC4A, #3FDAD8, #2FC9E2, #1C7FEE, #5F15F2, #BA0CF8, #FB07D9, #FF0000)',
+    }
   },
 },
   plugins: [],
