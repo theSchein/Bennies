@@ -117,7 +117,7 @@ export function Profile() {
                                     onClick={disconnect}
                                     className="w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition duration-300"
                                 >
-                                    Disconnect
+                                    {`Disconnect`}
                                 </button>
 
                                 {/* <button
@@ -131,18 +131,18 @@ export function Profile() {
                                     onClick={fetchArtistEligibility}
                                     className="w-full bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition duration-300"
                                 >
-                                    Check Eligibility
+                                    {`Check Eligibility`}
                                 </button>
                             </div>
 
                             <div className="text-center p-4">
                                 {isEligible ? (
                                     <div className="text-green-500 font-bold">
-                                        You are eligible to create an artist page!
+                                        {`You are eligible to create an artist page!`}
                                     </div>
                                 ) : (
                                     <div className="text-red-500">
-                                        You're not eligible to create an artist page.
+                                        {`You are not eligible to create an artist page.`}
                                     </div>
                                 )}
                             </div>

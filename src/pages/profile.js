@@ -27,35 +27,35 @@ function ProfilePage() {
                             Welcome, {session.username}
                         </h1>
                         <p className="text-lg leading-relaxed pt-4">
-                            On this profile page you can connect your wallet and if
+                          {`On this profile page you can connect your wallet and if
                             you have used it to deploy any of the NFTs on our platorm
                             than you can create your own artist page to showcase and
-                            discuss your work.
+                            discuss your work.`}
                         </p>
                         <div className="mb-5 pt-4">
                             <h2 className="font-bold text-2xl mb-4 text-tertiary">
-                                Current Features
+                                {`Current Features`}
                             </h2>
                             <ul className="list-disc pl-6 text-lg">
-                                <li>Comment on NFTs</li>
-                                <li>Check eligibilty to create Artist Page</li>
+                                <li>{`Comment on NFTs`}</li>
+                                <li>{`Check eligibilty to create Artist Page`}</li>
                             </ul>
                         </div>
                         <div className="mb-10">
                             <h2 className="font-bold text-2xl mb-4 text-tertiary">
-                                Upcoming Features
+                                {`Upcoming Features`}
                             </h2>
                             <ul className="list-disc pl-8 text-lg">
                                 <li>
-                                    Favoriting NFTs that will show in your Profile
+                                    {`Favoriting NFTs that will show in your Profile`}
                                 </li>
-                                <li>Creating/updating an artist page</li>
+                                <li>{`Creating/updating an artist page`}</li>
                                 <li>
-                                    Notifications for comments to your work and
-                                    replies to your comments
+                                    {`Notifications for comments to your work and
+                                    replies to your comments`}
                                 </li>
                                 <li>
-                                    Reach out if you have any ideas!! 
+                                    {`Reach out if you have any ideas!!`}
                                 </li>
                             </ul>
                         </div>
