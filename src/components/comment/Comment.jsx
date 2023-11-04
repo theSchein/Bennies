@@ -2,12 +2,10 @@ import React, { useState } from "react";
 import CommentForm from "./CommentForm";
 import CommentList from "./CommentList";
 
-// Individual Comment component and its nested replies
-function Comment({ comment, addReply, nft }) {
+// Individual Comment component
+function Comment({ comment, addReply, nft, depth=0 }) {
     const [showReplyForm, setShowReplyForm] = useState(false);
     const [nestedText, setNestedText] = useState("");
-
-    console.log('full comment:' + JSON.stringify(comment));
 
     const handleNestedSubmit = (e) => {
         e.preventDefault();
@@ -15,7 +13,7 @@ function Comment({ comment, addReply, nft }) {
         const data = {
             nft_id: nft.nft_id,
             text: nestedText,
-            parentCommentId: comment.parent_comment_id,
+            parentCommentId: comment.comment_id,
         };
 
         fetch("/api/comments/createComments", {
@@ -40,17 +38,11 @@ function Comment({ comment, addReply, nft }) {
     };
 
     return (
-        <div style={{ marginLeft: "20px" }} key={comment.comment_id}>
-            <strong>{comment.commenter}</strong>
+        <div style={{ marginLeft: `${depth * 20}px`}} key={comment.comment_id}>            
+        <strong>{comment.commenter}</strong>
             <p>{comment.text}</p>
             <span>{new Date(comment.commentdate).toLocaleDateString()}</span>
             <button onClick={() => setShowReplyForm(!showReplyForm)}>Reply</button>
-            {/* Render replies if they exist */}
-            {comment.replies && comment.replies.length > 0 && (
-                <div className="replies">
-                    <CommentList comments={comment.replies} />
-                </div>
-            )}
             {showReplyForm && (
                 <CommentForm
                     onSubmit={handleNestedSubmit}
@@ -58,10 +50,11 @@ function Comment({ comment, addReply, nft }) {
                     setText={setNestedText}
                 />
             )}
-            {comment.replies && (
+            {comment.parent_comment_id && (
                 <CommentList
                     comments={comment.replies}
                     nft={nft}
+                    depth={depth + 1}
                     addReply={addReply}
                 />
             )}

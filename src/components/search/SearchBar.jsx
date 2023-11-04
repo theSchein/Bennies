@@ -1,9 +1,8 @@
 import * as React from "react";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import SearchPresentation from "./SearchPresentation";
 
-function SearchContainer() {
+function SearchBar() {
     const [searchTerm, setSearchTerm] = useState("");
     const [suggestions, setSuggestions] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -42,7 +41,7 @@ function SearchContainer() {
     };
 
     return (
-        <SearchPresentation
+        <Bar
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             suggestions={suggestions}
@@ -53,4 +52,41 @@ function SearchContainer() {
     );
 }
 
-export default SearchContainer;
+function Bar({
+    searchTerm,
+    setSearchTerm,
+    suggestions,
+    loading,
+    error,
+    handleClick,
+}) {
+    return (
+        <div className="flex flex-col space-y-4">
+            <div className="flex">
+                <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder="Search..."
+                    className="p-2 border rounded w-full"
+                />
+                <button
+                    onClick={handleClick}
+                    className="p-2 text-white rounded hover:bg-opacity-80 ml-2 bg-gradient-to-r from-gray-300 via-gray-400 to-gray-500" // Gray gradient styling
+                >
+                    Submit
+                </button>
+            </div>
+            {error && <div className="text-secondary">{error}</div>}
+            <ul className="w-full space-y-2">
+                {suggestions.map((suggestion) => (
+                    <li key={suggestion.id} className="p-2 border-b">
+                        {suggestion.name}
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+}
+
+export default SearchBar;
