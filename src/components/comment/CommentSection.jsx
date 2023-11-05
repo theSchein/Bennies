@@ -96,8 +96,9 @@ function CommentSection({ nft }) {
                     {/* Centered text with padding */}
                     <Link
                         href="/signin"
-                        className="text-xl text-quaternary hover:text-primary transition-colors"
-                    >
+                        className={`bg-rainbow-gradient text-white font-bold py-2 px-4 rounded-full shadow-md transform transition hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed {
+                            !connector.ready && "cursor-not-allowed"
+                        }`}                    >
                         Sign in to comment
                     </Link>
                 </div>
