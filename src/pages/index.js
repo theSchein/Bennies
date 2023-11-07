@@ -9,7 +9,7 @@ export default function Home() {
       
           <div className="w-full max-w-4xl p-8 bg-white rounded-lg shadow-xl">
             <div className="mb-10">
-              <h2 className="font-bold text-3xl mb-4 text-center text-tertiary">Explore for NFTs</h2>
+              <h2 className="font-bold text-3xl mb-4 text-center text-tertiary">Explore NFTs</h2>
               <div className="flex justify-center">
                 <SearchContainer />
               </div>
@@ -28,15 +28,17 @@ export default function Home() {
                 <li>Creating accounts</li>
                 <li>NFT Page with top level comments</li>
                 <li>Search Page by NFT name</li>
-                <li>NFTs and Comments in the cloud database</li>
+                <li>NFTs, comments, and user accounts in the cloud database</li>
               </ul>
             </div>
       
             <div className="mb-10">
-              <h2 className="font-bold text-2xl mb-4 text-tertiary">Next Steps</h2>
+              <h2 className="font-bold text-2xl mb-4 text-tertiary">Next Features</h2>
               <ul className="list-disc pl-8 text-lg">
-                <li>Allow user to create artist page, if they made an NFT</li>
+                <li>Allow user to create artist page, if they made an NFT or own the NFT</li>
+                <li>Show user generated content on thier profile page (comments, pages, etc)</li>
                 <li>Search by more than name (contract, user, content, etc.)</li>
+                <li>Frontpage content (leaderboard and featured work)</li>
                 <li>Nested Comments on NFT pages</li>
                 <li>Everything else...</li>
               </ul>
