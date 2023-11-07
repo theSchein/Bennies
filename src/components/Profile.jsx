@@ -165,7 +165,7 @@ export function Profile() {
                     }`}
                 >
                     {connector.name}
-                    {!connector.ready && " (unsupported)"}
+                    {!connector.ready && " (Not Available on this Device)"}
                     {isLoading &&
                         connector.id === pendingConnector?.id &&
                         " (connecting)"}
