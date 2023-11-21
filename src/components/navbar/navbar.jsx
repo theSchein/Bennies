@@ -12,7 +12,7 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import { useSession } from "next-auth/react";
 
-const pages = ["whitepaper", "search"];
+const pages = ["pitchdeck", "search"];
 
 function Navbar() {
     const { data: session } = useSession();
