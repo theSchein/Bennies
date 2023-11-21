@@ -5,7 +5,7 @@ const PitchDeck= () => {
                 className="aspect-content  border-none"
                 src="pitchdeck.pdf" 
                 width="100%" 
-                height="1000"
+                height="8000"
                 style={{ border: 'none' }}>
             </iframe>
         </div>
