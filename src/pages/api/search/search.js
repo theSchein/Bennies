@@ -1,4 +1,4 @@
-import db from "../../lib/db";
+import db from "../../../lib/db";
 import Fuse from "fuse.js";
 
 export default async (req, res) => {

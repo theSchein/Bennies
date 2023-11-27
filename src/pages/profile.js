@@ -3,6 +3,9 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { Profile } from "../components/Profile";
 import WagmiWallet from "../components/WagmiWallet";
+import WalletNFTs from "@/components/walletNfts";
+
+
 
 function ProfilePage() {
     const { data: session } = useSession();
@@ -59,6 +62,7 @@ function ProfilePage() {
                                 </li>
                             </ul>
                         </div>
+                        <WalletNFTs />
                     </div>
 
                     <Profile />

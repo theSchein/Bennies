@@ -47,6 +47,49 @@ export default async function (req, res) {
     let cursor = null;
 
     do {
+
+      // Add Collection to database
+      const coll_response = await Moralis.EvmApi.nft.getNFTContractMetadata({
+        "chain": "0x1",
+        "address": contract
+      });
+
+      // console.log("collection response:", coll_response.raw);
+    
+      const collData ={
+        contract_address: coll_response.raw.token_address,
+        collection_name: coll_response.raw.name,
+        token_type: coll_response.raw.contract_type,
+      };
+
+      // Check if the entry already exists in the database
+      const existingEntry = await db.oneOrNone(
+        "SELECT contract_address FROM collections WHERE contract_address = $1",
+        [collData.contract_address]
+      );
+
+      if (!existingEntry) {
+        // Add the NFT data to the database
+        await db.none(
+          `
+          INSERT INTO collections(
+              contract_address, 
+              collection_name,
+              token_type)
+              VALUES($1, $2, $3)
+                        `,
+          [
+            collData.contract_address,
+            collData.collection_name,
+            collData.token_type
+          ]
+        );
+        console.log("Added collection to database:", collData.collection_name);
+
+      }
+
+
+      // Add NFTs to database
       const response = await Moralis.EvmApi.nft.getContractNFTs({
         address: contract,
         chain,

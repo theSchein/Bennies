@@ -1,6 +1,6 @@
 // pages/api/updateWallet.js
 import { getToken } from "next-auth/jwt";
-import db from "../../lib/db";
+import db from "../../../lib/db";
 
 export default async (req, res) => {
     if (req.method === "POST") {

@@ -31,7 +31,7 @@ export function Profile() {
             return;
         }
         try {
-            const response = await fetch("/api/claimWallet", {
+            const response = await fetch("/api/wallet/claimWallet", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -51,7 +51,7 @@ export function Profile() {
             return;
         }
         try {
-            const response = await fetch("/api/get_wallet_nfts", {
+            const response = await fetch("/api/wallet/get_wallet_nfts", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -70,12 +70,12 @@ export function Profile() {
             return;
         }
         try {
-            const response = await fetch("/api/checkArtistEligibility", {
+            const response = await fetch("/api/artist/checkArtistEligibility", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ address }),
+                credentials: "include",
             });
             const data = await response.json();
             setIsEligible(data.isEligible);
@@ -120,12 +120,12 @@ export function Profile() {
                                     {`Disconnect`}
                                 </button>
 
-                                {/* <button
+                                <button
                                     onClick={fetchNFTs}
                                     className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-300"
                                 >
                                     Fetch NFTs
-                                </button> */}
+                                </button>
 
                                 <button
                                     onClick={fetchArtistEligibility}
