@@ -1,3 +1,6 @@
+// components/WagmiWallet.jsx
+// This component sets up the Wagmi wallet and passes it to the React Context Provider.
+
 import { WagmiConfig, createConfig, configureChains, mainnet } from "wagmi";
 
 import { alchemyProvider } from "wagmi/providers/alchemy";

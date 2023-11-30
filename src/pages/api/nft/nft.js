@@ -1,3 +1,7 @@
+// pages/api/nft/nft.js
+// API to add user NFTs to the database
+// TODO: Delete this file once the admin page is implemented.
+
 import db from "../../../lib/db";
 const { Alchemy, Network } = require("alchemy-sdk");
 
@@ -8,7 +12,8 @@ const config = {
 const alchemy = new Alchemy(config);
 
 export default async function (req, res) {
-    if (req.method === "POST") {  // Assuming you're checking for a POST request
+    if (req.method === "POST") {
+        // Assuming you're checking for a POST request
         try {
             const { address } = req.body;
 

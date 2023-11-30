@@ -1,3 +1,7 @@
+// components/CustomButton.jsx
+// This component handles the logic for the custom button.
+// This is used to connet and disconnect wallets.
+
 import { useWeb3Modal } from "@web3modal/react";
 import { useState } from "react";
 import { useAccount, useDisconnect } from "wagmi";

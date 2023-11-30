@@ -1,3 +1,7 @@
+// components/Check.jsx
+// This component fetches the session data for the user.
+// Not actually used in the app, but useful for debugging.
+
 import { useState, useEffect } from "react";
 
 function CheckSessionComponent() {

@@ -1,3 +1,6 @@
+// pages/api/auth/register.js
+// Registration API route
+
 import bcrypt from "bcryptjs";
 import db from "../../../lib/db";
 

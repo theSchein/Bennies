@@ -1,3 +1,6 @@
+// pages/api/user_profile/nfts.js
+// WIP: this api is used to fetch user nfts from the database, recently implemented and needs improvemnt.
+
 import db from "../../../lib/db";
 const { Alchemy, Network } = require("alchemy-sdk");
 import { getToken } from "next-auth/jwt";
@@ -46,7 +49,7 @@ export default async (req, res) => {
             res.status(500).json({ error: "Internal server error" });
         }
     } else {
-        res.setHeader('Allow', ['GET']);
+        res.setHeader("Allow", ["GET"]);
         res.status(405).json({ error: `Method ${req.method} Not Allowed` });
     }
 };

@@ -1,3 +1,6 @@
+// pages/api/auth/[...nextauth].js
+// This file is used to configure next-auth.
+
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import db from "../../../lib/db";

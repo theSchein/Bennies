@@ -1,3 +1,6 @@
+// components/search/SearchContainer.jsx
+// This component handles the logic for the search on the home page.
+
 import * as React from "react";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";

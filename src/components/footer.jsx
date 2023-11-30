@@ -1,3 +1,7 @@
+// components/footer.jsx
+// Footer style component. There is no logic to actually handle anything here.
+// The footer should be revisted and updated to be more useful.
+
 import React, { useState } from "react";
 
 function Footer() {

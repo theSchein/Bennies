@@ -1,3 +1,7 @@
+// pages/api/search/search.js
+// Search api that returns nfts and artists
+// TODO: massive overhaul to search for collections and by more fields than name
+
 import db from "../../../lib/db";
 import Fuse from "fuse.js";
 

@@ -1,4 +1,6 @@
 // pages/api/comments/createComments.js
+// Api for user to create a comment under an nft
+
 import { getToken } from "next-auth/jwt";
 import db from "../../../lib/db";
 
@@ -10,8 +12,8 @@ export default async (req, res) => {
             return res
                 .status(401)
                 .json({ error: "Not authenticated from the session" });
-        }    
-            
+        }
+
         const user_id = session.user.user_id;
         const { nft_id, text, parentCommentId } = req.body.data;
 

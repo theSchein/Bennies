@@ -1,10 +1,13 @@
+// pages/search.js
+// This page displays the search results for the query.
+// Search is only by name, need more fields to search or tags to improve results
+
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import SearchBar from "@/components/search/SearchBar";
 import Link from "next/link";
 import Image from "next/image";
-import fallbackImageUrl from '../../public/placeholder.png'; 
-
+import fallbackImageUrl from "../../public/placeholder.png";
 
 const Search = () => {
     const searchParams = useSearchParams();
@@ -12,7 +15,6 @@ const Search = () => {
 
     const [data, setData] = useState({ nfts: [], artists: [] });
     const [error, setError] = useState("");
-
 
     useEffect(() => {
         if (!query) return;

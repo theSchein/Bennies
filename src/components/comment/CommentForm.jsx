@@ -1,3 +1,6 @@
+// components/comment/CommentForm.jsx
+// This component has the presentation for the comment form.
+
 import React from "react";
 
 // Presentation of comments

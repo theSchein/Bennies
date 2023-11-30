@@ -1,3 +1,7 @@
+// pages/api/wallet/get_wallet_nfts.js
+// WIP api: this originally added nfts in users wallet to database
+// but users have a lot of shitty nfts so this may get removed in favor of admin page
+
 import { getToken } from "next-auth/jwt";
 import db from "../../../lib/db";
 const { Alchemy, Network } = require("alchemy-sdk");
@@ -40,34 +44,34 @@ export default async function (req, res) {
                     "SELECT contract_address_token_id FROM nfts WHERE contract_address_token_id = $1",
                     [nft.contract.address + nft.tokenId],
                 );
-        //         if (!existingEntry) {
-        //             await db.none(
-        //                 `
-        // INSERT INTO nfts(
-        //     contract_address_token_id,
-        //     contract_address, 
-        //     deployer_address,
-        //     nft_name,
-        //     token_type, 
-        //     token_uri_gateway,
-        //     nft_description,
-        //     media_url, 
-        //     token_id)
-        //     VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)
-        //     `,
-        //                 [
-        //                     nft.contract.address + nft.tokenId,
-        //                     nft.contract.address,
-        //                     nft.contract.contractDeployer,
-        //                     nft.title,
-        //                     nft.tokenType,
-        //                     nft.tokenUri,
-        //                     nft.description,
-        //                     nft.imageUrl,
-        //                     nft.tokenId,
-        //                 ],
-        //             );
-        //         }
+                //         if (!existingEntry) {
+                //             await db.none(
+                //                 `
+                // INSERT INTO nfts(
+                //     contract_address_token_id,
+                //     contract_address,
+                //     deployer_address,
+                //     nft_name,
+                //     token_type,
+                //     token_uri_gateway,
+                //     nft_description,
+                //     media_url,
+                //     token_id)
+                //     VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)
+                //     `,
+                //                 [
+                //                     nft.contract.address + nft.tokenId,
+                //                     nft.contract.address,
+                //                     nft.contract.contractDeployer,
+                //                     nft.title,
+                //                     nft.tokenType,
+                //                     nft.tokenUri,
+                //                     nft.description,
+                //                     nft.imageUrl,
+                //                     nft.tokenId,
+                //                 ],
+                //             );
+                //         }
             }
             res.status(200).json({
                 success: true,

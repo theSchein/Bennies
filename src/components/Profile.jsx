@@ -1,3 +1,6 @@
+// components/Profile.jsx
+// This component handles much of the logic for the profile page.
+
 import {
     useAccount,
     useConnect,

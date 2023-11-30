@@ -1,3 +1,6 @@
+// components/comment/CommentSection.jsx
+// This is a higher level component for rendering the comment section
+
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
@@ -97,7 +100,7 @@ function CommentSection({ nft }) {
                     <Link
                         href="/signin"
                         className="px-6 py-2 bg-primary text-tertiary rounded-full hover:bg-secondary-dark focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-opacity-50 transition ease-in duration-200"
-                        >
+                    >
                         Sign in to comment
                     </Link>
                 </div>

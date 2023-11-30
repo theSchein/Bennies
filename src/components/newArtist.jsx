@@ -1,3 +1,7 @@
+// components/newArtist.jsx
+// Component to handle a lot of the logic for creating a new artist page.
+// Much of this got rescoped so this page needs to be drasitcally upated
+
 import * as React from "react";
 import { useState } from "react";
 import Box from "@mui/material/Box";

@@ -1,3 +1,7 @@
+// components/navbar/navbar.jsx
+// This component handles the logic and presentation for the navbar.
+// Most of this was ripped form mui docs and modified to fit our needs.
+
 import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -30,14 +34,21 @@ function Navbar() {
     const allPages = [...pages, authPage];
 
     return (
-        <AppBar position="static" style={{ background: '#1E2022' }}>
+        <AppBar position="static" style={{ background: "#1E2022" }}>
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
                     {/* Move the DiamondIcon outside of the Box to be visible on mobile */}
-                    <DiamondIcon sx={{ display: { xs: "flex", md: "flex" }, mr: 1 }} />
+                    <DiamondIcon
+                        sx={{ display: { xs: "flex", md: "flex" }, mr: 1 }}
+                    />
 
                     {/* Hamburger menu icon for mobile */}
-                    <Box sx={{ display: { xs: "flex", md: "none" }, marginLeft: 'auto' }}>
+                    <Box
+                        sx={{
+                            display: { xs: "flex", md: "none" },
+                            marginLeft: "auto",
+                        }}
+                    >
                         <IconButton
                             size="large"
                             aria-label="navigation menu"
@@ -65,14 +76,25 @@ function Navbar() {
                         >
                             {allPages.map((page) => (
                                 <MenuItem key={page} onClick={handleCloseNavMenu}>
-                                    <Typography textAlign="center" sx={{
-                                        fontFamily: "metropolis",
-                                        fontWeight: 700,
-                                        letterSpacing: ".1rem",
-                                        color: "inherit",
-                                        textDecoration: "none",
-                                    }}>
-                                        <a href={`/${page}`} style={{ textDecoration: 'none', color: 'inherit' }}>{page}</a>
+                                    <Typography
+                                        textAlign="center"
+                                        sx={{
+                                            fontFamily: "metropolis",
+                                            fontWeight: 700,
+                                            letterSpacing: ".1rem",
+                                            color: "inherit",
+                                            textDecoration: "none",
+                                        }}
+                                    >
+                                        <a
+                                            href={`/${page}`}
+                                            style={{
+                                                textDecoration: "none",
+                                                color: "inherit",
+                                            }}
+                                        >
+                                            {page}
+                                        </a>
                                     </Typography>
                                 </MenuItem>
                             ))}

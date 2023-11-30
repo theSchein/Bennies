@@ -1,3 +1,5 @@
+// WIP
+
 // import { useState, useRef, useEffect } from "react";
 // import { useSession } from "next-auth/react";
 // import DownArrow from "../assets/down-arrow.svg";
@@ -64,15 +66,12 @@
 //     //   setInput("");
 //     // }
 
-
 // //     if (editMode) setEditMode(false);
 // //   };
-
 
 // //   const handleDelete = () => {
 // //     handleDeleteNode(comment.id);
 // //   };
-
 
 //   return (
 //     <div>

@@ -1,3 +1,6 @@
+// components/search/SearchBar.jsx
+// This component handles the logic for the search bar. On the Search Page
+
 import * as React from "react";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";

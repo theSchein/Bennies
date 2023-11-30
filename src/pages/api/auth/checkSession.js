@@ -1,4 +1,7 @@
-// pages/api/checkSession.js
+// pages/api/auth/checkSession.js
+// This file is used to check if a session exists.
+// It is not actively used in the app but kept around for testing and troubleshooting.
+
 import { getSession } from "next-auth/react";
 
 export default async (req, res) => {

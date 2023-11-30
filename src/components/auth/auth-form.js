@@ -1,3 +1,6 @@
+// components/auth/auth-form.js
+// Presentation and logic for the app login and signup forms.
+
 import { useState, useRef } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -14,7 +17,7 @@ async function createUser(email_address, username, password) {
     const data = await response.json();
 
     if (!response.ok) {
-        return data; 
+        return data;
     }
 
     return data;
@@ -22,20 +25,19 @@ async function createUser(email_address, username, password) {
 
 function validatePassword(password) {
     if (password.length < 8) {
-        return 'Password should be at least 8 characters.';
+        return "Password should be at least 8 characters.";
     }
     if (!/[A-Z]/.test(password)) {
-        return 'Password should contain at least one uppercase letter.';
+        return "Password should contain at least one uppercase letter.";
     }
     if (!/[a-z]/.test(password)) {
-        return 'Password should contain at least one lowercase letter.';
+        return "Password should contain at least one lowercase letter.";
     }
     if (!/[0-9]/.test(password)) {
-        return 'Password should contain at least one number.';
+        return "Password should contain at least one number.";
     }
     return null;
 }
-
 
 function AuthForm() {
     const emailInputRef = useRef();
@@ -69,8 +71,7 @@ function AuthForm() {
             if (result && result.error) {
                 alert(result.error);
                 //router.replace("/profile");
-            }
-            else {
+            } else {
                 router.replace("/profile");
             }
         } else {
@@ -165,7 +166,6 @@ function AuthForm() {
             </div>
         </section>
     );
-    
 }
 
 export default AuthForm;

@@ -1,11 +1,13 @@
+// pages/profile.js
+// This page displays the profile of the user, it is password protected and pulls their specific session data
+// Features to be added in components and rendered here
+
 import { getSession, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { Profile } from "../components/Profile";
 import WagmiWallet from "../components/WagmiWallet";
 import WalletNFTs from "@/components/walletNfts";
-
-
 
 function ProfilePage() {
     const { data: session } = useSession();
@@ -30,7 +32,7 @@ function ProfilePage() {
                             Welcome, {session.username}
                         </h1>
                         <p className="text-lg leading-relaxed pt-4">
-                          {`On this profile page you can connect your wallet and if
+                            {`On this profile page you can connect your wallet and if
                             you have used it to deploy any of the NFTs on our platorm
                             than you can create your own artist page to showcase and
                             discuss your work.`}
@@ -57,9 +59,7 @@ function ProfilePage() {
                                     {`Notifications for comments to your work and
                                     replies to your comments`}
                                 </li>
-                                <li>
-                                    {`Reach out if you have any ideas!!`}
-                                </li>
+                                <li>{`Reach out if you have any ideas!!`}</li>
                             </ul>
                         </div>
                         <WalletNFTs />

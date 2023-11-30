@@ -1,3 +1,7 @@
+// lib/auth.js
+// This file contains functions for hashing and verifying passwords.
+// Needs review to see if this is still used.
+
 import { hash, compare } from "bcryptjs";
 
 export async function hashPassword(password) {

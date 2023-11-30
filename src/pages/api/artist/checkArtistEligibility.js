@@ -1,3 +1,7 @@
+// pages/api/artist/checkArtistEligibility.js
+// API to check if a wallet address is sn nft deployer
+// If ues then the user may create an artist page
+
 import db from "../../../lib/db";
 
 export default async (req, res) => {

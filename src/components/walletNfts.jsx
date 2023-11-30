@@ -1,10 +1,15 @@
-import React, { useState, useEffect } from 'react';
+// components/walletNfts.jsx
+// This component fetches wallet addresses tied to the user and then fetches NFTs for each address.
+// It then displays the NFTs in a list.
+// TODO: Make the display of NFTs look better, add pagination, fix bugs
+
+import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 
 function WalletNFTs() {
     const [nfts, setNfts] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
+    const [error, setError] = useState("");
     const { data: session } = useSession();
 
     useEffect(() => {
@@ -13,12 +18,12 @@ function WalletNFTs() {
 
     const fetchWalletAddresses = async () => {
         try {
-            const response = await fetch('/api/wallet/fetchWallets', {
-                method: 'GET',
+            const response = await fetch("/api/wallet/fetchWallets", {
+                method: "GET",
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 },
-                credentials: 'include',
+                credentials: "include",
             });
 
             if (!response.ok) {
@@ -26,7 +31,7 @@ function WalletNFTs() {
             }
 
             const walletData = await response.json();
-            const addresses = walletData.map(wallet => wallet.wallet_address);
+            const addresses = walletData.map((wallet) => wallet.wallet_address);
             fetchNFTsForAllAddresses(addresses);
         } catch (err) {
             console.error(err);
@@ -36,7 +41,9 @@ function WalletNFTs() {
 
     const fetchNFTsForAddress = async (address) => {
         try {
-            const response = await fetch(`/api/user_profile/nfts?address=${address}`);
+            const response = await fetch(
+                `/api/user_profile/nfts?address=${address}`,
+            );
             if (!response.ok) {
                 throw new Error(`Error: ${response.status}`);
             }
@@ -50,9 +57,11 @@ function WalletNFTs() {
 
     const fetchNFTsForAllAddresses = async (addresses) => {
         setLoading(true);
-        setError('');
+        setError("");
         try {
-            const allNFTs = await Promise.all(addresses.map(address => fetchNFTsForAddress(address)));
+            const allNFTs = await Promise.all(
+                addresses.map((address) => fetchNFTsForAddress(address)),
+            );
             setNfts(allNFTs.flat());
         } catch (err) {
             setError(err.message);

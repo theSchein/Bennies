@@ -1,3 +1,6 @@
+// pages/api/artist/fetchArtist.js
+// API to fetch artists to render on the artist page.
+
 import db from "../../../lib/db";
 
 export default async (req, res) => {
@@ -12,7 +15,7 @@ export default async (req, res) => {
             if (artistData) {
                 res.status(200).json(artistData);
             } else {
-                res.status(404).json({ error: "ArtistPage not found" });
+                res.status(404).json({ error: "Artist not found" });
             }
         } catch (error) {
             res.status(500).json({ error: "Database error: " + error.message });

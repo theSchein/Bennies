@@ -1,3 +1,6 @@
+// lib/db.js
+// Database connection using pg-promise
+
 import pgPromise from "pg-promise";
 
 const pgp = pgPromise({});

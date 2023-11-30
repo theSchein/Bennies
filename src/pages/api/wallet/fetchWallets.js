@@ -1,3 +1,6 @@
+// pages/api/wallet/fetchWallets.js
+// This file is used to fetch a specific user's the wallets from the database.
+
 import { getToken } from "next-auth/jwt";
 import db from "../../../lib/db";
 
@@ -12,7 +15,7 @@ export default async (req, res) => {
                 .json({ error: "Not authenticated from the session" });
         }
 
-        const user_id  = session.user_id;
+        const user_id = session.user_id;
         try {
             const addresses = await db.manyOrNone(
                 "SELECT * FROM wallets WHERE user_id = $1",

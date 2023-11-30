@@ -1,3 +1,6 @@
+// pages/api/auth/login.js
+// Login API route
+
 import db from "../../../lib/db";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";

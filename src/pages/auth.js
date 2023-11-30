@@ -1,3 +1,6 @@
+// pages/auth.js
+// I do not think this is used anymore, needs review.
+
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 

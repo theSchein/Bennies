@@ -1,4 +1,7 @@
 // pages/artist/[...slug].js
+// This file is used to display the artist page.
+// It grabs the artist metadata by slug from the database.
+
 import db from "../../lib/db";
 import Image from "next/image";
 import Link from "next/link";

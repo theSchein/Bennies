@@ -1,3 +1,7 @@
+// pages/api/artists/createArtist.js
+// API to create a new artist and artist page
+// While this api is complete, the actual feature has yet to be fleshed out.
+
 import db from "../../../lib/db";
 import { getToken } from "next-auth/jwt";
 

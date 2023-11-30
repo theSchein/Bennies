@@ -1,4 +1,6 @@
-// pages/api/updateWallet.js
+// pages/api/wallet/claimWallet.js
+// This api is allows a user to tie thier wallet to their account in the database.
+
 import { getToken } from "next-auth/jwt";
 import db from "../../../lib/db";
 
