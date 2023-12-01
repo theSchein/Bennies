@@ -2,121 +2,85 @@
 // This component handles the logic and presentation for the navbar.
 // Most of this was ripped form mui docs and modified to fit our needs.
 
-import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import DiamondIcon from "@mui/icons-material/Diamond";
-import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu"; // Import the MenuIcon for the hamburger menu
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem"; // Import MenuItem
-import Container from "@mui/material/Container";
-import Button from "@mui/material/Button";
-import { useSession } from "next-auth/react";
+import Image from 'next/image'
+import Link from 'next/link'
+import { useState } from 'react'
+// import logo from '..\src\assets\logo.svg'
 
-const pages = ["pitchdeck", "search"];
-
-function Navbar() {
-    const { data: session } = useSession();
-    const [anchorElNav, setAnchorElNav] = React.useState(null);
-
-    const handleOpenNavMenu = (event) => {
-        setAnchorElNav(event.currentTarget);
-    };
-
-    const handleCloseNavMenu = () => {
-        setAnchorElNav(null);
-    };
-
-    const authPage = session ? "profile" : "signin";
-    const allPages = [...pages, authPage];
-
-    return (
-        <AppBar position="static" style={{ background: "#1E2022" }}>
-            <Container maxWidth="xl">
-                <Toolbar disableGutters>
-                    {/* Move the DiamondIcon outside of the Box to be visible on mobile */}
-                    <DiamondIcon
-                        sx={{ display: { xs: "flex", md: "flex" }, mr: 1 }}
-                    />
-
-                    {/* Hamburger menu icon for mobile */}
-                    <Box
-                        sx={{
-                            display: { xs: "flex", md: "none" },
-                            marginLeft: "auto",
-                        }}
-                    >
-                        <IconButton
-                            size="large"
-                            aria-label="navigation menu"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            onClick={handleOpenNavMenu}
-                            color="inherit"
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        <Menu
-                            id="menu-appbar"
-                            anchorEl={anchorElNav}
-                            anchorOrigin={{
-                                vertical: "bottom",
-                                horizontal: "left",
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: "top",
-                                horizontal: "left",
-                            }}
-                            open={Boolean(anchorElNav)}
-                            onClose={handleCloseNavMenu}
-                        >
-                            {allPages.map((page) => (
-                                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                                    <Typography
-                                        textAlign="center"
-                                        sx={{
-                                            fontFamily: "metropolis",
-                                            fontWeight: 700,
-                                            letterSpacing: ".1rem",
-                                            color: "inherit",
-                                            textDecoration: "none",
-                                        }}
-                                    >
-                                        <a
-                                            href={`/${page}`}
-                                            style={{
-                                                textDecoration: "none",
-                                                color: "inherit",
-                                            }}
-                                        >
-                                            {page}
-                                        </a>
-                                    </Typography>
-                                </MenuItem>
-                            ))}
-                        </Menu>
-                    </Box>
-
-                    {/* Desktop menu items */}
-                    <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-                        {allPages.map((page) => (
-                            <Button
-                                href={`/${page}`}
-                                key={page}
-                                onClick={handleCloseNavMenu}
-                                sx={{ my: 2, color: "white", display: "block" }}
-                            >
-                                {page}
-                            </Button>
-                        ))}
-                    </Box>
-                </Toolbar>
-            </Container>
-        </AppBar>
-    );
+const style = {
+  wrapper: `p-4 w-screen flex items-center`,
+  headerLogo: `flex`,
+  nav: `flex-1 flex justify-center`,
+  navItemsContainer: `flex bg-[#191B1F] rounded-3xl`,
+  navItem: `px-4 py-2 m-1 flex items-center text-lg font-semibold text-[1.1rem] cursor-pointer rounded-3xl`,
+  activeNavItem: `bg-[#20242A]`,
+  buttonsContainer: `w-1/4`,
+  button: `flex items-center bg-[#191B1F] rounded-2xl mx-2 text-[1.1rem] font-semibold cursor-pointer`,
+  buttonPadding: `p-2`,
+  buttonTextContainer: `h-8 flex items-center`,
+  buttonIconContainer: `flex items-center justify-center w-8 h-8`,
+  buttonAccent: `bg-[#172A42] border border-[#163256] hover:border-[#234169] h-full rounded-2xl flex items-center justify-center font-semibold text-[1.1rem] text-[#4F90EA]`,
 }
-export default Navbar;
+
+const Header = () => {
+  const [selectedNav, setSelectedNav] = useState('home')
+
+  return (
+    <div className={style.wrapper}>
+      {/* <div className={style.headerLogo}>
+        <Image src={logo} alt='logo' height={80} width={80} />
+      </div> */}
+      <div className={style.nav}>
+        <div className={style.navItemsContainer}>
+        <div onClick={() => setSelectedNav('home')}
+            className={`${style.navItem} ${
+              selectedNav === '/' && style.activeNavItem
+            }`}
+          ><Link href="/">
+              Home
+            </Link>
+            </div>
+            <div
+            onClick={() => setSelectedNav('pitchdeck')}
+            className={`${style.navItem} ${
+              selectedNav === 'pitchdeck' && style.activeNavItem
+            }`}
+          ><Link href="/pitchdeck">
+          Pitch Deck
+        </Link>
+          </div>
+          <div
+            onClick={() => setSelectedNav('team')}
+            className={`${style.navItem} ${
+              selectedNav === 'team' && style.activeNavItem
+            }`}
+          ><Link href="/team">
+          Team
+        </Link>
+          </div>
+          <div
+            onClick={() => setSelectedNav('signin')}
+            className={`${style.navItem} ${
+              selectedNav === 'signin' && style.activeNavItem
+            }`}
+          ><Link href="/signin">
+          Sign In
+        </Link>
+          </div>
+          <div
+            onClick={() => setSelectedNav('contact')}
+            className={`${style.navItem} ${
+              selectedNav === 'contact' && style.activeNavItem
+            }`}
+          >
+            <Link href="/contact">
+          Contact Us
+        </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default Header
