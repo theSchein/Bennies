@@ -1,11 +1,9 @@
 // pages/index.js
 // This is the homepage for the App and is the first page that is loaded when the app is opened.
 
-import SearchContainer from "@/components/search/SearchContainer";
-
 export default function Home() {
     return (
-        <div className="bg-primary text-quaternary min-h-screen font-body flex flex-col items-center justify-center py-8">
+        <div className=" text-quaternary min-h-screen font-body flex flex-col items-center justify-center py-8">
             <h1 className="font-heading text-6xl mb-10 text-quaternary tracking-wide">
                 DISCOVRY
             </h1>
