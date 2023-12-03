@@ -30,9 +30,5 @@ export default function Home() {
         </button>
     </div>
 </div>
-
-
-
-
     );
 }
