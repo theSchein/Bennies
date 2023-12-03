@@ -2,9 +2,9 @@
 import { Pool } from 'pg';
 
 const pool = new Pool({
-    connectionString: process.env.waitlist_url, // Use environment variable for the database URL
+    connectionString: process.env.waitlist_URL,
     ssl: {
-        rejectUnauthorized: false // This is important for some hosted databases like Heroku
+        rejectUnauthorized: false
     }
 });
 
@@ -13,9 +13,18 @@ export default async function handler(req, res) {
         const { name, email } = req.body;
 
         try {
-            // Insert data into the database
-            const query = 'INSERT INTO waitlist (name, email) VALUES ($1, $2)';
-            await pool.query(query, [name, email]);
+            // Check if the email already exists
+            const checkEmailQuery = 'SELECT * FROM waitlist WHERE email = $1';
+            const checkResult = await pool.query(checkEmailQuery, [email]);
+
+            if (checkResult.rows.length > 0) {
+                // Email already exists in the database
+                return res.status(409).json({ message: 'Email already registered.' });
+            }
+
+            // Insert new record into the database
+            const insertQuery = 'INSERT INTO waitlist (name, email) VALUES ($1, $2)';
+            await pool.query(insertQuery, [name, email]);
 
             res.status(200).json({ message: 'Added to waitlist!' });
         } catch (error) {
