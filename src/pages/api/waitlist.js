@@ -1,4 +1,3 @@
-// pages/api/waitlist.js
 import { Pool } from 'pg';
 
 const pool = new Pool({
@@ -11,6 +10,14 @@ const pool = new Pool({
 export default async function handler(req, res) {
     if (req.method === 'POST') {
         const { name, email } = req.body;
+
+        // Email validation regex
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        // Check if the email format is valid
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ message: 'Invalid email format.' });
+        }
 
         try {
             // Check if the email already exists
@@ -37,3 +44,4 @@ export default async function handler(req, res) {
         res.status(405).end(`Method ${req.method} Not Allowed`);
     }
 }
+
