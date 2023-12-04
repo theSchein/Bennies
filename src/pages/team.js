@@ -1,54 +1,65 @@
-//team profile page
-import React from "react"
-import Image from 'next/image'
-import Ben from '../assets/Headshot.jpg'
-import Joe from '../assets/Headshot.jpg'
+// components/Team.jsx
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTwitter } from '@fortawesome/free-brands-svg-icons';
+import Image from 'next/image';
 
-const Team = () => {
-return (
-<>
-<h2 className="flex px-6 py-6 text-5xl font-bold text-sky-500">About Us</h2>
-<div>
-<figure className="py-6 md:flex rounded-xl p-8 md:p-0">
-  <Image className="w-24 h-24 md:w-48 md:h-auto md:rounded-none rounded-full mx-auto" src={Ben} alt="" width="512" height="512" />
-  <div className="pt-6 md:p-8 text-center md:text-left space-y-4">
-    <blockquote>
-      <p className="text-md font-medium">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      </p>
-    </blockquote>
-    <figcaption className="font-medium">
-      <div className="text-sky-500">
-        Ben
-      </div>
-      <div className="text-white">
-        President
-      </div>
-    </figcaption>
-  </div>
-</figure>
 
-</div>
-<figure className="md:flex rounded-xl p-8 md:p-0">
-  <Image className="w-24 h-24 md:w-48 md:h-auto md:rounded-none rounded-full mx-auto" src={Joe} alt="" width="512" height="512" />
-  <div className="pt-6 md:p-8 text-center md:text-left space-y-4">
-    <blockquote>
-      <p className="text-md font-medium">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      </p>
-    </blockquote>
-    <figcaption className="font-medium">
-      <div className="text-sky-500">
-        Joseph Moran
+const teamMembers = [
+    { name: 'Benjamin Scheinberg', 
+    role: 'CEO', 
+    imageUrl: '/assets/Headshot.jpg', 
+    twitterHandle: '@alicejohnson' },
+    { name: 'Joseph Moran', 
+    role: 'CTO', 
+    imageUrl: '/assets/Headshot.jpg',
+    twitterHandle: '@NFT69420' },
+    // Add more team members here
+];
+
+const TeamMemberCard = ({ member }) => {
+  return (
+      <div className="bg-primary py-6 px-4 rounded-xl shadow-xl mb-6">
+          <Image 
+              src={member.imageUrl} 
+              alt={member.name} 
+              width={500} 
+              height={300}
+              className="w-32 h-32 rounded-full mx-auto border-4 border-secondary" 
+          />
+          <h3 className="font-heading text-xl text-secondary text-center mt-4">
+              {member.name}
+          </h3>
+          <p className="text-center text-secondary font-semibold">
+              {member.role}
+          </p>
+          <p className="text-sm text-secondary text-center mt-2">
+              {member.bio}
+          </p>
+          {member.twitterHandle && (
+              <a 
+                  href={`https://twitter.com/${member.twitterHandle.replace('@', '')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex justify-center mt-4"
+              >
+                  <FontAwesomeIcon icon={faTwitter} size="1x" />
+              </a>
+          )}
       </div>
-      <div className="text-white">
-        CTO
-      </div>
-    </figcaption>
-  </div>
-</figure>
-</>
-)
+  );
 };
 
-export default Team 
+const Team = () => {
+    return (
+        <section className="team-section">
+            <h1 className="font-heading text-xl text-secondary">Our Team</h1>
+            <div className="team-grid">
+                {teamMembers.map(member => (
+                    <TeamMemberCard key={member.name} member={member} />
+                ))}
+            </div>
+        </section>
+    );
+};
+
+export default Team;
