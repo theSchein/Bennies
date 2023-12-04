@@ -13,13 +13,13 @@ export default function Home() {
     </div>
 
     <div className="bg-primary p-4 sm:p-6 lg:p-8 rounded-2xl shadow-xl max-w-2xl space-y-4">
-        <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-secondary text-left leading-relaxed">
-            Finding out what your NFT does is hard
-        </h2>
-        <p className="text-sm sm:text-base lg:text-lg text-secondary text-left">
-            Discovry.xyz shows you the utility and rights of each NFT and incentivizes active engagement between the creators and owners.
-        </p>
-    </div>
+    <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-secondary text-center leading-relaxed">
+        Finding out what your NFT does is hard
+    </h2>
+    <p className="text-sm sm:text-base lg:text-lg text-secondary text-center">
+        Discovry.xyz shows you the utility and rights of each NFT and incentivizes active engagement between the creators and owners
+    </p>
+</div>
     <div>
         <WaitlistForm />
     </div>
