@@ -10,17 +10,22 @@ import WagmiWallet from "../components/WagmiWallet";
 import WalletNFTs from "@/components/walletNfts";
 
 function ProfilePage() {
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
     const router = useRouter();
 
+
     useEffect(() => {
-        if (!session) {
+        if (status === "unauthenticated") {
             router.push("/signin");
         }
-    }, [session, router]);
+    }, [status, router]);
+
+    if (status === "loading") {
+        return <div>Loading...</div>;
+    }
 
     if (!session) {
-        return <div>Loading...</div>; // or render a loading spinner
+        return null; // or handle the unauthenticated state
     }
 
     return (
