@@ -10,7 +10,7 @@ module.exports = {
       fontFamily: {
         'heading': ['Gasoek One', 'sans-serif'],
         'body': ['Josefin Sans', 'sans-serif'],
-        'subheading': ['Metropolis', 'sans-serif'],
+        'subheading': ['lilita one', 'sans-serif'],
       },
       colors: {
         'primary': '#F2EAD3',

@@ -33,7 +33,7 @@ export default function WaitlistForm() {
             isOpen={showModal}
             message={modalMessage}
             onClose={() => setShowModal(false)} /><div className="mt-10 bg-primary p-4 sm:p-6 lg:p-8 rounded-2xl shadow-xl max-w-md w-full">
-                <h3 className="font-subheading text-xl sm:text-2xl lg:text-2xl mb-4 text-secondary text-center">
+                <h3 className="font-bold text-xl sm:text-2xl lg:text-2xl mb-4 text-secondary text-center">
                     Join Waitlist for Beta
                 </h3>
                 <form onSubmit={handleSubmit}>
