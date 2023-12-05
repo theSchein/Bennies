@@ -12,11 +12,11 @@ export default function Home() {
         </h1>
     </div>
 
-    <div className="bg-primary p-4 sm:p-6 lg:p-8 rounded-2xl shadow-xl max-w-2xl space-y-4">
-    <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-secondary text-center leading-relaxed">
+    <div className="bg-primary p-6 sm:p-8 lg:p-10 rounded-2xl shadow-xl max-w-4xl space-y-10">
+    <h2 className="text-2xl sm:text-2xl lg:text-4xl font-semibold text-secondary text-center leading-relaxed">
         Finding out what your NFT does is hard
     </h2>
-    <p className="text-sm sm:text-base lg:text-lg text-secondary text-center">
+    <p className="text-lg sm:text-lg lg:text-xl text-secondary text-center">
         Discovry.xyz shows you the utility and rights of each NFT and incentivizes active engagement between the creators and owners
     </p>
 </div>
