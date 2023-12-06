@@ -7,7 +7,7 @@ import Link from 'next/link'
 
 function Footer() {
     return (
-<footer className="bg-teal-900 text-white py-8">
+<footer className="bg-teal-900 text-white py-8 bg-opacity-80">
     <div className="container mx-auto px-4">
 
             <div className="footer-section text-center sm:text-left">
