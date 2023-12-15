@@ -22,6 +22,8 @@ export default function WaitlistForm() {
         if (response.ok) {
             setModalMessage("You've been added to the waitlist!");
             setShowModal(true);
+            setName('');
+            setEmail('');
         } else {
             setModalMessage("Something went wrong. Please try again.");
             setShowModal(true);
