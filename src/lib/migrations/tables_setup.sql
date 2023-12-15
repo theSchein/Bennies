@@ -26,7 +26,8 @@ CREATE TABLE transactions (
 	buyer_address varchar(255) NULL,
 	seller_address varchar(255) NULL,
 	transactiondate timestamp NULL,
-	CONSTRAINT transactions_pkey PRIMARY KEY (transaction_id)
+	CONSTRAINT transactions_pkey PRIMARY KEY (transaction_id),
+	CONSTRAINT transactions_nft_id_fkey FOREIGN KEY (nft_id) REFERENCES nfts(nft_id)
 );
 
 CREATE TABLE wallets (
@@ -43,6 +44,10 @@ CREATE TABLE collections (
 	collection_name varchar(255) NULL,
 	num_collection_items int4 NULL,
 	deployer_address varchar(255) NULL,
+	contract_address varchar(255) NULL,
+	token_type varchar(10) NULL,
+	nft_licence text NULL,
+	collection_description text NULL,
 	CONSTRAINT collections_pkey PRIMARY KEY (collection_id),
 	CONSTRAINT collections_artist_id_fkey FOREIGN KEY (artist_id) REFERENCES artists(artist_id)
 );
@@ -61,12 +66,11 @@ CREATE TABLE "comments" (
 
 CREATE TABLE nfts (
 	nft_id serial4 NOT NULL,
-	contract_address_token_id varchar(255) UNIQUE NOT NULL,
+	contract_address_token_id varchar(255) NOT NULL,
 	artist_id int4 NULL,
 	collection_id int4 NULL,
 	contract_address varchar(255) NULL,
 	deployer_address varchar(255) NULL,
-	owners text[], 
 	nft_name varchar(255) NULL,
 	token_type varchar(10) NULL,
 	token_uri_gateway varchar(255) NULL,
@@ -76,9 +80,19 @@ CREATE TABLE nfts (
 	media_url varchar(255) NULL,
 	nft_sales_link varchar(255) NULL,
 	nft_licence text NULL,
+	owners _text NULL,
+	CONSTRAINT nfts_contract_address_token_id_key UNIQUE (contract_address_token_id),
 	CONSTRAINT nfts_pkey PRIMARY KEY (nft_id),
 	CONSTRAINT nfts_artist_id_fkey FOREIGN KEY (artist_id) REFERENCES artists(artist_id),
 	CONSTRAINT nfts_collection_id_fkey FOREIGN KEY (collection_id) REFERENCES collections(collection_id)
+);
+
+CREATE TABLE waitlist (
+	id serial4 NOT NULL,
+	"name" varchar(255) NOT NULL,
+	email varchar(255) NOT NULL,
+	joined_at timestamp NULL DEFAULT (now() AT TIME ZONE 'UTC'::text),
+	CONSTRAINT waitlist_pkey PRIMARY KEY (id)
 );
 
 ALTER TABLE transactions ADD CONSTRAINT transactions_nft_id_fkey FOREIGN KEY (nft_id) REFERENCES nfts(nft_id);

@@ -22,17 +22,6 @@ export default function Home() {
 
                 <div className="mb-10">
                     <h2 className="font-bold text-2xl mb-4 text-tertiary">
-                        About DISCOVRY
-                    </h2>
-                    <p className="text-lg leading-relaxed">
-                        The goal is for this repo to mature into an authoritative
-                        source to explore and discover digital content that has been
-                        verified onchain.
-                    </p>
-                </div>
-
-                <div className="mb-10">
-                    <h2 className="font-bold text-2xl mb-4 text-tertiary">
                         Things that work
                     </h2>
                     <ul className="list-disc pl-8 text-lg">
