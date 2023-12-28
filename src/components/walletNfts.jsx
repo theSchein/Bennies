@@ -5,6 +5,9 @@
 
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
+import Link from "next/link";
+import fallbackImageUrl from "../../public/placeholder.png";
 
 function WalletNFTs() {
     const [nfts, setNfts] = useState([]);
@@ -74,12 +77,42 @@ function WalletNFTs() {
         <div>
             {loading && <p>Loading...</p>}
             {error && <p>Error: {error}</p>}
-            <div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
                 {nfts.map((nft, index) => (
-                    <div key={index}>
-                        {/* Display your NFT data here */}
-                        <p>{nft.contract_address_token_id}</p>
+                    <Link
+                    key={nft.nft_id}
+                    href={`/nft/${nft.nft_id}/${nft.nft_name}`}
+                    passHref
+                    legacyBehavior
+                >                    
+                <div
+                        key={index}
+                        className="bg-white rounded-lg shadow overflow-hidden relative"
+                    >
+                        <div className="p-4">
+                            <p className="text-lg font-semibold text-gray-800 truncate">
+                                {nft.nft_name}
+                            </p>
+                        </div>
+                        <div className="w-full h-64 relative">
+                            {nft.media_url ? (
+                                <Image
+                                    src={nft.media_url}
+                                    alt={nft.nft_name}
+                                    layout="fill"
+                                    objectFit="cover"
+                                />
+                            ) : (
+                                <Image
+                                    src={fallbackImageUrl}
+                                    alt="Fallback Image"
+                                    layout="fill"
+                                    objectFit="cover"
+                                />
+                            )}
+                        </div>
                     </div>
+                    </Link>
                 ))}
             </div>
         </div>

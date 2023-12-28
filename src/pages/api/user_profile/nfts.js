@@ -35,7 +35,7 @@ export default async (req, res) => {
             const nftData = [];
             for (let nft of nfts.ownedNfts) {
                 const load = await db.oneOrNone(
-                    "SELECT contract_address_token_id FROM nfts WHERE contract_address_token_id = $1",
+                    "SELECT contract_address_token_id, nft_id, nft_name, media_url FROM nfts WHERE contract_address_token_id = $1",
                     [nft.contract.address + nft.tokenId],
                 );
                 if (load) {
