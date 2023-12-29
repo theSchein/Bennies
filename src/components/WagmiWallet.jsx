@@ -50,7 +50,7 @@ const config = createConfig({
 // Pass config to React Context Provider
 const WagmiWallet = ({ children }) => {
     return (
-        <div className="bg-secondary p-6 rounded-lg shadow-md space-y-4 w-full max-w-lg">
+        <div>
             <WagmiConfig config={config}>{children}</WagmiConfig>
         </div>
     );
