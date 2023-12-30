@@ -20,24 +20,6 @@ CREATE TABLE artists (
 	CONSTRAINT artists_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
-CREATE TABLE transactions (
-	transaction_id serial4 NOT NULL,
-	nft_id int4 NULL,
-	buyer_address varchar(255) NULL,
-	seller_address varchar(255) NULL,
-	transactiondate timestamp NULL,
-	CONSTRAINT transactions_pkey PRIMARY KEY (transaction_id),
-	CONSTRAINT transactions_nft_id_fkey FOREIGN KEY (nft_id) REFERENCES nfts(nft_id)
-);
-
-CREATE TABLE wallets (
-	wallet_id serial4 NOT NULL,
-	user_id int4 NULL,
-	wallet_address varchar(255) NULL,
-	CONSTRAINT wallets_pkey PRIMARY KEY (wallet_id),
-	CONSTRAINT wallets_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(user_id)
-);
-
 CREATE TABLE collections (
 	collection_id serial4 NOT NULL,
 	artist_id int4 NULL,
@@ -50,18 +32,6 @@ CREATE TABLE collections (
 	collection_description text NULL,
 	CONSTRAINT collections_pkey PRIMARY KEY (collection_id),
 	CONSTRAINT collections_artist_id_fkey FOREIGN KEY (artist_id) REFERENCES artists(artist_id)
-);
-
-CREATE TABLE "comments" (
-	comment_id serial4 NOT NULL,
-	nft_id int4 NULL,
-	user_id int4 NULL,
-	parent_comment_id int4 NULL,
-	"text" text NULL,
-	commentdate timestamp NULL,
-	CONSTRAINT comments_pkey PRIMARY KEY (comment_id),
-	CONSTRAINT comments_parent_comment_id_fkey FOREIGN KEY (parent_comment_id) REFERENCES "comments"(comment_id),
-	CONSTRAINT comments_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE nfts (
@@ -85,6 +55,35 @@ CREATE TABLE nfts (
 	CONSTRAINT nfts_pkey PRIMARY KEY (nft_id),
 	CONSTRAINT nfts_artist_id_fkey FOREIGN KEY (artist_id) REFERENCES artists(artist_id),
 	CONSTRAINT nfts_collection_id_fkey FOREIGN KEY (collection_id) REFERENCES collections(collection_id)
+);
+
+CREATE TABLE transactions (
+	transaction_id serial4 NOT NULL,
+	nft_id int4 NULL,
+	buyer_address varchar(255) NULL,
+	seller_address varchar(255) NULL,
+	transactiondate timestamp NULL,
+	CONSTRAINT transactions_pkey PRIMARY KEY (transaction_id)
+);
+
+CREATE TABLE wallets (
+	wallet_id serial4 NOT NULL,
+	user_id int4 NULL,
+	wallet_address varchar(255) NULL,
+	CONSTRAINT wallets_pkey PRIMARY KEY (wallet_id),
+	CONSTRAINT wallets_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+CREATE TABLE "comments" (
+	comment_id serial4 NOT NULL,
+	nft_id int4 NULL,
+	user_id int4 NULL,
+	parent_comment_id int4 NULL,
+	"text" text NULL,
+	commentdate timestamp NULL,
+	CONSTRAINT comments_pkey PRIMARY KEY (comment_id),
+	CONSTRAINT comments_parent_comment_id_fkey FOREIGN KEY (parent_comment_id) REFERENCES "comments"(comment_id),
+	CONSTRAINT comments_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE waitlist (
