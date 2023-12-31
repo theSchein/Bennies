@@ -1,5 +1,6 @@
 // pages/api/user_profile/nfts.js
-// WIP: this api is used to fetch user nfts from the database, recently implemented and needs improvemnt.
+// This api is used to fetch user nfts from the database
+// If the NFT is owned by the user and in the database it makes sure the owner is correct in the db and grabs the nfts to render
 
 import db from "../../../lib/db";
 const { Alchemy, Network } = require("alchemy-sdk");
@@ -34,12 +35,19 @@ export default async (req, res) => {
 
             const nftData = [];
             for (let nft of nfts.ownedNfts) {
+                const contractAddressTokenId = nft.contract.address + nft.tokenId;
+
                 const load = await db.oneOrNone(
-                    "SELECT contract_address_token_id FROM nfts WHERE contract_address_token_id = $1",
+                    "SELECT contract_address_token_id, nft_id, nft_name, media_url FROM nfts WHERE LOWER(contract_address_token_id) = $1",
                     [nft.contract.address + nft.tokenId],
                 );
                 if (load) {
                     nftData.push(load);
+
+                    await db.none(
+                        "UPDATE nfts SET owners = array_append(owners, $1) WHERE contract_address_token_id = $2",
+                        [address, contractAddressTokenId],
+                    );
                 }
             }
 

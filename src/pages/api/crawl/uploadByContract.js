@@ -37,12 +37,10 @@ export default async function (req, res) {
         } catch (error) {
             if (!error.message.includes("Modules are started already")) {
                 console.error("Error initializing Moralis:", error);
-                return res
-                    .status(500)
-                    .json({
-                        message: "Internal Server Error.",
-                        error: error.message,
-                    });
+                return res.status(500).json({
+                    message: "Internal Server Error.",
+                    error: error.message,
+                });
             }
         }
     }
@@ -60,18 +58,19 @@ export default async function (req, res) {
 
         do {
             // Add Collection to database
-            const coll_response = await Moralis.EvmApi.nft.getNFTContractMetadata({
-                chain: "0x1",
-                address: contract,
-            });
-
-            // console.log("collection response:", coll_response.raw);
+            const coll_response = await alchemy.nft.getContractMetadata(
+                String(contract),
+            );
 
             const collData = {
-                contract_address: coll_response.raw.token_address,
-                collection_name: coll_response.raw.name,
-                token_type: coll_response.raw.contract_type,
+                contract_address: coll_response.address,
+                collection_name: coll_response.name,
+                token_type: coll_response.tokenType,
+                num_collection: coll_response.totalSupply,
+                deployer: coll_response.contractDeployer,
             };
+
+            console.log("Collection Data:", collData); 
 
             // Check if the entry already exists in the database
             const existingEntry = await db.oneOrNone(
@@ -86,19 +85,35 @@ export default async function (req, res) {
           INSERT INTO collections(
               contract_address, 
               collection_name,
-              token_type)
-              VALUES($1, $2, $3)
+              token_type,
+              num_collection_items,
+              deployer_address
+              )
+              VALUES($1, $2, $3, $4, $5)
                         `,
                     [
                         collData.contract_address,
                         collData.collection_name,
                         collData.token_type,
+                        collData.num_collection,
+                        collData.deployer,
                     ],
                 );
                 console.log(
                     "Added collection to database:",
                     collData.collection_name,
                 );
+            }
+
+            let collectionId = null;
+
+            const collectionResult = await db.oneOrNone(
+                "SELECT collection_id FROM collections WHERE contract_address = $1",
+                [collData.contract_address],
+            );
+
+            if (collectionResult) {
+                collectionId = collectionResult.collection_id;
             }
 
             // Add NFTs to database
@@ -164,8 +179,9 @@ export default async function (req, res) {
                 media_url, 
                 deployer_address,
                 nft_description,
-                token_id)
-                VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+                token_id,
+                collection_id)
+                VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
             `,
                         [
                             nftData.contract_address + nftData.token_id,
@@ -178,6 +194,7 @@ export default async function (req, res) {
                             nftData.deployer_address,
                             nftData.nft_description,
                             nftData.token_id,
+                            collectionId,
                         ],
                     );
                 }
