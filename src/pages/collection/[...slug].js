@@ -37,6 +37,9 @@ export default function CollectionPage({ collection, nftData }) {
                 <h1 className="text-quaternary font-heading text-3xl sm:text-4xl mb-8 break-words">
                     {collection.collection_name}
                 </h1>
+                <h1 className="text-quaternary font-heading text-3xl sm:text-4xl mb-8 break-words">
+                    {collection.num_collection_items}
+                </h1>
                 <p className="text-quaternary font-body text-base sm:text-lg break-words">
                     {collection.collection_description}
                 </p>

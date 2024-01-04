@@ -14,11 +14,12 @@ const NftGrid = ({ nftData }) => {
             >
                 {nftData.map((nft, index) => (
                     <Link
+                        key={nft.nft_id} 
                         href={`/nft/${nft.nft_id}/${nft.nft_name}`}
                         passHref
                         legacyBehavior
                     >
-                        <Grid xs={2} sm={4} md={4} key={index}>
+                        <Grid xs={2} sm={4} md={4}>
                         {nft.media_url ? (
                             <Image
                                 src={nft.media_url}
