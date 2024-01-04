@@ -19,13 +19,21 @@ const NftGrid = ({ nftData }) => {
                         legacyBehavior
                     >
                         <Grid xs={2} sm={4} md={4} key={index}>
-                            {/* Render NFT details here */}
+                        {nft.media_url ? (
                             <Image
                                 src={nft.media_url}
                                 alt={nft.nft_name}
                                 width={200}
                                 height={200}
                             />
+                        ) : (
+                            <Image
+                                src={fallbackImageUrl}
+                                alt="Fallback Image"
+                                width={200}
+                                height={200}
+                            />
+                        )}
                             <p>{nft.nft_name}</p>
                         </Grid>
                     </Link>
