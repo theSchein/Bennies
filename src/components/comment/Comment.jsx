@@ -6,7 +6,7 @@ import CommentForm from "./CommentForm";
 import CommentList from "./CommentList";
 
 // Individual Comment component
-function Comment({ comment, addReply, nft, depth = 0 }) {
+function Comment({ comment, addReply, nft, depth }) {
     const [showReplyForm, setShowReplyForm] = useState(false);
     const [nestedText, setNestedText] = useState("");
 
@@ -32,15 +32,11 @@ function Comment({ comment, addReply, nft, depth = 0 }) {
                 setNestedText("");
                 addReply(comment.comment_id, newReply);
             })
-            .catch((error) =>
-                console.error(
-                    "There was an error saving the nested comment:",
-                    error,
-                ),
-            );
+            .catch((error) => console.error("Error saving nested comment:", error));
     };
 
     return (
+
         <div
             className={`ml-${depth * 5} my-2 p-4 bg-gray-100 rounded-lg shadow`}
             key={comment.comment_id}
@@ -67,7 +63,7 @@ function Comment({ comment, addReply, nft, depth = 0 }) {
                     />
                 )}
             </div>
-            {comment.parent_comment_id && (
+            {comment.replies && comment.replies.length > 0 && (
                 <CommentList
                     comments={comment.replies}
                     nft={nft}

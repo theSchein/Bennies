@@ -27,7 +27,7 @@ function CommentSection({ nft }) {
                 );
                 const data = await response.json();
                 const structuredData = structureComments(data);
-                setComments(structuredData); // Assuming the API returns an array of comments
+                setComments(structuredData);
             } catch (error) {
                 console.error("There was an error fetching the comments", error);
             }
@@ -39,14 +39,46 @@ function CommentSection({ nft }) {
         setComments((currentComments) => {
             const updatedComments = currentComments.map((comment) => {
                 if (comment.comment_id === parentCommentId) {
+                    // Update the replies for the direct parent comment
                     const updatedReplies = comment.replies
                         ? [...comment.replies, newReply]
                         : [newReply];
                     return { ...comment, replies: updatedReplies };
+                } else if (comment.replies) {
+                    // Recursively update replies for nested comments
+                    return {
+                        ...comment,
+                        replies: addReplyToNestedComments(
+                            comment.replies,
+                            parentCommentId,
+                            newReply,
+                        ),
+                    };
                 }
                 return comment;
             });
             return updatedComments;
+        });
+    };
+
+    const addReplyToNestedComments = (comments, parentCommentId, newReply) => {
+        return comments.map((comment) => {
+            if (comment.comment_id === parentCommentId) {
+                const updatedReplies = comment.replies
+                    ? [...comment.replies, newReply]
+                    : [newReply];
+                return { ...comment, replies: updatedReplies };
+            } else if (comment.replies) {
+                return {
+                    ...comment,
+                    replies: addReplyToNestedComments(
+                        comment.replies,
+                        parentCommentId,
+                        newReply,
+                    ),
+                };
+            }
+            return comment;
         });
     };
 
@@ -76,14 +108,14 @@ function CommentSection({ nft }) {
             .catch((error) => console.error("Failed to post comment:", error));
     };
 
+    const topLevelComments = comments.filter(
+        (comment) => comment.parent_comment_id === null,
+    );
+
     return (
         <div className="py-8 w-full max-w-2xl mx-auto">
-            {" "}
-            {/* Added padding y-8 and set max width */}
             {session ? (
                 <div className="bg-gray-50 p-6 rounded-lg shadow space-y-4">
-                    {" "}
-                    {/* Added background, padding, rounded corners, and shadow */}
                     <h2 className="text-lg font-semibold">
                         Commenting as {session.username}
                     </h2>
@@ -95,8 +127,6 @@ function CommentSection({ nft }) {
                 </div>
             ) : (
                 <div className="text-center py-4">
-                    {" "}
-                    {/* Centered text with padding */}
                     <Link
                         href="/signin"
                         className="px-6 py-2 bg-primary text-tertiary rounded-full hover:bg-secondary-dark focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-opacity-50 transition ease-in duration-200"
@@ -106,7 +136,7 @@ function CommentSection({ nft }) {
                 </div>
             )}
             <CommentList
-                comments={comments}
+                comments={topLevelComments}
                 nft={nft}
                 addReply={addReplyToComment}
             />
