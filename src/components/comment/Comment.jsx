@@ -9,6 +9,7 @@ import CommentList from "./CommentList";
 function Comment({ comment, addReply, nft, depth, toggleReloadComments }) {
     const [showReplyForm, setShowReplyForm] = useState(false);
     const [nestedText, setNestedText] = useState("");
+    const [showReplies, setShowReplies] = useState(true);
 
     const handleNestedSubmit = (e) => {
         e.preventDefault();
@@ -34,6 +35,10 @@ function Comment({ comment, addReply, nft, depth, toggleReloadComments }) {
                 addReply(comment.comment_id, newReply);
             })
             .catch((error) => console.error("Error saving nested comment:", error));
+    };
+
+    const toggleRepliesVisibility = () => {
+        setShowReplies(!showReplies); 
     };
 
     return (
@@ -65,13 +70,20 @@ function Comment({ comment, addReply, nft, depth, toggleReloadComments }) {
                 )}
             </div>
             {comment.replies && comment.replies.length > 0 && (
-                <CommentList
-                    comments={comment.replies}
-                    nft={nft}
-                    depth={depth + 1}
-                    addReply={addReply}
-                    toggleReloadComments={toggleReloadComments}
-                />
+                <>
+                    <button onClick={toggleRepliesVisibility} className="text-blue-500 hover:text-blue-700 text-sm font-medium">
+                        {showReplies ? "Hide Replies" : "Show Replies"}
+                    </button>
+                    {showReplies && (
+                        <CommentList
+                            comments={comment.replies}
+                            nft={nft}
+                            depth={depth + 1}
+                            addReply={addReply}
+                            toggleReloadComments={toggleReloadComments}
+                        />
+            )}
+                </>
             )}
         </div>
     );
