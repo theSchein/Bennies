@@ -6,7 +6,7 @@ import CommentForm from "./CommentForm";
 import CommentList from "./CommentList";
 
 // Individual Comment component
-function Comment({ comment, addReply, nft, depth }) {
+function Comment({ comment, addReply, nft, depth, toggleReloadComments }) {
     const [showReplyForm, setShowReplyForm] = useState(false);
     const [nestedText, setNestedText] = useState("");
 
@@ -30,6 +30,7 @@ function Comment({ comment, addReply, nft, depth }) {
             .then((response) => response.json())
             .then((newReply) => {
                 setNestedText("");
+                toggleReloadComments();
                 addReply(comment.comment_id, newReply);
             })
             .catch((error) => console.error("Error saving nested comment:", error));
@@ -44,7 +45,7 @@ function Comment({ comment, addReply, nft, depth }) {
             <div className="flex justify-between items-center mb-2">
                 <strong className="font-semibold">{comment.commenter}</strong>
                 <span className="text-sm text-gray-600">
-                    {new Date(comment.commentdate).toLocaleDateString()}
+                    {new Date(comment.comment_date).toLocaleDateString()}
                 </span>
             </div>
             <p className="text-gray-800 mb-4">{comment.text}</p>
@@ -69,6 +70,7 @@ function Comment({ comment, addReply, nft, depth }) {
                     nft={nft}
                     depth={depth + 1}
                     addReply={addReply}
+                    toggleReloadComments={toggleReloadComments}
                 />
             )}
         </div>

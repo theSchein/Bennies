@@ -26,11 +26,11 @@ function structureComments(comments, parentId = null, currentDepth = 0) {
     });
 }
 
-function CommentList({ comments, nft }) {
+function CommentList({ comments, nft, toggleReloadComments }) {
     const renderComments = (comments, depth = 0) => {
         return comments.map((comment) => (
             <div key={comment.comment_id} style={{ marginLeft: `${depth * 20}px` }}>
-                <Comment comment={comment} nft={nft} depth={depth} />
+                <Comment comment={comment} nft={nft} depth={depth} toggleReloadComments={toggleReloadComments} />
             </div>
         ));
     };

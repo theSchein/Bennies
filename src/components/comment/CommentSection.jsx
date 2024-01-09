@@ -35,6 +35,10 @@ function CommentSection({ nft }) {
         fetchComments();
     }, [nft_id, reloadComments]);
 
+    const toggleReloadComments = () => {
+        setReloadComments(!reloadComments); 
+    };
+
     const addReplyToComment = (parentCommentId, newReply) => {
         setComments((currentComments) => {
             const updatedComments = currentComments.map((comment) => {
@@ -103,7 +107,7 @@ function CommentSection({ nft }) {
             .then((newComment) => {
                 setText("");
                 setComments((prevComments) => [...prevComments, newComment]);
-                setReloadComments(!reloadComments);
+                toggleReloadComments();
             })
             .catch((error) => console.error("Failed to post comment:", error));
     };
@@ -139,6 +143,7 @@ function CommentSection({ nft }) {
                 comments={topLevelComments}
                 nft={nft}
                 addReply={addReplyToComment}
+                toggleReloadComments={toggleReloadComments}
             />
         </div>
     );

@@ -24,11 +24,11 @@ export default async function handler(req, res) {
     commenters.user_id,
     commenters.username as commenter,
     c.text as text,
-    c.commentdate
+    c.comment_date
   FROM comments c
   JOIN users commenters ON c.user_id = commenters.user_id
   WHERE c.nft_id = $1
-    ORDER BY c.CommentDate DESC
+    ORDER BY c.comment_date DESC
     `;
 
         const values = [nftId];
