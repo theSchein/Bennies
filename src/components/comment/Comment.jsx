@@ -6,9 +6,10 @@ import CommentForm from "./CommentForm";
 import CommentList from "./CommentList";
 
 // Individual Comment component
-function Comment({ comment, addReply, nft, depth = 0 }) {
+function Comment({ comment, addReply, nft, depth, toggleReloadComments }) {
     const [showReplyForm, setShowReplyForm] = useState(false);
     const [nestedText, setNestedText] = useState("");
+    const [showReplies, setShowReplies] = useState(true);
 
     const handleNestedSubmit = (e) => {
         e.preventDefault();
@@ -30,17 +31,18 @@ function Comment({ comment, addReply, nft, depth = 0 }) {
             .then((response) => response.json())
             .then((newReply) => {
                 setNestedText("");
+                toggleReloadComments();
                 addReply(comment.comment_id, newReply);
             })
-            .catch((error) =>
-                console.error(
-                    "There was an error saving the nested comment:",
-                    error,
-                ),
-            );
+            .catch((error) => console.error("Error saving nested comment:", error));
+    };
+
+    const toggleRepliesVisibility = () => {
+        setShowReplies(!showReplies); 
     };
 
     return (
+
         <div
             className={`ml-${depth * 5} my-2 p-4 bg-gray-100 rounded-lg shadow`}
             key={comment.comment_id}
@@ -48,7 +50,7 @@ function Comment({ comment, addReply, nft, depth = 0 }) {
             <div className="flex justify-between items-center mb-2">
                 <strong className="font-semibold">{comment.commenter}</strong>
                 <span className="text-sm text-gray-600">
-                    {new Date(comment.commentdate).toLocaleDateString()}
+                    {new Date(comment.comment_date).toLocaleDateString()}
                 </span>
             </div>
             <p className="text-gray-800 mb-4">{comment.text}</p>
@@ -67,13 +69,21 @@ function Comment({ comment, addReply, nft, depth = 0 }) {
                     />
                 )}
             </div>
-            {comment.parent_comment_id && (
-                <CommentList
-                    comments={comment.replies}
-                    nft={nft}
-                    depth={depth + 1}
-                    addReply={addReply}
-                />
+            {comment.replies && comment.replies.length > 0 && (
+                <>
+                    <button onClick={toggleRepliesVisibility} className="text-blue-500 hover:text-blue-700 text-sm font-medium">
+                        {showReplies ? "Hide Replies" : "Show Replies"}
+                    </button>
+                    {showReplies && (
+                        <CommentList
+                            comments={comment.replies}
+                            nft={nft}
+                            depth={depth + 1}
+                            addReply={addReply}
+                            toggleReloadComments={toggleReloadComments}
+                        />
+            )}
+                </>
             )}
         </div>
     );

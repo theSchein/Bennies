@@ -77,10 +77,12 @@ CREATE TABLE wallets (
 CREATE TABLE "comments" (
 	comment_id serial4 NOT NULL,
 	nft_id int4 NULL,
+	collection_id int4 NULL,
 	user_id int4 NULL,
 	parent_comment_id int4 NULL,
 	"text" text NULL,
-	commentdate timestamp NULL,
+	comment_date timestamp NULL,
+	update_date timestamp NULL,
 	CONSTRAINT comments_pkey PRIMARY KEY (comment_id),
 	CONSTRAINT comments_parent_comment_id_fkey FOREIGN KEY (parent_comment_id) REFERENCES "comments"(comment_id),
 	CONSTRAINT comments_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(user_id)
