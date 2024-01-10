@@ -1,5 +1,7 @@
 // pages/api/wallet/claimWallet.js
 // This api is allows a user to tie thier wallet to their account in the database.
+// This api also checks to see if there are any deployed nfts from this wallet and creates an artist entry for it
+
 
 import { getToken } from "next-auth/jwt";
 import db from "../../../lib/db";
@@ -24,6 +26,10 @@ export default async (req, res) => {
             "SELECT * FROM Wallets WHERE user_id = $1 AND wallet_address = $2",
             [session.user_id, address],
         );
+        const existingNFTs = await db.manyOrNone(
+            "SELECT * FROM nfts WHERE deployer_address = $1",
+            [address],
+        );
 
         if (existingEntry) {
             res.status(200).json({ error: "Wallet already exists." });
@@ -34,8 +40,19 @@ export default async (req, res) => {
         try {
             await db.none(
                 "INSERT INTO Wallets(user_id, wallet_address) VALUES($1, $2)",
-                [session.user_id, address],
+                [session.user_id, address]
             );
+        
+            if (existingNFTs.length > 0) {
+                await db.none(
+                    "INSERT INTO artists(user_id, deployer_address) VALUES($1, $2)",
+                    [session.user_id, address]
+                );
+            } else {
+                res.status(404).json({ error: "No NFTs found for this wallet" });
+                return;
+            }
+        
             res.status(200).json({
                 success: true,
                 message: "Wallet added successfully.",
@@ -43,7 +60,5 @@ export default async (req, res) => {
         } catch (error) {
             res.status(500).json({ error: "Database error: " + error.message });
         }
-    } else {
-        res.status(405).json({ error: "Method not allowed." });
-    }
+    };
 };
