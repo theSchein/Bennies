@@ -1,15 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import ArtistForm from "./artistForm";
+import Button from "@mui/material/Button";
 
 export default function CreatorButton() {
     const [isEligible, setIsEligible] = useState(null);
+    const [showArtistForm, setShowArtistForm] = useState(false);
     const { data: session } = useSession();
+
+    const handleOpenArtistForm = () => setShowArtistForm(true);
+    const handleCloseArtistForm = () => setShowArtistForm(false);
 
     useEffect(() => {
         if (session?.wallets && session.wallets.length > 0) {
             fetchArtistEligibility(session.wallets);
         }
-    }, [session]); 
+    }, [session]);
 
     const fetchArtistEligibility = async (wallets) => {
         if (!session) {
@@ -30,15 +36,13 @@ export default function CreatorButton() {
             console.error("Failed:", error);
         }
     };
-    
 
     return (
         <div>
             {isEligible && (
-                <button className="bg-primary text-white py-2 px-4 rounded">
-                    Create Artist Page
-                </button>
+                <Button onClick={handleOpenArtistForm}>Create Artist Page</Button>
             )}
+            <ArtistForm open={showArtistForm} handleClose={handleCloseArtistForm} />
             {isEligible === false && (
                 <p>You are not eligible to create an artist page.</p>
             )}

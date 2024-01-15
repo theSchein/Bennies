@@ -1,6 +1,5 @@
-// pages/api/artists/createArtist.js
-// API to create a new artist and artist page
-// While this api is complete, the actual feature has yet to be fleshed out.
+// pages/api/artists/updateArtist.js
+// API to update content in artist table
 
 import db from "../../../lib/db";
 import { getToken } from "next-auth/jwt";

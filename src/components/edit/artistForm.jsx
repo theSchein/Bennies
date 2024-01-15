@@ -1,14 +1,12 @@
-// components/newArtist.jsx
+// components/edit/artistForm.jsx
 // Component to handle a lot of the logic for creating a new artist page.
 // Much of this got rescoped so this page needs to be drasitcally upated
 
 import * as React from "react";
 import { useState } from "react";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import Credentials from "next-auth/providers/credentials";
 
 const style = {
     position: "absolute",
@@ -22,11 +20,7 @@ const style = {
     p: 4,
 };
 
-export default function ArtistForm() {
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
-
+export default function ArtistForm({ open, handleClose }) {
     const [artistName, setArtistName] = useState("");
     const [artistBio, setArtistBio] = useState("");
     const [artistPicture, setArtistPicture] = useState("");
@@ -45,7 +39,7 @@ export default function ArtistForm() {
         };
 
         try {
-            const response = await fetch("/api/artist/createArtist", {
+            const response = await fetch("/api/artist/updateArtist", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -80,7 +74,6 @@ export default function ArtistForm() {
 
     return (
         <div>
-            <Button onClick={handleOpen}>Make your page!!1!</Button>
             <Modal
                 open={open}
                 onClose={handleClose}

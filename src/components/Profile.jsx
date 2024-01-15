@@ -12,7 +12,6 @@ import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { createContext, useContext } from "react";
 import Image from "next/image";
-import ArtistForm from "../components/newArtist";
 
 const WalletAddressContext = createContext();
 
@@ -27,8 +26,6 @@ export function Profile() {
     const { connect, connectors, error, isLoading, pendingConnector } = useConnect();
     const { disconnect } = useDisconnect();
     const { data: session } = useSession();
-    const [isEligible, setIsEligible] = useState(null);
-
     const claimWallet = useCallback(async () => {
         if (!session) {
             return;
@@ -49,24 +46,7 @@ export function Profile() {
         }
     }, [session, address]);
 
-    const fetchArtistEligibility = async () => {
-        if (!session) {
-            return;
-        }
-        try {
-            const response = await fetch("/api/artist/checkArtistEligibility", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                credentials: "include",
-            });
-            const data = await response.json();
-            setIsEligible(data.isEligible);
-        } catch (error) {
-            console.error("Failed:", error);
-        }
-    };
+
 
     useEffect(() => {
         if (isConnected && address) {
@@ -104,25 +84,8 @@ export function Profile() {
                                     {`Disconnect`}
                                 </button>
 
-                                <button
-                                    onClick={fetchArtistEligibility}
-                                    className="w-full bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition duration-300"
-                                >
-                                    {`Check Eligibility`}
-                                </button>
                             </div>
 
-                            <div className="text-center p-4">
-                                {isEligible ? (
-                                    <div className="text-green-500 font-bold">
-                                        {`You are eligible to create an artist page!`}
-                                    </div>
-                                ) : (
-                                    <div className="text-red-500">
-                                        {`You are not eligible to create an artist page.`}
-                                    </div>
-                                )}
-                            </div>
                         </div>
                     </WalletAddressContext.Provider>
                 </div>
