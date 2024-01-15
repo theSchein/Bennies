@@ -7,9 +7,9 @@ import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import Slider from 'react-slick';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import fallbackImageUrl from "../../public/placeholder.png";
 
 function WalletNFTs() {
@@ -20,31 +20,10 @@ function WalletNFTs() {
     const { data: session } = useSession();
 
     useEffect(() => {
-        fetchWalletAddresses();
+        if (session?.wallets) {
+            fetchNFTsForAllAddresses(session.wallets);
+        }
     }, []);
-
-    const fetchWalletAddresses = async () => {
-        try {
-            const response = await fetch("/api/wallet/fetchWallets", {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                credentials: "include",
-            });
-
-            if (!response.ok) {
-                throw new Error(`Error: ${response.status}`);
-            }
-
-            const walletData = await response.json();
-            const addresses = walletData.map((wallet) => wallet.wallet_address);
-            fetchNFTsForAllAddresses(addresses);
-        } catch (err) {
-            console.error(err);
-            setError(err.message);
-        } 
-    };
 
     const fetchNFTsForAddress = async (address) => {
         try {
@@ -127,7 +106,11 @@ function WalletNFTs() {
             <Slider {...sliderSettings}>
                 {nfts.map((nft, index) => (
                     <div key={index} className="p-4">
-                        <Link href={`/nft/${nft.nft_id}/${nft.nft_name}`} passHref legacyBehavior>
+                        <Link
+                            href={`/nft/${nft.nft_id}/${nft.nft_name}`}
+                            passHref
+                            legacyBehavior
+                        >
                             <a className="bg-white rounded-lg shadow overflow-hidden block">
                                 <div className="p-4">
                                     <p className="text-lg font-semibold text-gray-800 truncate">
