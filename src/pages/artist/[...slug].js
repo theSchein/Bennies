@@ -18,8 +18,8 @@ export async function getServerSideProps({ params }) {
 }
 
 function ArtistPage({ artist }) {
-    const defaultWidth = 600; // Adjust as needed
-    const defaultHeight = 400; // Adjust as needed
+    const defaultWidth = 600; 
+    const defaultHeight = 400; 
 
     // Check if the artist's image URL is valid
     const artistImage =
