@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import { Profile } from "../components/Profile";
 import WagmiWallet from "../components/WagmiWallet";
 import WalletNFTs from "@/components/walletNfts";
+import CreatorButton from "@/components/edit/creatorButton";
 
 function ProfilePage() {
     const { data: session, status } = useSession();
@@ -36,6 +37,7 @@ function ProfilePage() {
                     <h1 className="font-heading text-5xl text-gray-800">
                         Welcome, {session.username}
                     </h1>
+                    <p>Wallet Addresses: {JSON.stringify(session.wallets)}</p>
                     <p className="text-xl leading-relaxed pt-4">
                         On this profile page you can connect your wallet and if
                         you have used it to deploy any of the NFTs on our platform
@@ -64,6 +66,7 @@ function ProfilePage() {
                             </li>
                             <li>Reach out if you have any ideas!!</li>
                         </ul>
+                        <CreatorButton />
                     </div>
                     <WalletNFTs />
                 </div>

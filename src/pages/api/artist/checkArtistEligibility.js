@@ -3,26 +3,44 @@
 // If ues then the user may create an artist page
 
 import db from "../../../lib/db";
+import { getToken } from "next-auth/jwt";
+
 
 export default async (req, res) => {
     if (req.method === "POST") {
+        const session = await getToken({ req });
+
+        if (!session) {
+            return res.status(401).json({ error: "Not authenticated" });
+        }
+
+        let wallets = req.body.wallets; 
+
+        // Ensure wallets is always an array
+        if (!Array.isArray(wallets)) {
+            wallets = [wallets].filter(Boolean); // Filter out falsy values
+        }
+
+        // If wallets array is empty, return false immediately
+        if (wallets.length === 0) {
+            return res.status(200).json({ isEligible: false });
+        }
+
         try {
-            const { address } = req.body;
-            if (!address) {
-                return res.status(400).json({ error: "Wallet address is required" });
+            // Check if any of the wallet addresses exist in the deployer field
+            for (const address of wallets) {
+                const matchingEntry = await db.oneOrNone(
+                    "SELECT * FROM nfts WHERE deployer_address = $1",
+                    [address],
+                );
+
+                if (matchingEntry) {
+                    return res.status(200).json({ isEligible: true });
+                }
             }
 
-            // Query the database to check if the walletAddress exists in the deployer field
-            const matchingEntry = await db.oneOrNone(
-                "SELECT * FROM nfts WHERE deployer_address = $1",
-                [address],
-            );
-
-            if (matchingEntry) {
-                res.status(200).json({ isEligible: true });
-            } else {
-                res.status(200).json({ isEligible: false });
-            }
+            // If none of the wallets are eligible
+            return res.status(200).json({ isEligible: false });
         } catch (error) {
             res.status(500).json({ error: "Database error: " + error.message });
         }

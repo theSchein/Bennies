@@ -28,6 +28,12 @@ export default NextAuth({
                 if (!user) {
                     throw new Error("No user found!");
                 }
+
+                const wallets = await db.manyOrNone(
+                    "SELECT wallet_address FROM wallets WHERE user_id = $1",
+                    [user.user_id]
+                );
+
                 const isValid = await bcryptjs.compare(
                     credentials.password,
                     user.password,
@@ -36,6 +42,7 @@ export default NextAuth({
                     throw new Error("Invalid Credentials!");
                     //return Promise.resolve(null);
                 }
+                user.wallets = wallets.map(w => w.wallet_address);
 
                 return Promise.resolve(user);
             },
@@ -49,6 +56,7 @@ export default NextAuth({
                 token.user_id = user.user_id;
                 token.username = user.username;
                 token.email_address = user.email_address;
+                token.wallets = user.wallets;
             }
             return token;
             //return {...token, ...user};
@@ -59,6 +67,7 @@ export default NextAuth({
                 session.username = token.username; // Use token here instead of user
                 session.email_address = token.email_address; // Use token here
                 session.user_id = token.user_id;
+                session.wallets = token.wallets;
             }
             return session;
             // return {...session, ...token};

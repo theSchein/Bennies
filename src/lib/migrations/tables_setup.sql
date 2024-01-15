@@ -12,6 +12,7 @@ CREATE TABLE artists (
 	artist_id serial4 NOT NULL,
 	artist_name varchar(100) NULL,
 	user_id int4 NULL,
+	deployer_address varchar(255) NULL,
 	artist_bio text NULL,
 	artist_picture varchar(255) NULL,
 	artist_sales_link varchar(255) NULL,
