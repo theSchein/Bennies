@@ -15,7 +15,6 @@ export default async (req, res) => {
         }
 
         let wallets = req.body.wallets; 
-        console.log('wallets', wallets)
 
         // Ensure wallets is always an array
         if (!Array.isArray(wallets)) {
