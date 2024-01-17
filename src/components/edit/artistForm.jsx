@@ -60,7 +60,7 @@ export default function ArtistForm({ open, handleClose }) {
             fetchArtistId().then(artistId => {
                 if (artistId) {
                     setTimeout(() => {
-                        router.push(`/artist/${artistId}/${encodeURIComponent(artistName)}`);
+                        router.push(`/artist/${artistId}/${encodeURIComponent(artistName)}`); // Redirect to the artist's page
                     }, 2000); // Redirect after 2 seconds
                 }
             });

@@ -1,3 +1,6 @@
+// components/edit/creatorButton.jsx
+// Button that appears on the profile page to allow deployers to create an artist page.
+
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import ArtistForm from "./artistForm";

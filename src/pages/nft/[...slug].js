@@ -6,6 +6,9 @@ import { useState } from "react";
 import db from "../../lib/db";
 import CommentSection from "../../components/comment/CommentSection";
 import Image from "next/image";
+import EditPageButton from "../../components/edit/editPageButton";
+import IsOwner from "../../components/check/isOwner";
+import IsDeployer from "@/components/check/isDeployer";
 
 export async function getServerSideProps({ params }) {
     const { slug } = params;
@@ -15,6 +18,10 @@ export async function getServerSideProps({ params }) {
 
 export default function NftPage({ nft }) {
     const [isModalOpen, setModalOpen] = useState(false);
+
+    const isOwner = IsOwner(nft.owners);
+    const isDeployer = IsDeployer(nft.deployer_address);
+
 
     const handleModalToggle = () => {
         setModalOpen(!isModalOpen);
@@ -34,6 +41,10 @@ export default function NftPage({ nft }) {
                 <p className="text-quaternary font-body text-base sm:text-lg break-words">
                     {nft.nft_description}
                 </p>
+                <h2 className="text-quaternary font-heading text-xl sm:text-2xl break-words">
+
+                    <EditPageButton isOwner={isOwner} isDeployer={isDeployer} />
+                </h2>
                 <div className="relative w-full h-64 sm:h-[500px] rounded overflow-hidden">
                     <Image
                         src={nft.media_url}
