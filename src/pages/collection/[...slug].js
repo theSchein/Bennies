@@ -2,13 +2,13 @@
 // This file is used to display the Collection page.
 // It grabs the collection data and shows the nfts as part of a grid.
 
-
 import db from "../../lib/db";
 import CommentSection from "../../components/comment/CommentSection";
 import Image from "next/image";
 import NftGrid from "../../components/collections/nftGrid";
-
-
+import EditPageButton from "../../components/edit/editPageButton";
+import IsOwner from "../../components/check/isOwner";
+import IsDeployer from "@/components/check/isDeployer"; 
 
 export async function getServerSideProps({ params }) {
     const { slug } = params;
@@ -17,10 +17,9 @@ export async function getServerSideProps({ params }) {
         [slug[0]],
     );
 
-    const nftData = await db.query(
-        "SELECT * FROM nfts WHERE collection_id = $1",
-        [slug[0]],
-    );
+    const nftData = await db.query("SELECT * FROM nfts WHERE collection_id = $1", [
+        slug[0],
+    ]);
 
     if (!collection) {
         return { notFound: true };
@@ -29,14 +28,24 @@ export async function getServerSideProps({ params }) {
     return { props: { collection, nftData } };
 }
 
-
 export default function CollectionPage({ collection, nftData }) {
+    const allOwnerAddresses = nftData.map(nft => nft.owners).flat();
+    const isOwner = IsOwner(allOwnerAddresses);
+    const isDeployer = IsDeployer(collection.deployer_address);
+
     return (
         <div>
             <div className="text-center w-full">
                 <h1 className="text-quaternary font-heading text-3xl sm:text-4xl mb-8 break-words">
                     {collection.collection_name}
                 </h1>
+                <h2 className="text-quaternary font-heading text-xl sm:text-2xl break-words">
+                    <EditPageButton
+                        isOwner={isOwner}
+                        isDeployer={isDeployer}
+                        pageData={collection}
+                    />
+                </h2>
                 <h1 className="text-quaternary font-heading text-3xl sm:text-4xl mb-8 break-words">
                     {collection.num_collection_items}
                 </h1>
@@ -45,8 +54,8 @@ export default function CollectionPage({ collection, nftData }) {
                 </p>
             </div>
             <div>
-            <NftGrid nftData={nftData} />            </div>
-
+                <NftGrid nftData={nftData} />{" "}
+            </div>
         </div>
     );
 }

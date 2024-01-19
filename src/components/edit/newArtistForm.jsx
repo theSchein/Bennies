@@ -21,7 +21,7 @@ const style = {
     p: 4,
 };
 
-export default function ArtistForm({ open, handleClose }) {
+export default function NewArtistForm({ open, handleClose }) {
     const [artistName, setArtistName] = useState("");
     const [artistBio, setArtistBio] = useState("");
     const [artistPicture, setArtistPicture] = useState("");
@@ -60,7 +60,7 @@ export default function ArtistForm({ open, handleClose }) {
             fetchArtistId().then(artistId => {
                 if (artistId) {
                     setTimeout(() => {
-                        router.push(`/artist/${artistId}/${encodeURIComponent(artistName)}`);
+                        router.push(`/artist/${artistId}/${encodeURIComponent(artistName)}`); // Redirect to the artist's page
                     }, 2000); // Redirect after 2 seconds
                 }
             });
