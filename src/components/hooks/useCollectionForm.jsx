@@ -1,9 +1,9 @@
-// components/hooks/useNftForm.js
-// Custom hook to handle logic of the NFT form data
+// components/hooks/useCollectionForm.js
+// Custom hook to handle logic of the Collection form data
 
 import { useState } from 'react';
 
-const useNftForm = (role, nft) => {
+const useCollectionForm = (role, collection) => {
     const [isSuccessful, setIsSuccessful] = useState(false);
     const [error, setError] = useState('');
 
@@ -12,22 +12,21 @@ const useNftForm = (role, nft) => {
     function determineEditableFields(role) {
         switch (role) {
             case "deployer":
-                return ["nft_sales_link", "nft_licence", "nft_context", "nft_utility", "nft_category"]; 
+                return ["media_url", "nft_licence", "collection_description", "collection_utility", "category"]; 
             case "owner":
-                return ["nft_context", "nft_utility", "category"]; 
+                return ["collection_description", "nft_utility", "category"]; 
             default:
                 return ["category"]; 
         }
     }
     const onSubmit = async (formData) => {
         try {
-            // Include nft_id in the data to be sent
             const dataToSend = {
                 ...formData,
-                nft_id: nft.nft_id
+                collection_id: collection.collection_id
             };
 
-            const response = await fetch('/api/nft/updateNft', {
+            const response = await fetch('/api/nft/updateCollection', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -36,14 +35,14 @@ const useNftForm = (role, nft) => {
             });
 
             if (!response.ok) {
-                throw new Error('Failed to update NFT');
+                throw new Error('Failed to update Collection');
             }
 
             setIsSuccessful(true); // Set success state
             setError(''); // Clear any previous errors
         } catch (error) {
-            console.error('Error updating NFT:', error);
-            setError(error.message || 'Failed to update NFT');
+            console.error('Error updating Collection:', error);
+            setError(error.message || 'Failed to update Collection');
             setIsSuccessful(false);
         }
     };
@@ -56,4 +55,4 @@ const useNftForm = (role, nft) => {
     };
 };
 
-export default useNftForm;
+export default useCollectionForm;

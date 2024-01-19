@@ -1,5 +1,5 @@
-// pages/api/updateNft.js
-// takes inputs from NFT form and updates the database entry according ot user input
+// pages/api/updateCollection.js
+// takes inputs from Collection form and updates the database entry according ot user input
 
 import db from "../../../lib/db";
 
@@ -24,11 +24,11 @@ export default async function handler(req, res) {
         console.log('values: ', values)
 
         await db.query(
-            `UPDATE nfts SET ${setQuery} WHERE nft_id = $1`,
+            `UPDATE collections SET ${setQuery} WHERE collection_id = $1`,
             values
         );
 
-        res.status(200).json({ message: 'NFT updated successfully' });
+        res.status(200).json({ message: 'Collection updated successfully' });
     } catch (error) {
         res.status(500).json({ error: error.message || 'Something went wrong' });
     }

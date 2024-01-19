@@ -2,13 +2,12 @@
 // reusable button component to edit pages for nfts, artists, and collections
 // Button checks if the user's role: user, owner, ore creator to pass to the modal
 
-import React from 'react';
-import { useSession } from 'next-auth/react';
-import { useState } from 'react';
+import React from "react";
+import { useSession } from "next-auth/react";
+import { useState } from "react";
 import Button from "@mui/material/Button";
-import EditForm from './editForm';
-import Link from 'next/link';
-
+import EditForm from "./editForm";
+import Link from "next/link";
 
 const EditButton = ({ isOwner, isDeployer, pageData }) => {
     const [showEditForm, setShowEditForm] = useState(false);
@@ -18,22 +17,26 @@ const EditButton = ({ isOwner, isDeployer, pageData }) => {
     let role;
 
     if (isDeployer) {
-        role = 'deployer';
+        role = "deployer";
     } else if (isOwner) {
-        role = 'owner';
+        role = "owner";
     } else {
-        role = 'user';
+        role = "user";
     }
-
-
 
     return (
         <div className="py-8 w-full max-w-2xl mx-auto">
             {session ? (
                 <div className="bg-gray-50 p-6 rounded-lg shadow space-y-4">
-                <Button onClick={handleOpenEditForm}>Update this Page</Button>
-                <EditForm open={showEditForm} handleClose={handleCloseEditForm} role={role} pageData={pageData}/>
-
+                    <Button onClick={handleOpenEditForm}>Update this Page</Button>
+                    {showEditForm && (
+                        <EditForm
+                            open={showEditForm}
+                            handleClose={handleCloseEditForm}
+                            role={role}
+                            pageData={pageData}
+                        />
+                    )}
                 </div>
             ) : (
                 <div className="text-center py-4">
@@ -46,7 +49,6 @@ const EditButton = ({ isOwner, isDeployer, pageData }) => {
                 </div>
             )}
         </div>
-
     );
 };
 

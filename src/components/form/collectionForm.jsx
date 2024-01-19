@@ -4,14 +4,17 @@
 import React from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import TextInput from "./textInput";
-import useNftForm from "../hooks/useNftForm";
+import useCollectionForm from "../hooks/useCollectionForm";
 
-const CollectionForm = ({ role, nft }) => {
+const CollectionForm = ({ role, collection }) => {
     const methods = useForm({
-        defaultValues: nft,
+        defaultValues: collection,
     });
 
-    const { editableFields, onSubmit, isSuccessful, error } = useNftForm(role, nft);
+    const { editableFields, onSubmit, isSuccessful, error } = useCollectionForm(
+        role,
+        collection,
+    );
 
     // Function to check if a field is editable
     const isFieldEditable = (fieldName) => editableFields.includes(fieldName);
@@ -25,8 +28,12 @@ const CollectionForm = ({ role, nft }) => {
     return (
         <FormProvider {...methods}>
             <form onSubmit={methods.handleSubmit(onSubmit)}>
-                {isFieldEditable("name") && (
-                    <TextInput name="name" label="NFT Name" />
+                {isFieldEditable("media_url") && (
+                    <TextInput
+                        name="media_url"
+                        label="Collection Image"
+                        as="textarea"
+                    />
                 )}
 
                 {isFieldEditable("nft_licence") && (
@@ -37,30 +44,23 @@ const CollectionForm = ({ role, nft }) => {
                     />
                 )}
 
-                {isFieldEditable("nft_context") && (
+                {isFieldEditable("collection_description") && (
                     <TextInput
-                        name="nft_context"
-                        label="Item Background"
+                        name="collection_description"
+                        label="Description"
                         as="textarea"
                     />
                 )}
 
-                {isFieldEditable("nft_utility") && (
-                    <TextInput
-                        name="nft_utility"
-                        label="Utility"
-                        as="textarea"
-                    />
+                {isFieldEditable("collection_utility") && (
+                    <TextInput name="collection_utility" label="Utility" as="textarea" />
                 )}
 
-                {isFieldEditable("nft_category") && (
-                    <TextInput
-                        name="nft_category"
-                        label="Category"
-                    />
+                {isFieldEditable("category") && (
+                    <TextInput name="category" label="Category" />
                 )}
 
-                <input type="submit" value="Update NFT" />
+                <input type="submit" value="Update Collection" />
                 {isSuccessful && <div>Update successful!</div>}
                 {error && <div>Error: {error}</div>}
             </form>

@@ -31,6 +31,9 @@ CREATE TABLE collections (
 	token_type varchar(10) NULL,
 	nft_licence text NULL,
 	collection_description text NULL,
+	media_url varchar(255) NULL,
+	collection_utility text NULL,
+	category varchar(255),
 	CONSTRAINT collections_pkey PRIMARY KEY (collection_id),
 	CONSTRAINT collections_artist_id_fkey FOREIGN KEY (artist_id) REFERENCES artists(artist_id)
 );
@@ -51,6 +54,9 @@ CREATE TABLE nfts (
 	media_url varchar(255) NULL,
 	nft_sales_link varchar(255) NULL,
 	nft_licence text NULL,
+	nft_context text NULL,
+	nft_utility text NULL,
+	category varchar(255),
 	owners _text NULL,
 	CONSTRAINT nfts_contract_address_token_id_key UNIQUE (contract_address_token_id),
 	CONSTRAINT nfts_pkey PRIMARY KEY (nft_id),

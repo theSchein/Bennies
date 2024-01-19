@@ -10,6 +10,7 @@ const NftForm = ({ role, nft }) => {
     const methods = useForm({
         defaultValues: nft,
     });
+    console.log('nftForm nft data:', nft)
 
     const { editableFields, onSubmit, isSuccessful, error } = useNftForm(role, nft);
 
@@ -25,8 +26,12 @@ const NftForm = ({ role, nft }) => {
     return (
         <FormProvider {...methods}>
             <form onSubmit={methods.handleSubmit(onSubmit)}>
-                {isFieldEditable("name") && (
-                    <TextInput name="name" label="NFT Name" />
+                {isFieldEditable("nft_sales_link") && (
+                    <TextInput
+                        name="nft_sales_link"
+                        label="Sales Link"
+                        as="textarea"
+                    />
                 )}
 
                 {isFieldEditable("nft_licence") && (
@@ -40,24 +45,17 @@ const NftForm = ({ role, nft }) => {
                 {isFieldEditable("nft_context") && (
                     <TextInput
                         name="nft_context"
-                        label="Item Background"
+                        label="Item Information"
                         as="textarea"
                     />
                 )}
 
                 {isFieldEditable("nft_utility") && (
-                    <TextInput
-                        name="nft_utility"
-                        label="Utility"
-                        as="textarea"
-                    />
+                    <TextInput name="nft_utility" label="Utility" as="textarea" />
                 )}
 
-                {isFieldEditable("nft_category") && (
-                    <TextInput
-                        name="nft_category"
-                        label="Category"
-                    />
+                {isFieldEditable("category") && (
+                    <TextInput name="category" label="Category" />
                 )}
 
                 <input type="submit" value="Update NFT" />
