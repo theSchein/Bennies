@@ -6,12 +6,12 @@ import { useForm, FormProvider } from "react-hook-form";
 import TextInput from "./textInput";
 import useNftForm from "../hooks/useNftForm";
 
-const ArtistForm = ({ role, nft }) => {
+const ArtistForm = ({ role, artist }) => {
     const methods = useForm({
-        defaultValues: nft,
+        defaultValues: artist,
     });
 
-    const { editableFields, onSubmit, isSuccessful, error } = useNftForm(role, nft);
+    const { editableFields, onSubmit, isSuccessful, error } = useArtistForm(role, artist);
 
     // Function to check if a field is editable
     const isFieldEditable = (fieldName) => editableFields.includes(fieldName);

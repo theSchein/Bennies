@@ -21,7 +21,6 @@ export default async function handler(req, res) {
         }
 
         const values = [nft_id, ...Object.values(updateFields)];
-        console.log('values: ', values)
 
         await db.query(
             `UPDATE nfts SET ${setQuery} WHERE nft_id = $1`,

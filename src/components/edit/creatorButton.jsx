@@ -48,7 +48,7 @@ export default function CreatorButton() {
             )}
             <NewArtistForm open={showArtistForm} handleClose={handleCloseArtistForm} />
             {isEligible === false && (
-                <p>You are not eligible to create an artist page.</p>
+            <p></p>
             )}
         </div>
     );

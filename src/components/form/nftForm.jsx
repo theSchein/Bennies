@@ -10,7 +10,6 @@ const NftForm = ({ role, nft }) => {
     const methods = useForm({
         defaultValues: nft,
     });
-    console.log('nftForm nft data:', nft)
 
     const { editableFields, onSubmit, isSuccessful, error } = useNftForm(role, nft);
 

@@ -9,8 +9,6 @@ import ArtistForm from "../form/artistForm";
 
 export default function EditForm({ role, pageData }) {
 
-    console.log('editform nft:', pageData.nft_id)
-
     if (pageData.nft_id) {
         return <NftForm nft={pageData} role={role}/>;
     } else if (pageData.collection_id) {

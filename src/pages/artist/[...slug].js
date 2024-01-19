@@ -5,6 +5,7 @@
 import db from "../../lib/db";
 import Image from "next/image";
 import Link from "next/link";
+import CreatorButton from "@/components/edit/creatorButton";
 import fallbackImageUrl from "../../../public/placeholder.png";
 
 export async function getServerSideProps({ params }) {
@@ -33,6 +34,8 @@ function ArtistPage({ artist }) {
                 <h1 className="text-quaternary font-heading text-3xl mb-4">
                     {artist.artist_name}
                 </h1>
+                <CreatorButton />
+
                 <Image
                     src={artistImage}
                     alt={artist.name}
