@@ -43,7 +43,7 @@ export default function NftPage({ nft }) {
                 </p>
                 <h2 className="text-quaternary font-heading text-xl sm:text-2xl break-words">
 
-                    <EditPageButton isOwner={isOwner} isDeployer={isDeployer} />
+                    <EditPageButton isOwner={isOwner} isDeployer={isDeployer} pageData={nft} />
                 </h2>
                 <div className="relative w-full h-64 sm:h-[500px] rounded overflow-hidden">
                     <Image

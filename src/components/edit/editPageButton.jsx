@@ -10,7 +10,7 @@ import EditForm from './editForm';
 import Link from 'next/link';
 
 
-const EditButton = ({ isOwner, isDeployer }) => {
+const EditButton = ({ isOwner, isDeployer, pageData }) => {
     const [showEditForm, setShowEditForm] = useState(false);
     const { data: session } = useSession();
     const handleOpenEditForm = () => setShowEditForm(true);
@@ -32,7 +32,7 @@ const EditButton = ({ isOwner, isDeployer }) => {
             {session ? (
                 <div className="bg-gray-50 p-6 rounded-lg shadow space-y-4">
                 <Button onClick={handleOpenEditForm}>Update this Page</Button>
-                <EditForm open={showEditForm} handleClose={handleCloseEditForm} />
+                <EditForm open={showEditForm} handleClose={handleCloseEditForm} role={role} pageData={pageData}/>
 
                 </div>
             ) : (

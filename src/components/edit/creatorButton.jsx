@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import ArtistForm from "./artistForm";
+import NewArtistForm from "./newArtistForm";
 import Button from "@mui/material/Button";
 
 export default function CreatorButton() {
@@ -12,6 +12,7 @@ export default function CreatorButton() {
     const { data: session } = useSession();
 
     const handleOpenArtistForm = () => setShowArtistForm(true);
+    
     const handleCloseArtistForm = () => setShowArtistForm(false);
 
     useEffect(() => {
@@ -45,7 +46,7 @@ export default function CreatorButton() {
             {isEligible && (
                 <Button onClick={handleOpenArtistForm}>Create Artist Page</Button>
             )}
-            <ArtistForm open={showArtistForm} handleClose={handleCloseArtistForm} />
+            <NewArtistForm open={showArtistForm} handleClose={handleCloseArtistForm} />
             {isEligible === false && (
                 <p>You are not eligible to create an artist page.</p>
             )}

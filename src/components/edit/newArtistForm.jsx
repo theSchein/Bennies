@@ -21,7 +21,7 @@ const style = {
     p: 4,
 };
 
-export default function ArtistForm({ open, handleClose }) {
+export default function NewArtistForm({ open, handleClose }) {
     const [artistName, setArtistName] = useState("");
     const [artistBio, setArtistBio] = useState("");
     const [artistPicture, setArtistPicture] = useState("");
