@@ -26,7 +26,7 @@ function ProfilePage() {
     }
 
     if (!session) {
-        return null; // or handle the unauthenticated state
+        return null; 
     }
 
     return (
@@ -37,9 +37,8 @@ function ProfilePage() {
                     <h1 className="font-heading text-5xl text-gray-800">
                         Welcome, {session.username}
                     </h1>
-                    <p>Wallet Addresses: {JSON.stringify(session.wallets)}</p>
                     <p className="text-xl leading-relaxed pt-4">
-                        On this profile page you can connect your wallet and if
+                        You can connect your wallet and if
                         you have used it to deploy any of the NFTs on our platform
                         then you can create your own artist page to showcase and
                         discuss your work.
@@ -64,7 +63,7 @@ function ProfilePage() {
                                 Notifications for comments to your work and
                                 replies to your comments
                             </li>
-                            <li>Reach out if you have any ideas!!</li>
+                            <li>Reach out to ben@discovry.xyz if you have any ideas!!</li>
                         </ul>
                         <CreatorButton />
                     </div>

@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-    @apply font-body bg-background;
+    @apply font-body;
 }
 
 h1,
@@ -15,10 +15,42 @@ h6 {
     @apply font-heading;
 }
 
+.bg-primary {
+    background-color: white; /* Light mode background */
+  }
+  
+  .dark .bg-primary {
+    background-color: black; /* Dark mode background */
+  }
+
 .textEllipsis {
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.custom-track {
+  @apply bg-light-primary; /* Light mode primary color for track */
+}
+
+.dark .custom-track {
+  @apply bg-dark-primary; /* Dark mode primary color for track */
+}
+
+.custom-thumb {
+  @apply bg-light-tertiary; /* Light mode secondary color */
+}
+
+.dark .custom-thumb {
+  @apply bg-dark-secondary; /* Dark mode secondary color */
+}
+
+.MuiIcon-colorPrimary {
+  @apply text-light-primary; 
+}
+
+.dark .MuiIcon-colorPrimary {
+  @apply text-dark-primary; 
 }

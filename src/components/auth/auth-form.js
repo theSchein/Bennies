@@ -70,7 +70,6 @@ function AuthForm() {
 
             if (result && result.error) {
                 alert(result.error);
-                //router.replace("/profile");
             } else {
                 router.replace("/profile");
             }
@@ -83,7 +82,7 @@ function AuthForm() {
                     enteredPassword,
                 );
                 if (result.error) {
-                    alert(result.error); // Display the error using an alert or any other method you prefer
+                    alert(result.error); 
                 } else {
                     router.replace("/profile");
                 }

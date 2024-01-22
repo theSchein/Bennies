@@ -33,7 +33,6 @@ export default function AdminPage() {
 
             {details && (
                 <div>
-                    {/* Render your details here */}
                     <pre>{JSON.stringify(details, null, 2)}</pre>
                 </div>
             )}
