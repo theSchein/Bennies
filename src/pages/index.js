@@ -1,7 +1,7 @@
 // pages/index.js
 // This is the homepage for the App and is the first page that is loaded when the app is opened.
 
-import SearchContainer from "@/components/search/SearchContainer";
+import SearchHomepage from "@/components/search/SearchHomePage";
 
 export default function Home() {
     return (
@@ -11,15 +11,8 @@ export default function Home() {
                     DISCOVRY.XYZ
                 </h1>
             </div>
-    
 
-                <div className="flex justify-center lg:justify-start">
-                    <div className="w-full max-w-md px-4 py-2"> {/* Adjust max-width as needed */}
-                        <SearchContainer />
-                    </div>
-                    </div>
+                    <SearchHomepage />
         </div>
     );
-    
-    
 }
