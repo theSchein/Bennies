@@ -38,7 +38,7 @@ function Navbar() {
     return (
         <AppBar
             position="static"
-            className="bg-light-quaternary dark:bg-dark-quaternary text-light-tertiary dark:text-dark-primary bg-opacity-80"
+            className="font-heading bg-light-quaternary dark:bg-dark-quaternary text-light-tertiary dark:text-dark-primary bg-opacity-80"
         >
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
@@ -92,7 +92,6 @@ function Navbar() {
                                         className="uppercase text-light-quaternary dark:text-dark-quaternary"
                                         textAlign="center"
                                         sx={{
-                                            fontFamily: "text-heading",
                                             fontWeight: 700,
                                             letterSpacing: ".1rem",
                                             textDecoration: "inherit",
@@ -123,8 +122,7 @@ function Navbar() {
                                 sx={{
                                     my: 2,
                                     color: "inherit",
-                                    fontFamily: "text-heading",
-                                }}
+                                    fontWeight: 700,}}
                             >
                                 {page}
                             </Button>

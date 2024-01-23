@@ -3,7 +3,7 @@
 // TODO: add some comditionals for the aggressive footer
 
 import Navbar from "./navbar/navbar";
-import Footer from "./footer";
+import Footer from "./footer/footer";
 
 export default function Layout({ children }) {
     return (
