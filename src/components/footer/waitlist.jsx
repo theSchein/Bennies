@@ -13,7 +13,7 @@ const useWaitlistForm = () => {
         e.preventDefault();
 
         // Post data to API endpoint
-        const response = await fetch("/api/waitlist", {
+        const response = await fetch("/api/footer/waitlist", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -27,7 +27,12 @@ const useWaitlistForm = () => {
             setName("");
             setEmail("");
         } else {
-            setModalMessage("Something went wrong. Please try again.");
+            if (response.status === 409) {
+                const data = await response.json(); 
+                setModalMessage(data.message); 
+            } else {
+                setModalMessage("Something went wrong. Please try again.");
+            }
             setShowModal(true);
         }
     };

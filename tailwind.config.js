@@ -11,7 +11,7 @@ module.exports = {
       fontFamily: {
         'heading': ['Gasoek One', 'sans-serif'],
         'body': ['Josefin Sans', 'sans-serif'],
-        'subheading': ['lilita one', 'sans-serif'],
+        'subheading': ['lilita One', 'sans-serif'],
       },
       colors: {
         light: {
