@@ -5,13 +5,11 @@ import {
     useAccount,
     useConnect,
     useDisconnect,
-    useEnsAvatar,
     useEnsName,
 } from "wagmi";
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { createContext, useContext } from "react";
-import Image from "next/image";
 
 const WalletAddressContext = createContext();
 
@@ -21,7 +19,6 @@ export const useWalletAddress = () => {
 
 export function Profile() {
     const { address, connector, isConnected } = useAccount();
-    const { data: ensAvatar } = useEnsAvatar({ address });
     const { data: ensName } = useEnsName({ address });
     const { connect, connectors, error, isLoading, pendingConnector } = useConnect();
     const { disconnect } = useDisconnect();
@@ -57,20 +54,13 @@ export function Profile() {
     if (isConnected) {
         return (
             <>
-                <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6">
+                <div>
                     <WalletAddressContext.Provider value={address}>
-                        <div className="max-w-md w-full bg-white rounded-lg shadow-md p-6 space-y-4">
-                            <div className="flex justify-center">
-                                <Image
-                                    src={ensAvatar}
-                                    alt="ENS Avatar"
-                                    className="w-24 h-24 rounded-full"
-                                />
-                            </div>
+                        <div>
                             <div className="text-center text-lg font-medium">
                                 {ensName ? `${ensName} (${address})` : address}
                             </div>
-                            <div className="text-center text-sm text-gray-600">
+                            <div>
                                 {connector
                                     ? `Connected to ${connector.name}`
                                     : "Not connected"}
@@ -79,7 +69,7 @@ export function Profile() {
                             <div className="space-y-2">
                                 <button
                                     onClick={disconnect}
-                                    className="w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition duration-300"
+                                    className="w-full bg-red-500 py-2 px-4 rounded hover:bg-red-600 transition duration-300"
                                 >
                                     {`Disconnect`}
                                 </button>
@@ -100,7 +90,7 @@ export function Profile() {
                     disabled={!connector.ready}
                     key={connector.id}
                     onClick={() => connect({ connector })}
-                    className={`bg-rainbow-gradient text-white font-bold py-2 px-4 rounded-full shadow-md transform transition hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed {
+                    className={`bg-rainbow-gradient text-white font-bold py-2 px-4 mr-5 rounded-full shadow-md transform transition hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed {
                         !connector.ready && "cursor-not-allowed"
                     }`}
                 >
