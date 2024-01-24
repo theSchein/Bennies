@@ -53,9 +53,10 @@ function AuthForm() {
 
     async function submitHandler(event) {
         event.preventDefault();
+        console.log('password', passwordInputRef);
 
-        const enteredIdentifier = emailInputRef.current.value;
-        const enteredPassword = passwordInputRef.current.value;
+        const enteredIdentifier = emailInputRef;
+        const enteredPassword = passwordInputRef;
         const passwordError = validatePassword(enteredPassword);
         if (passwordError) {
             alert(passwordError);

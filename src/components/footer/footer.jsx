@@ -37,7 +37,7 @@ function Footer() {
                             <p>(814)-215-3331</p>
                         </div>
 
-                        <div className="mt-10 bg-light-primary dark:bg-dark-primary p-4 sm:p-6 lg:p-8 rounded-2xl bg-opacity-50 shadow-xl max-w-md w-full">
+                        <div className="mt-10 bg-light-primary dark:bg-dark-primary p-4 sm:p-6 lg:p-8 rounded-2xl bg-opacity-50 shadow-xl max-w-md mb-5 w-full">
                             <h3 className="text-xl sm:text-2xl lg:text-2xl mb-4 text-secondary font-subheading font-bold text-center">
                                 {"Sign up for our Newsletter"}
                             </h3>
