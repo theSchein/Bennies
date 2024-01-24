@@ -12,7 +12,7 @@ export default function CreatorButton() {
     const { data: session } = useSession();
 
     const handleOpenArtistForm = () => setShowArtistForm(true);
-    
+
     const handleCloseArtistForm = () => setShowArtistForm(false);
 
     useEffect(() => {
@@ -42,14 +42,20 @@ export default function CreatorButton() {
     };
 
     return (
-        <div>
+        <div className="flex justify-center items-center m-5">
             {isEligible && (
-                <Button onClick={handleOpenArtistForm}>Create Artist Page</Button>
+                <Button
+                    className="p-3 font-bold text-light-quaternary dark:text-dark-quaternary flex space-y-4 flex-col bg-light-primary dark:bg-dark-primary rounded-lg hover:bg-light-tertiary hover:text-light-primary dark:hover:bg-dark-tertiary dark:hover:text-dark-primary transition duration-300"
+                    onClick={handleOpenArtistForm}
+                >
+                    Create Artist Page
+                </Button>
             )}
-            <NewArtistForm open={showArtistForm} handleClose={handleCloseArtistForm} />
-            {isEligible === false && (
-            <p></p>
-            )}
+            <NewArtistForm
+                open={showArtistForm}
+                handleClose={handleCloseArtistForm}
+            />
+            {isEligible === false && <p></p>}
         </div>
     );
 }

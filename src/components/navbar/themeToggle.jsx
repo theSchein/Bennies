@@ -40,7 +40,7 @@ const ThemeToggle = () => {
                 }}
             />
             <WbTwilightIcon
-                classname={`text-light-quaternary dark:text-dark-quaternary `}
+                className={`text-light-quaternary dark:text-dark-quaternary `}
             />
         </div>
     );
