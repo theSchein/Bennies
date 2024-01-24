@@ -1,5 +1,6 @@
 import useAuthForm from "../hooks/useAuthForm";
 import AuthInputField from "./authInputField";
+import AlertModal from "../alert";
 
 function AuthForm() {
     const {
@@ -9,7 +10,11 @@ function AuthForm() {
         isLogin,
         switchAuthModeHandler,
         submitHandler,
+        modalIsOpen,        
+        modalMessage,
+        closeModal
     } = useAuthForm();
+    
 
     return (
         <section className="min-h-screen flex items-center justify-center bg-gradient-light dark:bg-gradient-dark py-6 px-4 sm:px-6 lg:px-8">
@@ -60,6 +65,11 @@ function AuthForm() {
                     </div>
                 </form>
             </div>
+            <AlertModal 
+                isOpen={modalIsOpen} 
+                message={modalMessage} 
+                onClose={closeModal} 
+            />
         </section>
     );
 }

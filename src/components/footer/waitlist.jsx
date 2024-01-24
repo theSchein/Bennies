@@ -12,7 +12,6 @@ const useWaitlistForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Post data to API endpoint
         const response = await fetch("/api/footer/waitlist", {
             method: "POST",
             headers: {
