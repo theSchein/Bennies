@@ -38,28 +38,27 @@ function Comment({ comment, addReply, nft, depth, toggleReloadComments }) {
     };
 
     const toggleRepliesVisibility = () => {
-        setShowReplies(!showReplies); 
+        setShowReplies(!showReplies);
     };
 
     return (
-
         <div
-            className={`ml-${depth * 5} my-2 p-4 bg-gray-100 rounded-lg shadow`}
+            className={`ml-${depth * 5} my-2 p-4 bg-light-secondary dark:bg-dark-secondary rounded-lg shadow-xl`}
             key={comment.comment_id}
         >
             <div className="flex justify-between items-center mb-2">
                 <strong className="font-semibold">{comment.commenter}</strong>
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-light-quaternary dark:text-dark-quaternary">
                     {new Date(comment.comment_date).toLocaleDateString()}
                 </span>
             </div>
-            <p className="text-gray-800 mb-4">{comment.text}</p>
+            <p className="text-light-quaternary dark:text-dark-quaternary mb-4">{comment.text}</p>
             <div className="flex items-center">
                 <button
                     onClick={() => setShowReplyForm(!showReplyForm)}
-                    className="bg-gray-300 hover:bg-gray-400 text-gray-800 py-1 px-3 rounded transition-colors duration-200 ease-in-out text-sm font-medium mr-4"
+                    className="btn mr-2"
                 >
-                    Reply
+                    {showReplyForm ? "Hide" : "Reply"}
                 </button>
                 {showReplyForm && (
                     <CommentForm
@@ -71,9 +70,11 @@ function Comment({ comment, addReply, nft, depth, toggleReloadComments }) {
             </div>
             {comment.replies && comment.replies.length > 0 && (
                 <>
-                    <button onClick={toggleRepliesVisibility} className="text-blue-500 hover:text-blue-700 text-sm font-medium">
-                        {showReplies ? "Hide Replies" : "Show Replies"}
-                    </button>
+                    <div className="flex justify-center">
+                        <button onClick={toggleRepliesVisibility} className="btn">
+                            {showReplies ? "Hide Replies" : "Show Replies"}
+                        </button>
+                    </div>
                     {showReplies && (
                         <CommentList
                             comments={comment.replies}
@@ -82,7 +83,7 @@ function Comment({ comment, addReply, nft, depth, toggleReloadComments }) {
                             addReply={addReply}
                             toggleReloadComments={toggleReloadComments}
                         />
-            )}
+                    )}
                 </>
             )}
         </div>

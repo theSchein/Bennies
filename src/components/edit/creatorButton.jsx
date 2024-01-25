@@ -45,7 +45,7 @@ export default function CreatorButton() {
         <div className="flex justify-center items-center m-5">
             {isEligible && (
                 <Button
-                    className="p-3 font-bold text-light-quaternary dark:text-dark-quaternary flex space-y-4 flex-col bg-light-primary dark:bg-dark-primary rounded-lg hover:bg-light-tertiary hover:text-light-primary dark:hover:bg-dark-tertiary dark:hover:text-dark-primary transition duration-300"
+                    className="btn"
                     onClick={handleOpenArtistForm}
                 >
                     Create Artist Page

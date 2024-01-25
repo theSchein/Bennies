@@ -20,14 +20,6 @@ h6 {
     @apply font-heading;
 }
 
-.bg-primary {
-    background-color: white; /* Light mode background */
-  }
-  
-  .dark .bg-primary {
-    background-color: black; /* Dark mode background */
-  }
-
 .textEllipsis {
     display: -webkit-box;
     -webkit-line-clamp: 3;
@@ -58,4 +50,8 @@ h6 {
 
 .dark .MuiIcon-colorPrimary {
   @apply text-dark-primary; 
+}
+
+.btn {
+  @apply p-3 font-bold text-light-quaternary dark:text-dark-quaternary flex space-y-4 flex-col bg-light-primary dark:bg-dark-primary rounded-lg hover:bg-light-quaternary hover:text-light-primary dark:hover:bg-dark-tertiary dark:hover:text-dark-primary transition duration-300;
 }
