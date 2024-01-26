@@ -40,29 +40,17 @@ function ProfilePage() {
                             You can connect your wallet and if you have used it to
                             deploy any of the NFTs on our platform then you can
                             create your own artist page to showcase and discuss your
-                            work.
+                            work. If you own any NFTs you can also comment on them 
+                            and add more informatino about them.
                         </p>
-                        <div className="mb-5 pt-4">
-                            <h2 className="font-body text-3xl mb-4 ">
-                            </h2>
-                            <ul className="list-disc pl-6 text-xl ">
-                                <li>Comment on NFTs</li>
-                                <li>Check eligibility to create Artist Page</li>
-                            </ul>
-                        </div>
-                        <div className="mb-10">
+                        <div className="mb-10 mt-5 pt-4">
                             <h2 className="font-bold text-3xl mb-4 ">
                                 Upcoming Features
                             </h2>
                             <ul className="list-disc pl-8 text-xl">
-                                <li>
-                                    Favoriting NFTs that will show in your Profile
-                                </li>
-                                <li>Creating/updating an artist page</li>
-                                <li>
-                                    Notifications for comments to your work and
-                                    replies to your comments
-                                </li>
+                                <li>Likes and Dislikes on NFTs and comments</li>
+                                <li>Notifications when others comment on your NFT or reply to you</li>
+                                <li>Message holders of your NFTs for news, events, drops, or messages</li>
                             </ul>
                             <CreatorButton />
                         </div>
