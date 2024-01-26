@@ -38,7 +38,7 @@ function Navbar() {
     return (
         <AppBar
             position="static"
-            className="font-heading bg-light-quaternary dark:bg-dark-quaternary text-light-tertiary dark:text-dark-primary bg-opacity-80"
+            className=" font-heading bg-light-quaternary dark:bg-dark-quaternary text-light-tertiary dark:text-dark-primary  !important bg-opacity-80"
         >
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
