@@ -2,11 +2,28 @@
 // UI for the Collection form
 
 import React from "react";
+import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import TextInput from "./textInput";
 import useCollectionForm from "../hooks/useCollectionForm";
+import AlertModal from "../alert";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
 
-const CollectionForm = ({ role, collection }) => {
+const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "auto",
+    maxWidth: "500px",
+    bgcolor: "background.paper",
+    boxShadow: 24,
+    p: 4,
+    borderRadius: 2,
+};
+
+const CollectionForm = ({ role, collection, isOpen, onClose }) => {
     const methods = useForm({
         defaultValues: collection,
     });
@@ -16,55 +33,83 @@ const CollectionForm = ({ role, collection }) => {
         collection,
     );
 
-    // Function to check if a field is editable
+    const [showAlert, setShowAlert] = useState(false);
+
+    const handleSubmit = async (data) => {
+        const success = await onSubmit(data);
+        if (success) {
+            setShowAlert(true);
+            onClose();
+        }
+    };
+
     const isFieldEditable = (fieldName) => editableFields.includes(fieldName);
 
-    // // Watch specific fields IMPLEMENT LATER
-    // const watchedFields = methods.watch();
-
-    // // You can also watch individual fields like this:
-    // // const watchedName = methods.watch('name')
-
     return (
-        <FormProvider {...methods}>
-            <form onSubmit={methods.handleSubmit(onSubmit)}>
-                {isFieldEditable("media_url") && (
-                    <TextInput
-                        name="media_url"
-                        label="Collection Image"
-                        as="textarea"
-                    />
-                )}
+        <>
+            <Modal open={isOpen} onClose={onClose}>
+                <Box
+                    sx={style}
+                    className="bg-light-tertiary dark:bg-dark-secondary "
+                >
+                    <h1 className="text-center text-2xl font-bold mb-4">
+                        Edit Collection Page
+                    </h1>
+                    <FormProvider {...methods}>
+                        <form onSubmit={methods.handleSubmit(handleSubmit)}>
+                            {isFieldEditable("media_url") && (
+                                <TextInput
+                                    name="media_url"
+                                    label="Collection Image"
+                                    as="textarea"
+                                />
+                            )}
 
-                {isFieldEditable("nft_licence") && (
-                    <TextInput
-                        name="nft_licence"
-                        label="Ownership License"
-                        as="textarea"
-                    />
-                )}
+                            {isFieldEditable("nft_licence") && (
+                                <TextInput
+                                    name="nft_licence"
+                                    label="Ownership License"
+                                    as="textarea"
+                                />
+                            )}
 
-                {isFieldEditable("collection_description") && (
-                    <TextInput
-                        name="collection_description"
-                        label="Description"
-                        as="textarea"
-                    />
-                )}
+                            {isFieldEditable("collection_description") && (
+                                <TextInput
+                                    name="collection_description"
+                                    label="Description"
+                                    as="textarea"
+                                />
+                            )}
 
-                {isFieldEditable("collection_utility") && (
-                    <TextInput name="collection_utility" label="Utility" as="textarea" />
-                )}
+                            {isFieldEditable("collection_utility") && (
+                                <TextInput
+                                    name="collection_utility"
+                                    label="Utility"
+                                    as="textarea"
+                                />
+                            )}
 
-                {isFieldEditable("category") && (
-                    <TextInput name="category" label="Category" />
-                )}
+                            {isFieldEditable("category") && (
+                                <TextInput name="category" label="Category" />
+                            )}
 
-                <input type="submit" value="Update Collection" />
-                {isSuccessful && <div>Update successful!</div>}
-                {error && <div>Error: {error}</div>}
-            </form>
-        </FormProvider>
+                            <input
+                                type="submit"
+                                value="Update Collection"
+                                className="btn"
+                            />
+                        </form>
+                    </FormProvider>
+                </Box>
+            </Modal>
+            {showAlert && (
+                <AlertModal
+                    isOpen={showAlert}
+                    message="Update successful!"
+                    onClose={() => setShowAlert(false)}
+                />
+            )}
+        </>
     );
 };
 

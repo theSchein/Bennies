@@ -15,15 +15,12 @@ export default async (req, res) => {
 
         try {
             const artistData = await db.oneOrNone(
-                "SELECT artist_id, artist_name FROM artists WHERE user_id = $1",
+                "SELECT * FROM artists WHERE user_id = $1",
                 [userId],
             );
 
             if (artistData) {
-                res.status(200).json({
-                    artistId: artistData.artist_id,
-                    artistName: artistData.artist_name
-                });
+                res.status(200).json(artistData);
             } else {
                 res.status(404).json({ error: "Artist not found for the given user" });
             }

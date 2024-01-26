@@ -25,14 +25,16 @@ const EditButton = ({ isOwner, isDeployer, pageData }) => {
     }
 
     return (
-        <div className="py-8 w-full max-w-2xl mx-auto">
+        <div className=" max-w-2xl mx-auto">
             {session ? (
-                <div className="bg-gray-50 p-6 rounded-lg shadow space-y-4">
-                    <Button onClick={handleOpenEditForm}>Update this Page</Button>
+                <div className="btn">
+                    <Button onClick={handleOpenEditForm} className="btn">
+                        Update this Page
+                    </Button>
                     {showEditForm && (
                         <EditForm
-                            open={showEditForm}
-                            handleClose={handleCloseEditForm}
+                            isOpen={showEditForm}
+                            onClose={handleCloseEditForm}
                             role={role}
                             pageData={pageData}
                         />
@@ -40,10 +42,7 @@ const EditButton = ({ isOwner, isDeployer, pageData }) => {
                 </div>
             ) : (
                 <div className="text-center py-4">
-                    <Link
-                        href="/signin"
-                        className="px-6 py-2 bg-primary text-tertiary rounded-full hover:bg-secondary-dark focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-opacity-50 transition ease-in duration-200"
-                    >
+                    <Link href="/signin" className="btn">
                         Sign in to Edit
                     </Link>
                 </div>

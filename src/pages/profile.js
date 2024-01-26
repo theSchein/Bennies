@@ -7,13 +7,12 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { Profile } from "../components/Profile";
 import WagmiWallet from "../components/WagmiWallet";
-import WalletNFTs from "@/components/walletNfts";
+import WalletNFTs from "@/components/user_profile/walletNfts";
 import CreatorButton from "@/components/edit/creatorButton";
 
 function ProfilePage() {
     const { data: session, status } = useSession();
     const router = useRouter();
-
 
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -26,56 +25,42 @@ function ProfilePage() {
     }
 
     if (!session) {
-        return null; // or handle the unauthenticated state
+        return null;
     }
 
     return (
-        <div className="min-h-screen bg-gray-100 flex justify-center items-center py-6 px-4">
-        <WagmiWallet>
-            <div className="max-w-6xl w-full bg-white rounded-lg shadow-xl p-8">
-                <div className="border-b pb-4 mb-6">
-                    <h1 className="font-heading text-5xl text-gray-800">
-                        Welcome, {session.username}
-                    </h1>
-                    <p>Wallet Addresses: {JSON.stringify(session.wallets)}</p>
-                    <p className="text-xl leading-relaxed pt-4">
-                        On this profile page you can connect your wallet and if
-                        you have used it to deploy any of the NFTs on our platform
-                        then you can create your own artist page to showcase and
-                        discuss your work.
-                    </p>
-                    <div className="mb-5 pt-4">
-                        <h2 className="font-bold text-3xl mb-4 text-tertiary">
-                            Current Features
-                        </h2>
-                        <ul className="list-disc pl-6 text-xl">
-                            <li>Comment on NFTs</li>
-                            <li>Check eligibility to create Artist Page</li>
-                        </ul>
+        <div className="min-h-screen bg-gradient-light dark:bg-gradient-dark flex flex-col items-center justify-center p-2 ">
+            <WagmiWallet>
+                <div className="max-w-6xl w-full bg-light-secondary dark:bg-dark-secondary rounded-lg shadow-xl p-8">
+                    <div className="border-b pb-4 mb-6  text-light-quaternary dark:text-dark-quaternary">
+                        <h1 className="font-heading text-5xl ">
+                            Welcome, {session.username}
+                        </h1>
+                        <p className="text-xl leading-relaxed pt-4 ">
+                            You can connect your wallet and if you have used it to
+                            deploy any of the NFTs on our platform then you can
+                            create your own artist page to showcase and discuss your
+                            work. If you own any NFTs you can also comment on them 
+                            and add more informatino about them.
+                        </p>
+                        <div className="mb-10 mt-5 pt-4">
+                            <h2 className="font-bold text-3xl mb-4 ">
+                                Upcoming Features
+                            </h2>
+                            <ul className="list-disc pl-8 text-xl">
+                                <li>Likes and Dislikes on NFTs and comments</li>
+                                <li>Notifications when others comment on your NFT or reply to you</li>
+                                <li>Message holders of your NFTs for news, events, drops, or messages</li>
+                            </ul>
+                            <CreatorButton />
+                        </div>
+                        <WalletNFTs />
                     </div>
-                    <div className="mb-10">
-                        <h2 className="font-bold text-3xl mb-4 text-tertiary">
-                            Upcoming Features
-                        </h2>
-                        <ul className="list-disc pl-8 text-xl">
-                            <li>Favoriting NFTs that will show in your Profile</li>
-                            <li>Creating/updating an artist page</li>
-                            <li>
-                                Notifications for comments to your work and
-                                replies to your comments
-                            </li>
-                            <li>Reach out if you have any ideas!!</li>
-                        </ul>
-                        <CreatorButton />
-                    </div>
-                    <WalletNFTs />
+
+                    <Profile />
                 </div>
-    
-                <Profile />
-            </div>
-        </WagmiWallet>
-    </div>
-    
+            </WagmiWallet>
+        </div>
     );
 }
 

@@ -15,6 +15,8 @@ import MenuItem from "@mui/material/MenuItem"; // Import MenuItem
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import { useSession } from "next-auth/react";
+import ThemeToggle from "./themeToggle";
+import Link from "next/link";
 
 const pages = ["pitchdeck", "search"];
 
@@ -34,13 +36,17 @@ function Navbar() {
     const allPages = [...pages, authPage];
 
     return (
-        <AppBar position="static" style={{ background: "#1E2022" }}>
+        <AppBar
+            position="static"
+            className="font-heading bg-light-quaternary dark:bg-dark-quaternary text-light-tertiary dark:text-dark-primary bg-opacity-80"
+        >
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    {/* Move the DiamondIcon outside of the Box to be visible on mobile */}
-                    <DiamondIcon
-                        sx={{ display: { xs: "flex", md: "flex" }, mr: 1 }}
-                    />
+                    <Link href="/">
+                        <DiamondIcon
+                            sx={{ display: { xs: "flex", md: "flex" }, mr: 1 }}
+                        />
+                    </Link>
 
                     {/* Hamburger menu icon for mobile */}
                     <Box
@@ -48,6 +54,7 @@ function Navbar() {
                             display: { xs: "flex", md: "none" },
                             marginLeft: "auto",
                         }}
+            
                     >
                         <IconButton
                             size="large"
@@ -73,23 +80,27 @@ function Navbar() {
                             }}
                             open={Boolean(anchorElNav)}
                             onClose={handleCloseNavMenu}
+                            className="opacity-70 hover:opacity-100"
+
                         >
                             {allPages.map((page) => (
-                                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                                <MenuItem
+                                    key={page}
+                                    onClick={handleCloseNavMenu}
+                                >
                                     <Typography
+                                        className="uppercase text-light-quaternary dark:text-dark-quaternary"
                                         textAlign="center"
                                         sx={{
-                                            fontFamily: "metropolis",
                                             fontWeight: 700,
                                             letterSpacing: ".1rem",
-                                            color: "inherit",
-                                            textDecoration: "none",
+                                            textDecoration: "inherit",
                                         }}
                                     >
                                         <a
                                             href={`/${page}`}
                                             style={{
-                                                textDecoration: "none",
+                                                textDecoration: "inherit",
                                                 color: "inherit",
                                             }}
                                         >
@@ -108,12 +119,16 @@ function Navbar() {
                                 href={`/${page}`}
                                 key={page}
                                 onClick={handleCloseNavMenu}
-                                sx={{ my: 2, color: "white", display: "block" }}
+                                sx={{
+                                    my: 2,
+                                    color: "inherit",
+                                    fontWeight: 700,}}
                             >
                                 {page}
                             </Button>
                         ))}
                     </Box>
+                    <ThemeToggle />
                 </Toolbar>
             </Container>
         </AppBar>

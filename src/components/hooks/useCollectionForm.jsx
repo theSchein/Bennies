@@ -26,7 +26,8 @@ const useCollectionForm = (role, collection) => {
                 collection_id: collection.collection_id
             };
 
-            const response = await fetch('/api/nft/updateCollection', {
+
+            const response = await fetch('/api/collection/updateCollection', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -38,12 +39,14 @@ const useCollectionForm = (role, collection) => {
                 throw new Error('Failed to update Collection');
             }
 
-            setIsSuccessful(true); // Set success state
-            setError(''); // Clear any previous errors
+            setIsSuccessful(true);
+            setError('');
+            return true;
         } catch (error) {
             console.error('Error updating Collection:', error);
             setError(error.message || 'Failed to update Collection');
             setIsSuccessful(false);
+            return false;
         }
     };
 

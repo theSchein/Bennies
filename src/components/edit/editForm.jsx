@@ -2,18 +2,17 @@
 // High level form to direct data and roles to the appropriate forms
 // Should take in user role and determine what allow to edit
 
-import * as React from "react";
+import React from "react";
 import NftForm from "../form/nftForm";
 import CollectionForm from "../form/collectionForm";
 import ArtistForm from "../form/artistForm";
 
-export default function EditForm({ role, pageData }) {
-
+export default function EditForm({ role, pageData, isOpen, onClose }) {
     if (pageData.nft_id) {
-        return <NftForm nft={pageData} role={role}/>;
+        return <NftForm nft={pageData} role={role} isOpen={isOpen} onClose={onClose}/>;
     } else if (pageData.collection_id) {
-        return <CollectionForm collection={pageData} role={role} />;
+        return <CollectionForm collection={pageData} role={role} isOpen={isOpen} onClose={onClose} />;
     } else {
-        return <ArtistForm initialValues={pageData} role={role} />;
+        return <ArtistForm artist={pageData} role={role} isOpen={isOpen} onClose={onClose} />;
     }
 }

@@ -1,14 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Gasoek+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=lilita+One&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
-    @apply font-body bg-background;
+    @apply font-body;
 }
 
 h1,
 h2,
-h3,
+h3 {
+    @apply font-subheading;
+}
 h4,
 h5,
 h6 {
@@ -21,4 +26,32 @@ h6 {
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.custom-track {
+  @apply bg-light-primary; /* Light mode primary color for track */
+}
+
+.dark .custom-track {
+  @apply bg-dark-primary; /* Dark mode primary color for track */
+}
+
+.custom-thumb {
+  @apply bg-light-tertiary; /* Light mode secondary color */
+}
+
+.dark .custom-thumb {
+  @apply bg-dark-secondary; /* Dark mode secondary color */
+}
+
+.MuiIcon-colorPrimary {
+  @apply text-light-primary; 
+}
+
+.dark .MuiIcon-colorPrimary {
+  @apply text-dark-primary; 
+}
+
+.btn {
+  @apply p-3 font-bold text-light-quaternary dark:text-dark-quaternary flex space-y-4 flex-col bg-light-primary dark:bg-dark-primary rounded-lg hover:bg-light-quaternary hover:text-light-primary dark:hover:bg-dark-tertiary dark:hover:text-dark-primary transition duration-300;
 }

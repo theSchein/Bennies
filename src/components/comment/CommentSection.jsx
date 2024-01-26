@@ -119,7 +119,7 @@ function CommentSection({ nft }) {
     return (
         <div className="py-8 w-full max-w-2xl mx-auto">
             {session ? (
-                <div className="bg-gray-50 p-6 rounded-lg shadow space-y-4">
+                <div className="bg-gradient-light-comment dark:bg-gradient-dark-comment p-6 rounded-lg shadow space-y-4">
                     <h2 className="text-lg font-semibold">
                         Commenting as {session.username}
                     </h2>
@@ -133,7 +133,7 @@ function CommentSection({ nft }) {
                 <div className="text-center py-4">
                     <Link
                         href="/signin"
-                        className="px-6 py-2 bg-primary text-tertiary rounded-full hover:bg-secondary-dark focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-opacity-50 transition ease-in duration-200"
+                        className="btn"
                     >
                         Sign in to comment
                     </Link>
