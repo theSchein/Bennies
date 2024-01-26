@@ -9,9 +9,9 @@ import ArtistForm from "../form/artistForm";
 
 export default function EditForm({ role, pageData, isOpen, onClose }) {
     if (pageData.nft_id) {
-        return <NftForm nft={pageData} role={role} />;
+        return <NftForm nft={pageData} role={role} isOpen={isOpen} onClose={onClose}/>;
     } else if (pageData.collection_id) {
-        return <CollectionForm collection={pageData} role={role} />;
+        return <CollectionForm collection={pageData} role={role} isOpen={isOpen} onClose={onClose} />;
     } else {
         return <ArtistForm artist={pageData} role={role} isOpen={isOpen} onClose={onClose} />;
     }

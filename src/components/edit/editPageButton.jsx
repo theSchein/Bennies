@@ -28,11 +28,13 @@ const EditButton = ({ isOwner, isDeployer, pageData }) => {
         <div className=" max-w-2xl mx-auto">
             {session ? (
                 <div className="btn">
-                    <Button onClick={handleOpenEditForm} className="btn">Update this Page</Button>
+                    <Button onClick={handleOpenEditForm} className="btn">
+                        Update this Page
+                    </Button>
                     {showEditForm && (
                         <EditForm
-                            open={showEditForm}
-                            handleClose={handleCloseEditForm}
+                            isOpen={showEditForm}
+                            onClose={handleCloseEditForm}
                             role={role}
                             pageData={pageData}
                         />
@@ -40,10 +42,7 @@ const EditButton = ({ isOwner, isDeployer, pageData }) => {
                 </div>
             ) : (
                 <div className="text-center py-4">
-                    <Link
-                        href="/signin"
-                        className="btn"
-                    >
+                    <Link href="/signin" className="btn">
                         Sign in to Edit
                     </Link>
                 </div>

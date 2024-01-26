@@ -2,9 +2,11 @@
 // UI for the Artist form
 
 import React from "react";
+import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import TextInput from "./textInput";
 import useArtistForm from "../hooks/useArtistForm";
+import AlertModal from "../alert";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 
@@ -13,7 +15,8 @@ const style = {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 400,
+    width: "auto",
+    maxWidth: "500px",
     bgcolor: "background.paper",
     boxShadow: 24,
     p: 4,
@@ -21,7 +24,6 @@ const style = {
 };
 
 const ArtistForm = ({ role, artist, isOpen, onClose }) => {
-    
     const methods = useForm({
         defaultValues: artist,
     });
@@ -30,61 +32,75 @@ const ArtistForm = ({ role, artist, isOpen, onClose }) => {
         role,
         artist,
     );
+    const [showAlert, setShowAlert] = useState(false);
 
-    // Function to check if a field is editable
+    const handleSubmit = async (data) => {
+        const success = await onSubmit(data);
+        if (success) {
+            setShowAlert(true);
+            onClose();
+        }
+    };
+
     const isFieldEditable = (fieldName) => editableFields.includes(fieldName);
 
-    // // Watch specific fields IMPLEMENT LATER
-    // const watchedFields = methods.watch();
-
-    // // You can also watch individual fields like this:
-    // // const watchedName = methods.watch('name')
-
     return (
-        <Modal open={isOpen} onClose={onClose}>
-            <Box sx={style}>
-                <FormProvider {...methods}>
-                    <form onSubmit={methods.handleSubmit(onSubmit)}>
-                        {isFieldEditable("artist_name") && (
-                            <TextInput name="artist_name" label="Artist Name" />
-                        )}
+        <>
+            <Modal open={isOpen} onClose={onClose}>
+                <Box
+                    sx={style}
+                    className="bg-light-tertiary dark:bg-dark-secondary "
+                >
+                    <h1 className="text-center text-2xl font-bold mb-4">
+                        Edit Artist Page
+                    </h1>
+                    <FormProvider {...methods}>
+                        <form onSubmit={methods.handleSubmit(handleSubmit)}>
+                            {isFieldEditable("artist_name") && (
+                                <TextInput label="Artist Name" name="artist_name" />
+                            )}
 
-                        {isFieldEditable("artist_bio") && (
-                            <TextInput
-                                name="artist_bio"
-                                label="Artist Background and Bio"
-                                as="textarea"
-                            />
-                        )}
+                            {isFieldEditable("artist_bio") && (
+                                <TextInput
+                                    name="artist_bio"
+                                    label="Artist Background and Bio"
+                                    as="textarea"
+                                />
+                            )}
 
-                        {isFieldEditable("artist_picture") && (
-                            <TextInput
-                                name="artist_picture"
-                                label="Link to Picture"
-                            />
-                        )}
+                            {isFieldEditable("artist_picture") && (
+                                <TextInput
+                                    name="artist_picture"
+                                    label="Link to Picture"
+                                />
+                            )}
 
-                        {isFieldEditable("artist_sales_link") && (
-                            <TextInput
-                                name="artist_sales_link"
-                                label="Link to Sales Page"
-                            />
+                            {isFieldEditable("artist_sales_link") && (
+                                <TextInput
+                                    name="artist_sales_link"
+                                    label="Link to Sales Page"
+                                />
+                            )}
+                            {isFieldEditable("social_media_link") && (
+                                <TextInput
+                                    name="social_media_link"
+                                    label="Social Media Link"
+                                />
+                            )}
 
-                        )}
-                        {isFieldEditable("social_media_link") && (
-                            <TextInput
-                                name="social_media_link"
-                                label="Social Media Link"
-                            />
-                        )}                        
-                        
-                        <input type="submit" value="Submit" />
-                        {isSuccessful && <div>Update successful!</div>}
-                        {error && <div>Error: {error}</div>}
-                    </form>
-                </FormProvider>
-            </Box>
-        </Modal>
+                            <input type="submit" value="Submit" className="btn" />
+                        </form>
+                    </FormProvider>
+                </Box>
+            </Modal>
+            {showAlert && (
+                <AlertModal
+                    isOpen={showAlert}
+                    message="Update successful!"
+                    onClose={() => setShowAlert(false)}
+                />
+            )}
+        </>
     );
 };
 

@@ -39,12 +39,14 @@ const useNftForm = (role, nft) => {
                 throw new Error('Failed to update NFT');
             }
 
-            setIsSuccessful(true); // Set success state
-            setError(''); // Clear any previous errors
+            setIsSuccessful(true); 
+            setError(''); 
+            return true;
         } catch (error) {
             console.error('Error updating NFT:', error);
             setError(error.message || 'Failed to update NFT');
             setIsSuccessful(false);
+            return false;
         }
     };
 

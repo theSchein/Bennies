@@ -51,10 +51,12 @@ const useArtistForm = (role, artist) => {
 
             setIsSuccessful(true);
             setError("");
+            return true;
         } catch (error) {
             console.error("Error updating Artist:", error);
             setError(error.message || "Failed to update Artist");
             setIsSuccessful(false);
+            return false;
         }
     };
 

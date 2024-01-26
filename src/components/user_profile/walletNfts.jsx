@@ -11,7 +11,6 @@ import fallbackImageUrl from "../../../public/placeholder.png";
 
 function WalletNFTs() {
     const { ownedNfts, deployedNfts, loading, error } = useWalletNFTs();
-    console.log("deployedNfts:", JSON.stringify(deployedNfts, null, 2));
 
     const sliderSettings = {
         dots: true,

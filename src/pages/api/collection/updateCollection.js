@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { nft_id, ...updateFields } = req.body;
+        const { collection_id, ...updateFields } = req.body;
 
         // Construct the SET part of the SQL query dynamically based on the fields to update
         const setQuery = Object.keys(updateFields)
@@ -20,7 +20,7 @@ export default async function handler(req, res) {
             throw new Error('No fields to update');
         }
 
-        const values = [nft_id, ...Object.values(updateFields)];
+        const values = [collection_id, ...Object.values(updateFields)];
 
         await db.query(
             `UPDATE collections SET ${setQuery} WHERE collection_id = $1`,
