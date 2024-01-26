@@ -3,28 +3,23 @@
 
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import NewArtistForm from "./newArtistForm";
+import EditForm from "./editForm";
 import Button from "@mui/material/Button";
 
 export default function CreatorButton() {
     const [isEligible, setIsEligible] = useState(null);
-    const [showArtistForm, setShowArtistForm] = useState(false);
+    const [hasArtistPage, setHasArtistPage] = useState(false);
+    const [artistPageData, setArtistPageData] = useState(null);
+    const [showEditForm, setShowEditForm] = useState(false);
     const { data: session } = useSession();
-
-    const handleOpenArtistForm = () => setShowArtistForm(true);
-
-    const handleCloseArtistForm = () => setShowArtistForm(false);
 
     useEffect(() => {
         if (session?.wallets && session.wallets.length > 0) {
-            fetchArtistEligibility(session.wallets);
+            fetchArtist(session.wallets);
         }
     }, [session]);
 
     const fetchArtistEligibility = async (wallets) => {
-        if (!session) {
-            return;
-        }
         try {
             const response = await fetch("/api/artist/checkArtistEligibility", {
                 method: "POST",
@@ -41,21 +36,59 @@ export default function CreatorButton() {
         }
     };
 
+    const fetchArtist = async () => {
+        try {
+            const response = await fetch("/api/artist/fetchArtist", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                credentials: "include",
+            });
+            const data = await response.json();
+            if (response.ok && data.artist_id) {
+                setArtistPageData(data);
+                setHasArtistPage(true);
+                setIsEligible(false);
+            } else {
+                setHasArtistPage(false);
+                fetchArtistEligibility(session.wallets);
+            }
+        } catch (error) {
+            console.error("Failed to fetch artist ID:", error);
+        }
+    };
+
+    const handleEditFormOpen = () => {
+        setShowEditForm(true);
+    };
+
+    const handleCloseEditForm = () => {
+        setShowEditForm(false);
+    };
+
     return (
         <div className="flex justify-center items-center m-5">
-            {isEligible && (
-                <Button
-                    className="btn"
-                    onClick={handleOpenArtistForm}
-                >
+            {isEligible && !hasArtistPage && (
+                <Button className="btn" onClick={handleEditFormOpen}>
                     Create Artist Page
                 </Button>
             )}
-            <NewArtistForm
-                open={showArtistForm}
-                handleClose={handleCloseArtistForm}
-            />
-            {isEligible === false && <p></p>}
+            {!isEligible && hasArtistPage && (
+                <Button className="btn" onClick={handleEditFormOpen}>
+                    Edit your Artist Page
+                </Button>
+            )}
+            {(isEligible || hasArtistPage) && artistPageData && (
+                <EditForm
+                    role="artist"
+                    pageData={artistPageData}
+                    isOpen={showEditForm}
+                    onClose={handleCloseEditForm}
+                />
+            )}
+    
+            {isEligible === false && !hasArtistPage && <p></p>}
         </div>
     );
 }

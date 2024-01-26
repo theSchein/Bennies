@@ -32,7 +32,6 @@ const useWalletNFTs = () => {
             const json = await response.json();
       
             if (response.ok) {
-                console.log('response:',json)
               return json;
             } else if (json.error && json.error.code === 429) {
               console.error(`Attempt ${attempt}: HTTP error 429: Too Many Requests, retrying...`);

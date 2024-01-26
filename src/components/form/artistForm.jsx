@@ -4,14 +4,32 @@
 import React from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import TextInput from "./textInput";
-import useNftForm from "../hooks/useNftForm";
+import useArtistForm from "../hooks/useArtistForm";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
 
-const ArtistForm = ({ role, artist }) => {
+const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    boxShadow: 24,
+    p: 4,
+    borderRadius: 2,
+};
+
+const ArtistForm = ({ role, artist, isOpen, onClose }) => {
+    
     const methods = useForm({
         defaultValues: artist,
     });
 
-    const { editableFields, onSubmit, isSuccessful, error } = useArtistForm(role, artist);
+    const { editableFields, onSubmit, isSuccessful, error } = useArtistForm(
+        role,
+        artist,
+    );
 
     // Function to check if a field is editable
     const isFieldEditable = (fieldName) => editableFields.includes(fieldName);
@@ -23,48 +41,50 @@ const ArtistForm = ({ role, artist }) => {
     // // const watchedName = methods.watch('name')
 
     return (
-        <FormProvider {...methods}>
-            <form onSubmit={methods.handleSubmit(onSubmit)}>
-                {isFieldEditable("name") && (
-                    <TextInput name="name" label="NFT Name" />
-                )}
+        <Modal open={isOpen} onClose={onClose}>
+            <Box sx={style}>
+                <FormProvider {...methods}>
+                    <form onSubmit={methods.handleSubmit(onSubmit)}>
+                        {isFieldEditable("artist_name") && (
+                            <TextInput name="artist_name" label="Artist Name" />
+                        )}
 
-                {isFieldEditable("nft_licence") && (
-                    <TextInput
-                        name="nft_licence"
-                        label="Ownership License"
-                        as="textarea"
-                    />
-                )}
+                        {isFieldEditable("artist_bio") && (
+                            <TextInput
+                                name="artist_bio"
+                                label="Artist Background and Bio"
+                                as="textarea"
+                            />
+                        )}
 
-                {isFieldEditable("nft_context") && (
-                    <TextInput
-                        name="nft_context"
-                        label="Item Background"
-                        as="textarea"
-                    />
-                )}
+                        {isFieldEditable("artist_picture") && (
+                            <TextInput
+                                name="artist_picture"
+                                label="Link to Picture"
+                            />
+                        )}
 
-                {isFieldEditable("nft_utility") && (
-                    <TextInput
-                        name="nft_utility"
-                        label="Utility"
-                        as="textarea"
-                    />
-                )}
+                        {isFieldEditable("artist_sales_link") && (
+                            <TextInput
+                                name="artist_sales_link"
+                                label="Link to Sales Page"
+                            />
 
-                {isFieldEditable("nft_category") && (
-                    <TextInput
-                        name="nft_category"
-                        label="Category"
-                    />
-                )}
-
-                <input type="submit" value="Update NFT" />
-                {isSuccessful && <div>Update successful!</div>}
-                {error && <div>Error: {error}</div>}
-            </form>
-        </FormProvider>
+                        )}
+                        {isFieldEditable("social_media_link") && (
+                            <TextInput
+                                name="social_media_link"
+                                label="Social Media Link"
+                            />
+                        )}                        
+                        
+                        <input type="submit" value="Submit" />
+                        {isSuccessful && <div>Update successful!</div>}
+                        {error && <div>Error: {error}</div>}
+                    </form>
+                </FormProvider>
+            </Box>
+        </Modal>
     );
 };
 
