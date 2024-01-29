@@ -12,10 +12,9 @@ function useAuthForm() {
     const [isLogin, setIsLogin] = useState(true);
     const router = useRouter();
     const [modalIsOpen, setModalIsOpen] = useState(false);
-    const [modalMessage, setModalMessage] = useState('');
+    const [modalMessage, setModalMessage] = useState("");
 
     const closeModal = () => setModalIsOpen(false);
-
 
     const switchAuthModeHandler = () => {
         setIsLogin((prevState) => !prevState);
@@ -75,7 +74,7 @@ function useAuthForm() {
             if (result && result.error) {
                 setModalMessage(result.error);
                 setModalIsOpen(true);
-                        } else {
+            } else {
                 router.replace("/profile");
             }
         } else {
@@ -89,7 +88,7 @@ function useAuthForm() {
                 if (result.error) {
                     setModalMessage(result.error);
                     setModalIsOpen(true);
-                                } else {
+                } else {
                     router.replace("/profile");
                 }
             } catch (error) {
@@ -105,9 +104,9 @@ function useAuthForm() {
         isLogin,
         switchAuthModeHandler,
         submitHandler,
-        modalIsOpen,        
-        modalMessage,       
-        closeModal          
+        modalIsOpen,
+        modalMessage,
+        closeModal,
     };
 }
 
