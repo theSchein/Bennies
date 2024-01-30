@@ -9,6 +9,7 @@ import Image from "next/image";
 import EditPageButton from "../../components/edit/editPageButton";
 import IsOwner from "../../components/check/isOwner";
 import IsDeployer from "@/components/check/isDeployer";
+import Likes from "@/components/likes/likes";
 
 export async function getServerSideProps({ params }) {
     const { slug } = params;
@@ -45,6 +46,7 @@ export default function NftPage({ nft }) {
                     <p className="font-body text-base sm:text-lg break-words">
                         {nft.nft_description}
                     </p>
+                    <Likes nft_id={nft.nft_id} />
                     <h2>
                         <EditPageButton
                             isOwner={isOwner}

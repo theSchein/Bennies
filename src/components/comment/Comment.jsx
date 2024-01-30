@@ -4,6 +4,7 @@
 import React, { useState } from "react";
 import CommentForm from "./CommentForm";
 import CommentList from "./CommentList";
+import Likes from "../likes/likes";
 
 // Individual Comment component
 function Comment({ comment, addReply, nft, depth, toggleReloadComments }) {
@@ -74,6 +75,7 @@ function Comment({ comment, addReply, nft, depth, toggleReloadComments }) {
                         <button onClick={toggleRepliesVisibility} className="btn">
                             {showReplies ? "Hide Replies" : "Show Replies"}
                         </button>
+                        <Likes comment_id={comment.comment_id} />
                     </div>
                     {showReplies && (
                         <CommentList
