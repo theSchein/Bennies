@@ -31,7 +31,6 @@ export default async (req, res) => {
             ]);
             userStatus = userStatusResult[0] ? userStatusResult[0].type : null;
         }
-        console.log("userstatus", userStatus);
 
         const query = `
         SELECT type, COUNT(*) as count

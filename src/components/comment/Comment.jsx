@@ -55,6 +55,8 @@ function Comment({ comment, addReply, nft, depth, toggleReloadComments }) {
             </div>
             <p className="text-light-quaternary dark:text-dark-quaternary mb-4">{comment.text}</p>
             <div className="flex items-center">
+            <Likes comment_id={comment.comment_id} />
+
                 <button
                     onClick={() => setShowReplyForm(!showReplyForm)}
                     className="btn mr-2"
@@ -75,7 +77,6 @@ function Comment({ comment, addReply, nft, depth, toggleReloadComments }) {
                         <button onClick={toggleRepliesVisibility} className="btn">
                             {showReplies ? "Hide Replies" : "Show Replies"}
                         </button>
-                        <Likes comment_id={comment.comment_id} />
                     </div>
                     {showReplies && (
                         <CommentList
