@@ -117,6 +117,22 @@ CREATE TABLE waitlist (
 	CONSTRAINT waitlist_pkey PRIMARY KEY (id)
 );
 
+CREATE TABLE notifications (
+    notif_id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    type VARCHAR(50),  
+    message TEXT,      
+    entity_id INT,     
+    read BOOLEAN DEFAULT FALSE,  
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_user
+        FOREIGN KEY(user_id) 
+        REFERENCES users(user_id)
+        ON DELETE CASCADE
+);
+
 ALTER TABLE transactions ADD CONSTRAINT transactions_nft_id_fkey FOREIGN KEY (nft_id) REFERENCES nfts(nft_id);
 
 -- CREATE INDEX idx_likes_on_user ON likes(user_id);

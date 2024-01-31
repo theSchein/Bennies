@@ -37,6 +37,8 @@ export default async (req, res) => {
             nft_id || comment_id,
         ]);
 
+        let likeSuccessful = false;
+
         if (checkResult && checkResult.rows && checkResult.rows.length > 0) {
             // Like/dislike exists, so update it
             const updateQuery = `
@@ -45,6 +47,7 @@ export default async (req, res) => {
         WHERE id = $2
     `;
             await db.query(updateQuery, [like_dislike, checkResult.rows[0].id]);
+            likeSuccessful = true;
         } else {
             // Like/dislike does not exist, so insert a new one
             const insertQuery = `
@@ -57,13 +60,31 @@ export default async (req, res) => {
                 comment_id || null,
                 like_dislike,
             ]);
+            likeSuccessful = true;
             if (insertResult.rowCount === 0) {
                 throw new Error("Failed to add like/dislike.");
             }
         }
 
-        
+        if (comment_id) {
+            const commentOwnerQuery = `SELECT user_id FROM comments WHERE comment_id = $1`;
+            const commentOwnerResult = await db.query(commentOwnerQuery, [comment_id]);
+            const commentOwnerId = commentOwnerResult[0].user_id;
 
+            if (likeSuccessful && commentOwnerId) {
+                const message = `Your comment got a ${like_dislike}!`;
+                const insertNotificationQuery = `
+                    INSERT INTO notifications (user_id, type, message, entity_id, read, created_at, updated_at)
+                    VALUES ($1, $2, $3, $4, false, NOW(), NOW());
+                `;
+                await db.query(insertNotificationQuery, [
+                    commentOwnerId,
+                    like_dislike,
+                    message,
+                    comment_id,
+                ]);
+            }
+        }
 
         return res
             .status(201)
