@@ -1,11 +1,15 @@
+// components/hooks/useLikes.jsx
+// logic for fetching and updating likes/dislikes
+
 import { useState, useEffect, useCallback } from "react";
+import { set } from "react-hook-form";
 
 
 const useLikes = (nft_id, comment_id) => {
     const [likes, setLikes] = useState(0);
     const [dislikes, setDislikes] = useState(0);
     const [userStatus, setUserStatus] = useState(null);
-
+    const [isLoading, setIsLoading] = useState(false);
 
     const fetchLikes = useCallback(async () => {
         try {
@@ -30,6 +34,7 @@ const useLikes = (nft_id, comment_id) => {
     }, [fetchLikes]);
 
     const handleLike = async () => {
+        setIsLoading(true);
         try {
             const bodyData = {
                 like_dislike: "like",
@@ -58,10 +63,13 @@ const useLikes = (nft_id, comment_id) => {
             }
         } catch (error) {
             console.error("Add Like Error:", error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
     const handleDislike = async () => {
+        setIsLoading(true);
         try {
             const response = await fetch("/api/likes/addLike", {
                 method: "POST",
@@ -80,10 +88,13 @@ const useLikes = (nft_id, comment_id) => {
             }
         } catch (error) {
             console.error("Add Dislike Error:", error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
     const handleUnlike = async () => {
+        setIsLoading(true);
         try {
             const response = await fetch("/api/likes/removeLike", {
                 method: "DELETE",
@@ -101,6 +112,8 @@ const useLikes = (nft_id, comment_id) => {
             }
         } catch (error) {
             console.error("Remove Like Error:", error);
+        } finally {
+            setIsLoading(false);
         }
 
     };
@@ -111,7 +124,8 @@ const useLikes = (nft_id, comment_id) => {
         userStatus,
         handleLike,
         handleDislike,
-        handleUnlike
+        handleUnlike,
+        isLoading
     };
 };
 
