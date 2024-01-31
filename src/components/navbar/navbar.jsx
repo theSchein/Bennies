@@ -17,11 +17,12 @@ import Button from "@mui/material/Button";
 import { useSession } from "next-auth/react";
 import ThemeToggle from "./themeToggle";
 import Link from "next/link";
+import Notifications from "../notifications/notifications";
 
 const pages = ["pitchdeck", "search"];
 
 function Navbar() {
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
     const [anchorElNav, setAnchorElNav] = React.useState(null);
 
     const handleOpenNavMenu = (event) => {
@@ -124,16 +125,16 @@ function Navbar() {
                                     href={`/${page}`}
                                     key={page}
                                     onClick={handleCloseNavMenu}
-                                    sx={{
-                                        my: 2,
-                                        color: "inherit",
-                                        fontWeight: 700,
-                                    }}
+                                    sx={{ my: 2, color: "inherit", fontWeight: 700 }}
                                 >
                                     {page}
                                 </Button>
                             ))}
                         </Box>
+
+                        {/* Notifications Icon */}
+                        {status === "authenticated" && <Notifications />}
+
                         <ThemeToggle />
                     </Toolbar>
                 </Container>

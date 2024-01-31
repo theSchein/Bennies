@@ -95,6 +95,20 @@ CREATE TABLE "comments" (
 	CONSTRAINT comments_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
+CREATE TABLE likes (
+    id serial4 NOT NULL,
+    user_id int4 NOT NULL,
+    nft_id int4 NULL,
+    comment_id int4 NULL,
+    type varchar(10) NOT NULL CHECK (type IN ('like', 'dislike')),
+    created_at timestamp NULL DEFAULT (now() AT TIME ZONE 'UTC'::text),
+    updated_at timestamp NULL DEFAULT (now() AT TIME ZONE 'UTC'::text),
+    CONSTRAINT likes_pkey PRIMARY KEY (id),
+    CONSTRAINT likes_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(user_id),
+    CONSTRAINT likes_nft_id_fkey FOREIGN KEY (nft_id) REFERENCES nfts(nft_id),
+    CONSTRAINT likes_comment_id_fkey FOREIGN KEY (comment_id) REFERENCES comments(comment_id)
+);
+
 CREATE TABLE waitlist (
 	id serial4 NOT NULL,
 	"name" varchar(255) NOT NULL,
@@ -103,4 +117,26 @@ CREATE TABLE waitlist (
 	CONSTRAINT waitlist_pkey PRIMARY KEY (id)
 );
 
+CREATE TABLE notifications (
+    notif_id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    type VARCHAR(50),  
+    message TEXT,      
+    entity_id INT,     
+    read BOOLEAN DEFAULT FALSE,  
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_user
+        FOREIGN KEY(user_id) 
+        REFERENCES users(user_id)
+        ON DELETE CASCADE
+);
+
 ALTER TABLE transactions ADD CONSTRAINT transactions_nft_id_fkey FOREIGN KEY (nft_id) REFERENCES nfts(nft_id);
+
+-- CREATE INDEX idx_likes_on_user ON likes(user_id);
+-- CREATE INDEX idx_likes_on_nft ON likes(nft_id);
+-- CREATE INDEX idx_likes_on_comment ON likes(comment_id);
+
+CREATE UNIQUE INDEX idx_likes_unique_user_nft ON likes(user_id, nft_id) WHERE nft_id IS NOT NULL;

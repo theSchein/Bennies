@@ -4,6 +4,7 @@
 import React, { useState } from "react";
 import CommentForm from "./CommentForm";
 import CommentList from "./CommentList";
+import Likes from "../likes/likes";
 
 // Individual Comment component
 function Comment({ comment, addReply, nft, depth, toggleReloadComments }) {
@@ -54,6 +55,8 @@ function Comment({ comment, addReply, nft, depth, toggleReloadComments }) {
             </div>
             <p className="text-light-quaternary dark:text-dark-quaternary mb-4">{comment.text}</p>
             <div className="flex items-center">
+            <Likes comment_id={comment.comment_id} />
+
                 <button
                     onClick={() => setShowReplyForm(!showReplyForm)}
                     className="btn mr-2"
