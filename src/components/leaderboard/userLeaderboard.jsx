@@ -9,7 +9,6 @@ const UserLeaderboard = () => {
             if (response.ok) {
                 const data = await response.json();
                 setUserLeaderboard(data.userLeaderboard);
-                console.log(userLeaderboard);
             } else {
                 console.error('Failed to fetch leaderboard data');
             }
