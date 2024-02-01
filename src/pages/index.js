@@ -14,9 +14,11 @@ export default function Home() {
                 </h1>
             </div>
 
-                    <SearchHomepage />
-                    <NftLeaderboard />
-                    <UserLeaderboard />
+            <SearchHomepage />
+            <div className="flex flex-col md:flex-row justify-center items-center w-full gap-4">
+                <NftLeaderboard />
+                <UserLeaderboard />
+            </div>
         </div>
     );
 }
