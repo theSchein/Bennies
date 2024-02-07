@@ -1,6 +1,8 @@
 // pages/index.js
 // This is the homepage for the App and is the first page that is loaded when the app is opened.
 
+import NftLeaderboard from "@/components/leaderboard/nftLeaderboard";
+import UserLeaderboard from "@/components/leaderboard/userLeaderboard";
 import SearchHomepage from "@/components/search/SearchHomePage";
 
 export default function Home() {
@@ -12,7 +14,11 @@ export default function Home() {
                 </h1>
             </div>
 
-                    <SearchHomepage />
+            <SearchHomepage />
+            <div className="flex flex-col md:flex-row space-y-4 md:space-x-4 w-full max-w-4xl">
+                <NftLeaderboard />
+                <UserLeaderboard />
+            </div>
         </div>
     );
 }
