@@ -4,7 +4,8 @@ import Link from "next/link";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Unstable_Grid2";
 
-const NftGrid = ({ nftData }) => {
+const NftGrid = ({ nftData, query }) => {
+
     return (
 <Box sx={{ flexGrow: 1, padding: 2 }}>
     <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
