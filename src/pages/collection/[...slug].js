@@ -4,7 +4,7 @@
 
 import { useState } from "react";
 import db from "../../lib/db";
-import CommentSection from "../../components/comment/CommentSection";
+// import CommentSection from "../../components/comment/CommentSection";
 import CollectionSidebar from "../../components/collections/collectionSidebar";
 import NftGrid from "../../components/collections/nftGrid";
 
@@ -27,9 +27,13 @@ export default function CollectionPage({ collection }) {
 
 
     return (
-        <div>
-            <CollectionSidebar collection={collection} onNftsFetched={setNftData} />
-            <NftGrid nftData={nftData} />
+        <div className="min-h-screen bg-primary flex flex-col sm:flex-row items-start justify-start py-6 px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-0 sm:space-x-6 bg-gradient-light dark:bg-gradient-dark text-light-quaternary dark:text-dark-quaternary">
+            <div className="flex-none w-full sm:w-72"> 
+                <CollectionSidebar collection={collection} onNftsFetched={setNftData} />
+            </div>
+            <div className="flex-grow">
+                <NftGrid nftData={nftData} />
+            </div>
         </div>
     );
 }

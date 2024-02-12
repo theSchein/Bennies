@@ -5,7 +5,7 @@ import db from "../../../lib/db";
 
 export default async function handler(req, res) {
     const { collection_id, page = 1 } = req.query;
-    const limit = parseInt(req.query.limit) || 50; // Allow limit to be specified, default to 50
+    const limit = parseInt(req.query.limit) || 100000; // Allow limit to be specified, default to 50
     const sortBy = req.query.sort_by || 'token_id'; // Allow sort_by to be specified, default to token_id
     const sortOrder = req.query.sort_order || 'ASC'; // Allow sort_order to be specified, default to ASC
 
