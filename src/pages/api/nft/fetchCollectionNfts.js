@@ -4,30 +4,32 @@
 import db from "../../../lib/db";
 
 export default async function handler(req, res) {
-    const { collection_id, page = 1 } = req.query;
-    const limit = parseInt(req.query.limit) || 100000; // Allow limit to be specified, default to 50
-    const sortBy = req.query.sort_by || 'token_id'; // Allow sort_by to be specified, default to token_id
-    const sortOrder = req.query.sort_order || 'ASC'; // Allow sort_order to be specified, default to ASC
+    const { collection_id, page = 1, limit = 25, sort_by = 'token_id', sort_order = 'ASC' } = req.query;
+    const offset = (parseInt(page) - 1) * parseInt(limit);
 
-    // Calculate offset for pagination
-    const offset = (parseInt(page) - 1) * limit;
+    const validSortColumns = {
+        token_id: 'nfts.token_id',
+        like_count: 'like_count', 
+        // Add other valid columns here
+    };
 
-    // Validate sort_order
-    if (!['ASC', 'DESC'].includes(sortOrder.toUpperCase())) {
-        return res.status(400).json({ message: "Invalid sort_order value. Use 'ASC' or 'DESC'." });
-    }
+    const sortByField = validSortColumns[sort_by] || validSortColumns['token_id'];
+    const sortOrderValidated = ['ASC', 'DESC'].includes(sort_order.toUpperCase()) ? sort_order.toUpperCase() : 'ASC';
+
 
     try {
-        // Construct dynamic query
         const query = `
-            SELECT * FROM nfts
-            WHERE collection_id = $1
-            ORDER BY ${sortBy} ${sortOrder}
+            SELECT nfts.nft_id, nfts.nft_name, nfts.owners, nfts.media_url, COUNT(likes.id) AS like_count
+            FROM nfts
+            LEFT JOIN likes ON nfts.nft_id = likes.nft_id AND likes.type = 'like'
+            WHERE nfts.collection_id = $1
+            GROUP BY nfts.nft_id
+            ORDER BY ${sortByField} ${sortOrderValidated}, nfts.nft_id ${sortOrderValidated}
             LIMIT $2 OFFSET $3
         `;
 
-        // Execute query
         const result = await db.query(query, [collection_id, limit, offset]);
+        
 
         // Check if we have results
         if (result.length > 0) {

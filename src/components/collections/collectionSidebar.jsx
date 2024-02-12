@@ -33,7 +33,8 @@ const CollectionSidebar = ({ collection, onNftsFetched }) => {
     // Call fetchNfts when sortOrder, sortBy, or page changes
     useEffect(() => {
         fetchNfts();
-    }, [sortOrder, sortBy, page]);
+    }, [sortOrder, sortBy, page, collection.collection_id]);
+
 
     return (
         <div>
@@ -51,12 +52,34 @@ const CollectionSidebar = ({ collection, onNftsFetched }) => {
                 Items {collection.num_collection_items}
             </h1>
             <h1 className="font-heading text-3xl sm:text-4xl mb-8 break-words">
-                Owners {uniqueOwnerAddresses.length}
+                Holders {uniqueOwnerAddresses.length}
             </h1>
 
             <p className="font-body text-base sm:text-lg break-words">
                 {collection.collection_description}
             </p>
+            <div>
+                <label htmlFor="sortBy">Sort By:</label>
+                <select
+                    id="sortBy"
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                >
+                    <option value="token_id">Token ID</option>
+                    <option value="like_count">Likes</option>
+                </select>
+            </div>
+            <div>
+                <label htmlFor="sortOrder">Order:</label>
+                <select
+                    id="sortOrder"
+                    value={sortOrder}
+                    onChange={(e) => setSortOrder(e.target.value)}
+                >
+                    <option value="ASC">Ascending</option>
+                    <option value="DESC">Descending</option>
+                </select>
+            </div>
         </div>
     );
 };
