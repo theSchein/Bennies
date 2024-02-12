@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 const NftLeaderboard = () => {
     const [nftLeaderboard, setNftLeaderboard] = useState([]);
@@ -64,7 +65,15 @@ const NftLeaderboard = () => {
                                     {item.nft_name}
                                 </td>
                                 <td className="hidden md:table-cell px-4 py-2 md:px-6 md:py-4">
-                                    {item.collection_name}
+                                    <Link
+                                        href={`/collection/${item.collection_id}`}
+                                        passHref
+                                        legacyBehavior
+                                    >
+                                        <a onClick={(e) => e.stopPropagation()}>
+                                            {item.collection_name}
+                                        </a>
+                                    </Link>
                                 </td>
                                 <td className="px-4 py-2 md:px-6 md:py-4">
                                     {item.score}

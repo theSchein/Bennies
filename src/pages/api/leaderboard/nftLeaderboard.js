@@ -11,6 +11,7 @@ export default async function handler(req, res) {
                     ROW_NUMBER() OVER (ORDER BY score DESC) AS ranking,
                     nft_id,
                     nft_name,
+                    collection_id,
                     collection_name,
                     score
                 FROM
