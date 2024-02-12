@@ -12,6 +12,8 @@ const NftGrid = ({ nftData, query }) => {
                 container
                 spacing={{ xs: 2, md: 3 }}
                 columns={{ xs: 4, sm: 8, md: 12 }}
+                
+                
             >
                 {nftData.map((nft, index) => (
                     <Link
@@ -31,6 +33,7 @@ const NftGrid = ({ nftData, query }) => {
                                 alignItems: "center",
                                 padding: 2,
                             }}
+                            className="transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg rounded-lg"
                         >
                             <Box
                                 sx={{
@@ -39,6 +42,7 @@ const NftGrid = ({ nftData, query }) => {
                                     position: "relative",
                                     marginBottom: 1,
                                 }}
+                                
                             >
                                 <Image
                                     src={

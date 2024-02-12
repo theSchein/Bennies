@@ -10,11 +10,25 @@ import EditPageButton from "../../components/edit/editPageButton";
 import IsOwner from "../../components/check/isOwner";
 import IsDeployer from "@/components/check/isDeployer";
 import Likes from "@/components/likes/likes";
+import Link from "next/link";
 
 export async function getServerSideProps({ params }) {
     const { slug } = params;
-    const nft = await db.one("SELECT * FROM nfts WHERE nft_id = $1", [slug[0]]);
-    return { props: { nft } };
+    const nftDataQuery = `
+        SELECT nfts.*, collections.collection_name
+        FROM nfts
+        JOIN collections ON nfts.collection_id = collections.collection_id
+        WHERE nft_id = $1
+    `;
+    try {
+        const nft = await db.one(nftDataQuery, [slug[0]]);
+        console.log(nft);
+        return { props: { nft } };
+    } catch (error) {
+        console.error("Error fetching NFT data:", error);
+        // Handle errors, such as returning a 404 page or a custom error message
+        return { props: { error: "NFT not found" } };
+    }
 }
 
 export default function NftPage({ nft }) {
@@ -43,6 +57,12 @@ export default function NftPage({ nft }) {
                     <h1 className="font-heading text-2xl sm:text-3xl mb-2 break-words">
                         {nft.nft_name}
                     </h1>
+                    <Link
+                        href={`/collection/${nft.collection_id}/${nft.collection_name}`}
+                    >
+                        {" "}
+                        {nft.collection_name}{" "}
+                    </Link>
                     <p className="font-body text-base sm:text-lg break-words">
                         {nft.nft_description}
                     </p>

@@ -43,6 +43,9 @@ function WalletNFTs() {
                     <div className="p-4">
                         <p className="text-lg font-semibold truncate">{nft.nft_name}</p>
                     </div>
+                    <button href={`/collection/${nft.collection_id}/${nft.collection_name}`}  >
+                    <p className="ml-4 text-md font-italic truncate"> {nft.collection_name}</p>
+                    </button>
                     <div className="w-full h-64 relative">
                         <Image
                             src={nft.media_url ? nft.media_url : fallbackImageUrl}
