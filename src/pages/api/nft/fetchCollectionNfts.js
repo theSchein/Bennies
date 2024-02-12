@@ -10,6 +10,7 @@ export default async function handler(req, res) {
     const validSortColumns = {
         token_id: 'nfts.token_id',
         like_count: 'like_count', 
+        comment_count: 'comment_count',
         // Add other valid columns here
     };
 
@@ -19,9 +20,11 @@ export default async function handler(req, res) {
 
     try {
         const query = `
-            SELECT nfts.nft_id, nfts.nft_name, nfts.owners, nfts.media_url, COUNT(likes.id) AS like_count
+            SELECT nfts.nft_id, nfts.nft_name, nfts.owners, nfts.media_url, 
+                   COUNT(DISTINCT likes.id) AS like_count, COUNT(DISTINCT comments.comment_id) AS comment_count
             FROM nfts
             LEFT JOIN likes ON nfts.nft_id = likes.nft_id AND likes.type = 'like'
+            LEFT JOIN comments ON nfts.nft_id = comments.nft_id
             WHERE nfts.collection_id = $1
             GROUP BY nfts.nft_id
             ORDER BY ${sortByField} ${sortOrderValidated}, nfts.nft_id ${sortOrderValidated}

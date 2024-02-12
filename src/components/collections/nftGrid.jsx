@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Unstable_Grid2";
+import CommentIcon from '@mui/icons-material/Comment';
 
 const NftGrid = ({ nftData, query }) => {
     return (
@@ -31,9 +32,9 @@ const NftGrid = ({ nftData, query }) => {
                                 display: "flex",
                                 flexDirection: "column",
                                 alignItems: "center",
-                                padding: 2,
+                                padding: 1,
                             }}
-                            className="transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg rounded-lg"
+                            className="transition duration-300 ease-in-out transform hover:scale-120 hover:shadow-lg rounded-lg"
                         >
                             <Box
                                 sx={{
@@ -59,6 +60,10 @@ const NftGrid = ({ nftData, query }) => {
                                 {nft.nft_name}
                             </p>
                             <Likes nft_id={nft.nft_id} />
+                            <div>
+                            <CommentIcon />
+                            {nft.comment_count}
+                            </div>
                         </Grid>
                     </Link>
                 ))}

@@ -67,6 +67,7 @@ const CollectionSidebar = ({ collection, onNftsFetched }) => {
                 >
                     <option value="token_id">Token ID</option>
                     <option value="like_count">Likes</option>
+                    <option value="comment_count">Comments</option>
                 </select>
             </div>
             <div>
@@ -76,8 +77,8 @@ const CollectionSidebar = ({ collection, onNftsFetched }) => {
                     value={sortOrder}
                     onChange={(e) => setSortOrder(e.target.value)}
                 >
-                    <option value="ASC">Ascending</option>
-                    <option value="DESC">Descending</option>
+                    <option value="ASC">Low to High</option>
+                    <option value="DESC">High to Low</option>
                 </select>
             </div>
         </div>

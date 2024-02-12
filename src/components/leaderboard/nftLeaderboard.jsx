@@ -66,7 +66,7 @@ const NftLeaderboard = () => {
                                 </td>
                                 <td className="hidden md:table-cell px-4 py-2 md:px-6 md:py-4">
                                     <Link
-                                        href={`/collection/${item.collection_id}`}
+                                        href={`/collection/${item.collection_id}/${item.collection_name}`}
                                         passHref
                                         legacyBehavior
                                     >
