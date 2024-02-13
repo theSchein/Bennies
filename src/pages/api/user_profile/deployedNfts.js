@@ -20,12 +20,14 @@ export default async (req, res) => {
         try {
             // Fetch NFTs deployed by the user
             const deployedNfts = await db.manyOrNone(
-                "SELECT contract_address_token_id, nft_id, nft_name, media_url FROM nfts WHERE LOWER(deployer_address) = $1",
+                "SELECT nfts.contract_address_token_id, nfts.nft_id, nfts.nft_name,  nfts.media_url, collections.collection_name FROM nfts LEFT JOIN collections ON nfts.collection_id = collections.collection_id WHERE LOWER(nfts.deployer_address) = $1",
                 [address.toLowerCase()],
             );
 
             if (!deployedNfts) {
-                return res.status(404).json({ error: "No deployed NFTs found for this address." });
+                return res
+                    .status(404)
+                    .json({ error: "No deployed NFTs found for this address." });
             }
 
             res.status(200).json(deployedNfts);
