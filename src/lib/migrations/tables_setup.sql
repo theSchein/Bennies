@@ -133,6 +133,19 @@ CREATE TABLE notifications (
         ON DELETE CASCADE
 );
 
+CREATE TABLE news (
+    news_id SERIAL PRIMARY KEY,
+    collection_id INT NOT NULL,
+    artist_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    viewing_group VARCHAR(50) NOT NULL, -- e.g., 'public', 'holders', 'owners'
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (collection_id) REFERENCES collections(collection_id),
+    FOREIGN KEY (artist_id) REFERENCES users(user_id)
+);
+
+
 ALTER TABLE transactions ADD CONSTRAINT transactions_nft_id_fkey FOREIGN KEY (nft_id) REFERENCES nfts(nft_id);
 
 -- CREATE INDEX idx_likes_on_user ON likes(user_id);

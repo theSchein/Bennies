@@ -11,7 +11,7 @@ const NftGrid = ({ nftData, query }) => {
         <Box sx={{ flexGrow: 1, padding: 2 }}>
             <Grid
                 container
-                spacing={{ xs: 2, md: 3 }}
+                spacing={{ xs: 2, md: 2}}
                 columns={{ xs: 4, sm: 8, md: 12 }}
                 
                 
@@ -39,7 +39,7 @@ const NftGrid = ({ nftData, query }) => {
                             <Box
                                 sx={{
                                     width: "100%",
-                                    height: 200,
+                                    height: 400,
                                     position: "relative",
                                     marginBottom: 1,
                                 }}

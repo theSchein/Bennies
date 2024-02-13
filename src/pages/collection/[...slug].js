@@ -4,7 +4,6 @@
 
 import { useState } from "react";
 import db from "../../lib/db";
-// import CommentSection from "../../components/comment/CommentSection";
 import CollectionSidebar from "../../components/collections/collectionSidebar";
 import NftGrid from "../../components/collections/nftGrid";
 
