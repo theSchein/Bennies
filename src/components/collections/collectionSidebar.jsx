@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from "react";
 import IsOwner from "../../components/check/isOwner";
+import IsCollector from "../check/isCollector";
 import IsDeployer from "../../components/check/isDeployer";
 import EditPageButton from "../../components/edit/editPageButton";
 import MakeNews from "../newsfeed/makeNews";
@@ -26,7 +27,17 @@ const CollectionSidebar = ({ collection, onNftsFetched }) => {
     const allOwnerAddresses = nftData.map((nft) => nft.owners).flat();
     const uniqueOwnerAddresses = [...new Set(allOwnerAddresses)];
     const isOwner = IsOwner(uniqueOwnerAddresses);
+    const isCollector = IsCollector(allOwnerAddresses);
     const isDeployer = IsDeployer(collection.deployer_address);
+
+    let viewingGroup = "public"; // Default viewing group
+    if (isOwner) {
+        viewingGroup = "holders";
+    }
+    if (isDeployer || isCollector) {
+        viewingGroup = "collectors";
+    }
+
 
     // Call fetchNfts when sortOrder, sortBy, or page changes
     useEffect(() => {
@@ -78,7 +89,7 @@ const CollectionSidebar = ({ collection, onNftsFetched }) => {
                 </select>
             </div>
             {isDeployer && <MakeNews collectionId={collection.collection_id} />}
-            <NewsFeed collectionId={collection.collection_id} />
+            <NewsFeed collectionIds={[collection.collection_id]} viewingGroup={viewingGroup} />
         </div>
     );
 };

@@ -76,8 +76,8 @@ const MakeNews = ({ collectionId }) => {
                 >
                     <option value="public">Public</option>
                     <option value="holders">Holders Only</option>
-                    <option value="3xholders">Only Holders of 3 or More</option>
-                    <option value="10xholders">Only Holders of 10 or More</option>
+                    <option value="collectors">Collectors of 5 or More Only</option>
+                    {/* <option value="10xholders">Only Holders of 10 or More</option> */}
 
                 </select>
             </div>
