@@ -22,7 +22,6 @@ export async function getServerSideProps({ params }) {
     `;
     try {
         const nft = await db.one(nftDataQuery, [slug[0]]);
-        console.log(nft);
         return { props: { nft } };
     } catch (error) {
         console.error("Error fetching NFT data:", error);
