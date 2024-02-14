@@ -15,6 +15,12 @@ export default async (req, res) => {
         return res.status(400).json({ error: "Missing required fields." });
     }
 
+    const uuidPattern = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/;
+    if ((nft_id && !uuidPattern.test(nft_id)) || (comment_id && !uuidPattern.test(comment_id))) {
+        return res.status(400).json({ error: "Invalid UUID format." });
+    }
+
+
     let userStatus = null;
 
     try {
@@ -39,7 +45,7 @@ export default async (req, res) => {
         GROUP BY type;
         `;
 
-        const values = [parseInt(nft_id || comment_id, 10)];
+        const values = [nft_id || comment_id];
 
         const result = await db.query(query, values);
 
