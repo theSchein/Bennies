@@ -17,13 +17,12 @@ export default async (req, res) => {
                 .json({ error: "Not authenticated from the session" });
         }
 
-        // User is authenticated, you can access session.user
 
         // Extract wallet info from request, for instance:
         const { address } = req.body;
 
         const existingEntry = await db.oneOrNone(
-            "SELECT * FROM Wallets WHERE user_id = $1 AND wallet_address = $2",
+            "SELECT * FROM wallets WHERE user_id = $1 AND wallet_address = $2",
             [session.user_id, address],
         );
         const existingNFTs = await db.manyOrNone(
@@ -49,11 +48,11 @@ export default async (req, res) => {
                     [session.user_id, address]
                 );
             } else {
-                res.status(404).json({ error: "No NFTs found for this wallet" });
+                res.status(205).json({ error: "wallet added but no deployed NFTs found" });
                 return;
             }
         
-            res.status(200).json({
+            res.status(205).json({
                 success: true,
                 message: "Wallet added successfully.",
             });

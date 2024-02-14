@@ -9,6 +9,7 @@ import { Profile } from "../components/Profile";
 import WagmiWallet from "../components/WagmiWallet";
 import WalletNFTs from "@/components/user_profile/walletNfts";
 import CreatorButton from "@/components/edit/creatorButton";
+import SignOutButton from "@/components/auth/signOutButton";
 
 function ProfilePage() {
     const { data: session, status } = useSession();
@@ -36,6 +37,7 @@ function ProfilePage() {
                         <h1 className="font-heading text-5xl ">
                             Welcome, {session.username}
                         </h1>
+                        <SignOutButton />
                         <p className="text-xl leading-relaxed pt-4 ">
                             You can connect your wallet and if you have used it to
                             deploy any of the NFTs on our platform then you can

@@ -18,7 +18,7 @@ export default async (req, res) => {
         const user_id = session.user_id;
         try {
             const addresses = await db.manyOrNone(
-                "SELECT * FROM wallets WHERE user_id = $1",
+                "SELECT wallet_address FROM wallets WHERE user_id = $1",
                 [user_id],
             );
             if (addresses.length > 0) {

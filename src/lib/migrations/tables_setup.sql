@@ -103,7 +103,7 @@ CREATE TABLE notifications (
     user_id UUID NOT NULL,
     type VARCHAR(50),  
     message TEXT,      
-    entity_id INT,     
+    entity_id UUID,     
     read BOOLEAN DEFAULT FALSE,  
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
