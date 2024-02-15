@@ -9,11 +9,6 @@ export default async function handler(req, res) {
         return res.status(401).send("Unauthorized");
     }
 
-    // Ensure that the request is a POST request
-    if (req.method !== "POST") {
-        return res.status(405).send("Method Not Allowed");
-    }
-
     try {
         const updateOwnersQuery = `
         UPDATE collections
@@ -53,14 +48,10 @@ export default async function handler(req, res) {
         await db.query(updateOwnersQuery);
         await db.query(updateLikesQuery);
 
-        // Sorting collections for likes and comments
+        // Refresh the materialized views
         await db.query('REFRESH MATERIALIZED VIEW CONCURRENTLY collection_nft_aggregates;');
-
-        // Refresh the materialized views or run your leaderboard update queries here
         await db.query("REFRESH MATERIALIZED VIEW nft_leaderboard;");
         await db.query("REFRESH MATERIALIZED VIEW comment_leaderboard;");
-
-        // Add any additional logic if needed
 
         res.status(200).send("Cron job executed successfully");
     } catch (error) {
