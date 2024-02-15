@@ -7,27 +7,22 @@ export default async function handler(req, res) {
     const { collection_id, page = 1, limit = 25, sort_by = 'token_id', sort_order = 'ASC' } = req.query;
     const offset = (parseInt(page) - 1) * parseInt(limit);
 
-    const validSortColumns = {
-        token_id: 'nfts.token_id',
-        like_count: 'like_count', 
-        comment_count: 'comment_count',
-        // Add other valid columns here
-    };
-
-    const sortByField = validSortColumns[sort_by] || validSortColumns['token_id'];
-    const sortOrderValidated = ['ASC', 'DESC'].includes(sort_order.toUpperCase()) ? sort_order.toUpperCase() : 'ASC';
-
-
     try {
         const query = `
-            SELECT nfts.nft_id, nfts.nft_name, nfts.owners, nfts.media_url, 
-                   COUNT(DISTINCT likes.id) AS like_count, COUNT(DISTINCT comments.comment_id) AS comment_count
-            FROM nfts
-            LEFT JOIN likes ON nfts.nft_id = likes.nft_id AND likes.type = 'like'
-            LEFT JOIN comments ON nfts.nft_id = comments.nft_id
-            WHERE nfts.collection_id = $1
-            GROUP BY nfts.nft_id
-            ORDER BY ${sortByField} ${sortOrderValidated}, nfts.nft_id ${sortOrderValidated}
+            SELECT 
+                nfts.nft_id, 
+                nfts.nft_name, 
+                nfts.owners, 
+                nfts.media_url, 
+                agg.like_count, 
+                agg.comment_count
+            FROM 
+                nfts
+                JOIN collection_nft_aggregates agg ON nfts.nft_id = agg.nft_id
+            WHERE 
+                nfts.collection_id = $1
+            ORDER BY 
+                ${sort_by === 'like_count' || sort_by === 'comment_count' ? `agg.${sort_by}` : `nfts.${sort_by}`} ${sort_order.toUpperCase()}
             LIMIT $2 OFFSET $3
         `;
 

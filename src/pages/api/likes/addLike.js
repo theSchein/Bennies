@@ -28,7 +28,7 @@ export default async (req, res) => {
     try {
         // Check if a like/dislike already exists
         const checkQuery = `
-    SELECT id FROM likes
+    SELECT like_id FROM likes
     WHERE user_id = $1 AND 
     ${nft_id ? "nft_id = $2" : "comment_id = $2"}
 `;
@@ -44,7 +44,7 @@ export default async (req, res) => {
             const updateQuery = `
         UPDATE likes
         SET type = $1, updated_at = NOW()
-        WHERE id = $2
+        WHERE like_id = $2
     `;
             await db.query(updateQuery, [like_dislike, checkResult.rows[0].id]);
             likeSuccessful = true;

@@ -37,7 +37,18 @@ export function Profile() {
                 credentials: "include",
             });
 
-            const data = await response.json();
+            if (response.status === 205) {
+                // If the API call returned a 205 status, reload the page
+                window.location.reload();
+            } else {
+                // Handle non-205 responses, including success and error statuses
+                const data = await response.json();
+                if (!response.ok) {
+                    // Log or handle the error case if the API did not succeed
+                    console.error("Failed to claim wallet: ", data.message);
+                }
+                // Optionally handle other success statuses (e.g., 200) if needed
+            }
         } catch (error) {
             console.error("Failed to claim wallet:", error);
         }

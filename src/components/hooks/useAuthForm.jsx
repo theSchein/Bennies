@@ -59,25 +59,30 @@ function useAuthForm() {
         const enteredIdentifier = emailInputRef.current.value;
         const enteredPassword = passwordInputRef.current.value;
         const passwordError = validatePassword(enteredPassword);
+
         if (passwordError) {
             setModalMessage(passwordError);
             setModalIsOpen(true);
             return;
         }
+
         if (isLogin) {
+            // Attempt to sign in
             const result = await signIn("credentials", {
                 redirect: false,
                 identifier: enteredIdentifier,
                 password: enteredPassword,
             });
 
-            if (result && result.error) {
+            if (result.error) {
                 setModalMessage(result.error);
                 setModalIsOpen(true);
             } else {
-                router.replace("/profile");
+                // Redirect on successful login
+                router.push("/profile");
             }
         } else {
+            // Attempt to create a new user
             try {
                 const enteredUsername = usernameInputRef.current.value;
                 const result = await createUser(
@@ -85,14 +90,30 @@ function useAuthForm() {
                     enteredUsername,
                     enteredPassword,
                 );
+
                 if (result.error) {
                     setModalMessage(result.error);
                     setModalIsOpen(true);
                 } else {
-                    router.replace("/profile");
+                    // Automatically sign in the user after successful account creation
+                    const signInResult = await signIn("credentials", {
+                        redirect: false,
+                        identifier: enteredIdentifier,
+                        password: enteredPassword,
+                    });
+
+                    if (!signInResult.error) {
+                        // Redirect to profile page after successful sign-in
+                        router.push("/profile");
+                    } else {
+                        setModalMessage(signInResult.error);
+                        setModalIsOpen(true);
+                    }
                 }
             } catch (error) {
                 console.error(error);
+                setModalMessage("An unexpected error occurred.");
+                setModalIsOpen(true);
             }
         }
     };

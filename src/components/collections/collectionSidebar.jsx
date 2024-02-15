@@ -59,7 +59,10 @@ const CollectionSidebar = ({ collection, onNftsFetched }) => {
                 Items: {collection.num_collection_items}
             </h2>
             <h3 className="font-heading text-xl sm:text-2xl text-center mb-4">
-                Holders: {uniqueOwnerAddresses.length}
+                Holders: {collection.num_owners}
+            </h3>
+            <h3 className="font-heading text-xl sm:text-2xl text-center mb-4">
+                Likes: {collection.num_likes}
             </h3>
             <p className="font-body text-base sm:text-lg text-center mb-4">
                 {collection.collection_description}
