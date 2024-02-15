@@ -23,6 +23,8 @@ CREATE TABLE collections (
 	artist_id UUID REFERENCES artists(artist_id),
 	collection_name varchar(255) NULL,
 	num_collection_items int4 NULL,
+	num_owners int4 NULL,
+	num_likes int4 NULL,
 	deployer_address varchar(255) NULL,
 	contract_address varchar(255) NULL,
 	token_type varchar(10) NULL,
