@@ -53,6 +53,9 @@ export default async function handler(req, res) {
         await db.query(updateOwnersQuery);
         await db.query(updateLikesQuery);
 
+        // Sorting collections for likes and comments
+        await db.query('REFRESH MATERIALIZED VIEW CONCURRENTLY collection_nft_aggregates;');
+
         // Refresh the materialized views or run your leaderboard update queries here
         await db.query("REFRESH MATERIALIZED VIEW nft_leaderboard;");
         await db.query("REFRESH MATERIALIZED VIEW comment_leaderboard;");
