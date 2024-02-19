@@ -130,5 +130,6 @@ CREATE TABLE news (
 CREATE INDEX idx_nfts_collection_id ON nfts(collection_id);
 CREATE INDEX idx_likes_nft_id ON likes(nft_id);
 CREATE INDEX idx_comments_nft_id ON comments(nft_id);
+CREATE UNIQUE INDEX collection_nft_aggregates_nft_id_idx ON collection_nft_aggregates (nft_id);
 
 CREATE UNIQUE INDEX idx_likes_unique_user_nft ON likes(user_id, nft_id) WHERE nft_id IS NOT NULL;

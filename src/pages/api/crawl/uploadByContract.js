@@ -4,6 +4,7 @@
 // Currently only on ethereum chain but can be expanded to other chains.
 
 import db from "../../../lib/db";
+import retry from 'async-retry';
 const { Alchemy, Network } = require("alchemy-sdk");
 
 const config = {
@@ -52,6 +53,35 @@ export default async function (req, res) {
             .status(400)
             .json({ message: "contract address query parameter is required." });
     }
+
+    // // helper function to enable exponential backoff retries with alchemy
+    async function getNftMetadataWithRetry(contract, tokenId, contractType) {
+        return await retry(async () => {
+            return await alchemy.nft.getNftMetadata(String(contract), String(tokenId), String(contractType));
+        }, {
+            retries: 100,
+            factor: 3,
+            minTimeout: 3000,
+            maxTimeout: 60000,
+            onRetry: (error, attempt) => {
+                console.log(`Retry attempt ${attempt} for getNftMetadata due to error: ${error.message}`);
+            },
+        });
+    }
+    async function getNftOwnersWithRetry(contract, tokenId) {
+        return await retry(async () => {
+            return await alchemy.nft.getOwnersForNft(String(contract), String(tokenId));
+        }, {
+            retries: 100,
+            factor: 3,
+            minTimeout: 3000,
+            maxTimeout: 60000,
+            onRetry: (error, attempt) => {
+                console.log(`Retry attempt ${attempt} for getNftOwners due to error: ${error.message}`);
+            },
+        });
+    }
+
 
     try {
         let cursor = null;
@@ -133,7 +163,7 @@ export default async function (req, res) {
                     image = image.replace("ipfs://", "https://ipfs.io/ipfs/");
                 }
 
-                const load = await alchemy.nft.getNftMetadata(
+                const load = await getNftMetadataWithRetry(
                     String(contract),
                     String(NFT.tokenId),
                     String(NFT.contract_type),
@@ -141,7 +171,7 @@ export default async function (req, res) {
                 const deployer = load.contract.contractDeployer;
                 const description = load.description;
 
-                const owners = await alchemy.nft.getOwnersForNft(
+                const owners = await getNftOwnersWithRetry(
                     String(contract),
                     String(NFT.tokenId),
                 );
@@ -199,7 +229,7 @@ export default async function (req, res) {
                     );
                 }
                 console.log("Added NFT to database:", nftData.token_id);
-                await sleep(2000);
+                await sleep(1750);
             }
             cursor = response.pagination.cursor;
         } while (cursor != "" && cursor != null);
