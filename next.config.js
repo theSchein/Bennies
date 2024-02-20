@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['ipfs.io', 'arweave.net', 'firebasestorage.googleapis.com'],
+    domains: ['ipfs.io', 'arweave.net', 'firebasestorage.googleapis.com', 'www.larvalabs.com'],
   },
 }
 

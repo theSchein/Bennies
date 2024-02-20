@@ -16,6 +16,21 @@ const Search = () => {
     const [data, setData] = useState({ collections: [], nfts: [] });
     const [error, setError] = useState("");
 
+    // Helper function to check if the URL is a data URI
+    const isDataUri = (url) => {
+        return url.startsWith("data:image/svg+xml;base64,");
+    };
+
+    // Helper function to check if the URL is valid (simplified version)
+    const isValidUrl = (url) => {
+        try {
+            new URL(url);
+            return true;
+        } catch (e) {
+            return false; // Not a valid URL
+        }
+    };
+
     useEffect(() => {
         if (!query) return;
 
@@ -92,14 +107,21 @@ const Search = () => {
                             <a className="block transform transition duration-300 ease-in-out hover:-translate-y-2">
                                 <div className="bg-light-secondary dark:bg-dark-secondary rounded-lg overflow-hidden shadow-lg hover:shadow-2xl h-90 flex flex-col">
                                     <div className="w-full h-80 relative">
-                                        {nft.media_url ? (
-                                            <Image
+                                        {isDataUri(nft.media_url) ||
+                                        (nft.media_url &&
+                                            isValidUrl(nft.media_url)) ? (
+                                            // Use a regular <img> tag for SVG data URIs or valid URLs
+                                            <img
                                                 src={nft.media_url}
                                                 alt={nft.nft_name}
-                                                layout="fill"
-                                                objectFit="cover"
+                                                style={{
+                                                    objectFit: "cover",
+                                                    width: "100%",
+                                                    height: "100%",
+                                                }}
                                             />
                                         ) : (
+                                            // Fallback image for invalid URLs or when media_url is "Blank"
                                             <Image
                                                 src={fallbackImageUrl}
                                                 alt="Fallback Image"

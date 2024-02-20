@@ -11,6 +11,8 @@ import IsOwner from "../../components/check/isOwner";
 import IsDeployer from "@/components/check/isDeployer";
 import Likes from "@/components/likes/likes";
 import Link from "next/link";
+import fallbackImageUrl from "../../../public/placeholder.png";
+
 
 export async function getServerSideProps({ params }) {
     const { slug } = params;
@@ -38,6 +40,21 @@ export default function NftPage({ nft }) {
 
     const handleModalToggle = () => {
         setModalOpen(!isModalOpen);
+    };
+
+    // Helper function to check if the URL is a data URI
+    const isDataUri = (url) => {
+        return url.startsWith("data:image/svg+xml;base64,");
+    };
+
+    // Helper function to check if the URL is valid (simplified version)
+    const isValidUrl = (url) => {
+        try {
+            new URL(url);
+            return true;
+        } catch (e) {
+            return false; // Not a valid URL
+        }
     };
 
     return (
@@ -75,13 +92,27 @@ export default function NftPage({ nft }) {
                     </h2>
                     <div className="relative w-full h-64 sm:h-[500px] rounded overflow-hidden">
                         <div className="shadow-2xl rounded w-full h-full">
-                            <Image
-                                src={nft.media_url}
-                                alt={nft.nft_name}
-                                layout="fill"
-                                objectFit="contain"
-                                className="w-full h-full rounded"
-                            />
+                            {isDataUri(nft.media_url) ||
+                            (nft.media_url && isValidUrl(nft.media_url)) ? (
+                                // Use a regular <img> tag for SVG data URIs or valid URLs
+                                <img
+                                    src={nft.media_url}
+                                    alt={nft.nft_name}
+                                    style={{
+                                        objectFit: "cover",
+                                        width: "100%",
+                                        height: "100%",
+                                    }}
+                                />
+                            ) : (
+                                // Fallback image for invalid URLs or when media_url is "Blank"
+                                <Image
+                                    src={fallbackImageUrl}
+                                    alt="Fallback Image"
+                                    layout="fill"
+                                    objectFit="cover"
+                                />
+                            )}
                         </div>
                     </div>
                     <div className="flex flex-col sm:flex-row justify-between items-center text-center sm:text-left space-y-4 sm:space-y-0 sm:space-x-4">
