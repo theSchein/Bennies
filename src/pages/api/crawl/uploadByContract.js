@@ -189,8 +189,6 @@ export default async function (req, res) {
                     owner: owners.owners,
                 };
 
-                console.log("image:", image);
-
                 // Check if the entry already exists in the database
                 const existingEntry = await db.oneOrNone(
                     "SELECT contract_address_token_id FROM nfts WHERE contract_address_token_id = $1",
