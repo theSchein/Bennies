@@ -14,6 +14,7 @@ const CollectionSidebar = ({ collection, onNftsFetched }) => {
     const [sortOrder, setSortOrder] = useState("ASC");
     const [sortBy, setSortBy] = useState("token_id");
     const [page, setPage] = useState(1);
+    const [searchQuery, setSearchQuery] = useState("");
 
     const fetchNfts = async () => {
         const query = `?collection_id=${collection.collection_id}&sort_by=${sortBy}&sort_order=${sortOrder}&page=${page}`;
@@ -102,6 +103,21 @@ const CollectionSidebar = ({ collection, onNftsFetched }) => {
                         <option value="ASC">Low to High</option>
                         <option value="DESC">High to Low</option>
                     </select>
+                </div>
+                <div className="mb-4">
+                    <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Search within collection..."
+                        className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                    />
+                    <button
+                        onClick={() => fetchNfts()}
+                        className="mt-2 w-full btn"
+                    >
+                        Search
+                    </button>
                 </div>
             </div>
             {isDeployer && <MakeNews collectionId={collection.collection_id} />}
