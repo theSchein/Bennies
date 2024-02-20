@@ -1,51 +1,58 @@
 // pages/api/search/search.js
-// Search api that returns nfts and artists
-// TODO: massive overhaul to search for collections and by more fields than name
-
 import db from "../../../lib/db";
-import Fuse from "fuse.js";
 
 export default async (req, res) => {
     if (req.method !== "GET") {
         return res.status(405).json({ error: "Method not allowed" });
     }
 
-    try {
-        const { query } = req.query;
+    const { query, page = 1, limit = 12 } = req.query; 
 
-        if (!query) {
-            return res.status(400).json({ error: "Query is required" });
+    if (!query) {
+        return res.status(400).json({ error: "Query is required" });
+    }
+
+    const offset = (page - 1) * limit;
+
+    try {
+        // Search collections with pagination
+        const collectionResults = await db.any(`
+            SELECT collection_id, collection_name, media_url, num_collection_items FROM collections
+            WHERE textsearchable_index_col @@ plainto_tsquery('english', $1)
+            ORDER BY collection_name
+            LIMIT $2 OFFSET $3;
+        `, [query, limit, offset]);
+
+        // Calculate total number of collections for pagination metadata (optional)
+        const totalCollections = await db.one(`
+            SELECT COUNT(*) FROM collections
+            WHERE textsearchable_index_col @@ plainto_tsquery('english', $1);
+        `, [query]);
+
+        // Assuming you want to show collections first and then NFTs, calculate remaining limit and offset for NFTs
+        const remainingLimit = Math.max(0, limit - collectionResults.length);
+        const nftOffset = Math.max(0, offset - totalCollections.count);
+
+        // Search NFTs with adjusted pagination if there's remaining limit
+        let nftResults = [];
+        if (remainingLimit > 0) {
+            nftResults = await db.any(`
+                SELECT nft_id, nft_name, media_url, contract_address FROM nfts
+                WHERE textsearchable_index_col @@ plainto_tsquery('english', $1)
+                ORDER BY nft_name
+                LIMIT $2 OFFSET $3;
+            `, [query, remainingLimit, nftOffset]);
         }
 
-        // Fetch a broader set of data or a predefined subset
-        const nftData = await db.any(`SELECT * FROM nfts LIMIT 10000`); // Fetch all NFTs limits need added later
-        const artistData = await db.any(`SELECT * FROM artists LIMIT 10000`);
-
-        // Configure fuse.js options for nfts and artists
-        const fuseOptions = {
-            includeScore: true,
-            threshold: 0.3,
-            keys: ["nft_name", "artist_name"],
-        };
-
-        const fuseNFTs = new Fuse(nftData, fuseOptions);
-        const fuseArtists = new Fuse(artistData, fuseOptions);
-
-        const nftResults = fuseNFTs
-            .search(query)
-            .slice(0, 10)
-            .map((item) => item.item);
-        const artistResults = fuseArtists
-            .search(query)
-            .slice(0, 10)
-            .map((item) => item.item);
-
-        const combinedResults = {
-            nfts: nftResults,
-            artists: artistResults,
-        };
-
-        res.status(200).json(combinedResults);
+        res.status(200).json({
+            collections: {
+                results: collectionResults,
+                total: parseInt(totalCollections.count),
+                page: parseInt(page),
+                limit: parseInt(limit),
+            },
+            nfts: nftResults, // Note: NFTs don't have pagination metadata in this setup
+        });
     } catch (error) {
         console.error("Database error:", error);
         res.status(500).json({ error: "Database error" });

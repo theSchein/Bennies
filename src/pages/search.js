@@ -13,7 +13,7 @@ const Search = () => {
     const searchParams = useSearchParams();
     const query = searchParams.get("query");
 
-    const [data, setData] = useState({ nfts: [], artists: [] });
+    const [data, setData] = useState({ collections: [], nfts: [] });
     const [error, setError] = useState("");
 
     useEffect(() => {
@@ -25,7 +25,11 @@ const Search = () => {
                     `/api/search/search?query=${encodeURIComponent(query)}`,
                 );
                 const result = await response.json();
-                setData(result);
+                setData({
+                    collections: result.collections.results || [],
+                    nfts: result.nfts || [],
+                });
+                console.log(data.collections);
             } catch (err) {
                 setError("An error occurred while fetching the results.");
             }
@@ -42,49 +46,86 @@ const Search = () => {
             </h1>
             {error && <div className="text-red-500 mb-4">{error}</div>}
             <SearchBar />
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6">
-                {data.nfts.map((nft) => (
-                    <Link
-                        key={nft.nft_id}
-                        href={`/nft/${nft.nft_id}/${nft.nft_name}`}
-                        passHref
-                        legacyBehavior
-                    >
-                        <a className="block transform transition duration-300 ease-in-out hover:-translate-y-2">
-                            <div className="bg-light-secondary dark:bg-dark-secondary rounded-lg overflow-hidden shadow-lg hover:shadow-2xl h-90 flex flex-col">
-                                <div className="w-full h-80 relative">
-                                    {nft.media_url ? (
+            <div className="mt-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                    {data.collections.map((collection) => (
+                        <Link
+                            key={collection.collection_id}
+                            href={`/collection/${collection.collection_id}`}
+                            passHref
+                            legacyBehavior
+                        >
+                            <a className="block transform transition duration-300 ease-in-out hover:-translate-y-2">
+                                <div className="bg-light-secondary dark:bg-dark-secondary rounded-lg overflow-hidden shadow-lg hover:shadow-2xl h-90 flex flex-col">
+                                    <div className="w-full h-80 relative">
                                         <Image
-                                            src={nft.media_url}
-                                            alt={nft.nft_name}
+                                            src={
+                                                collection.media_url ||
+                                                fallbackImageUrl
+                                            }
+                                            alt={collection.collection_name}
                                             layout="fill"
                                             objectFit="cover"
                                         />
-                                    ) : (
-                                        <Image
-                                            src={fallbackImageUrl}
-                                            alt="Fallback Image"
-                                            layout="fill"
-                                            objectFit="cover"
-                                        />
-                                    )}
+                                    </div>
+                                    <div className="p-4">
+                                        <h3 className="text-light-quaternary dark:text-dark-quaternary text-lg font-bold truncate">
+                                            {collection.collection_name}
+                                        </h3>
+                                        <h3 className="text-light-quaternary dark:text-dark-quaternary text-lg font-bold truncate">
+                                            {collection.num_collection_items}
+                                        </h3>
+                                    </div>
                                 </div>
-                                <div className="p-4 flex-grow">
-                                    <h3 className="text-light-quaternary dark:text-dark-quaternary text-lg font-bold truncate">
-                                        {nft.nft_name}
-                                    </h3>
-                                    <p className="text-light-quaternary dark:text-dark-quaternary text-sm mt-1">
-                                        Address:{" "}
-                                        {nft.contract_address.substring(0, 20)}...
-                                    </p>
-                                    <p className="text-light-quaternary dark:text-dark-quaternary text-sm mt-2 line-clamp-1">
-                                        {nft.nft_description}
-                                    </p>
+                            </a>
+                        </Link>
+                    ))}
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6">
+                    {data.nfts.map((nft) => (
+                        <Link
+                            key={nft.nft_id}
+                            href={`/nft/${nft.nft_id}/${nft.nft_name}`}
+                            passHref
+                            legacyBehavior
+                        >
+                            <a className="block transform transition duration-300 ease-in-out hover:-translate-y-2">
+                                <div className="bg-light-secondary dark:bg-dark-secondary rounded-lg overflow-hidden shadow-lg hover:shadow-2xl h-90 flex flex-col">
+                                    <div className="w-full h-80 relative">
+                                        {nft.media_url ? (
+                                            <Image
+                                                src={nft.media_url}
+                                                alt={nft.nft_name}
+                                                layout="fill"
+                                                objectFit="cover"
+                                            />
+                                        ) : (
+                                            <Image
+                                                src={fallbackImageUrl}
+                                                alt="Fallback Image"
+                                                layout="fill"
+                                                objectFit="cover"
+                                            />
+                                        )}
+                                    </div>
+                                    <div className="p-4 flex-grow">
+                                        <h3 className="text-light-quaternary dark:text-dark-quaternary text-lg font-bold truncate">
+                                            {nft.nft_name}
+                                        </h3>
+                                        <p className="text-light-quaternary dark:text-dark-quaternary text-sm mt-1">
+                                            Address:{" "}
+                                            {nft.contract_address.substring(0, 20)}
+                                            ...
+                                        </p>
+                                        <p className="text-light-quaternary dark:text-dark-quaternary text-sm mt-2 line-clamp-1">
+                                            {nft.nft_description}
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
-                    </Link>
-                ))}
+                            </a>
+                        </Link>
+                    ))}
+                </div>
             </div>
         </div>
     );
