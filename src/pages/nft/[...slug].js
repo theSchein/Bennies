@@ -64,6 +64,7 @@ export default function NftPage({ nft }) {
                     </h1>
                     <Link
                         href={`/collection/${nft.collection_id}/${nft.collection_name}`}
+                        className="font-bold"
                     >
                         {nft.collection_name}
                     </Link>
@@ -84,13 +85,13 @@ export default function NftPage({ nft }) {
                                     src={imageSource}
                                     alt={nft.nft_name}
                                     layout="fill"
-                                    objectFit="cover"
+                                    objectFit="contain"
                                 />
                         </div>
                     </div>
-                    <div className="flex flex-col sm:flex-row justify-between items-center text-center sm:text-left space-y-4 sm:space-y-0 sm:space-x-4">
-                        <h2 className="font-subheading text-xl m-2 sm:text-2xl break-words">
-                            {nft.owners.length === 1 ? "Owner:" : "Owners:"}
+                    <div className="flex flex-col sm:flex-row justify-between items-center text-center sm:text-left space-y-4 sm:space-y-0 sm:space-x-4 font-bold italic">
+                        <h2 className=" m-2 break-words">
+                            {nft.owners.length === 1 ? "Owner: " : "Owners:"}
                             {nft.owners.length > 5 ? (
                                 <span
                                     onClick={handleModalToggle}
@@ -104,7 +105,7 @@ export default function NftPage({ nft }) {
                                 </span>
                             )}
                         </h2>
-                        <h2 className="font-subheading text-xl m-2 sm:text-2xl break-words">
+                        <h2 className="break-words">
                             Deployer:{" "}
                             <span className="break-all">{nft.deployer_address}</span>
                         </h2>

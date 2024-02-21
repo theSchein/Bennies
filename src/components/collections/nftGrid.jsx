@@ -32,7 +32,7 @@ const NftGrid = ({ nftData, query }) => {
                                 alignItems: "center",
                                 padding: 1,
                             }}
-                            className="transition duration-300 ease-in-out transform hover:scale-120 hover:shadow-lg rounded-lg"
+                            className="transition duration-300 bg-light-primary dark:bg-dark-secondary m-1 ease-in-out transform hover:scale-120 hover:shadow-lg rounded-lg"
                         >
                             <Box
                                 sx={{
@@ -40,6 +40,7 @@ const NftGrid = ({ nftData, query }) => {
                                     height: 400,
                                     position: "relative",
                                     marginBottom: 1,
+                                    color: "blue",
                                 }}
                             >
                                 <Image
@@ -53,13 +54,17 @@ const NftGrid = ({ nftData, query }) => {
                                     objectFit="contain" // Changed from "cover" to "contain"
                                 />
                             </Box>
-                            <p style={{ textAlign: "center", marginTop: 0 }}>
-                                {nft.nft_name}
-                            </p>
-                            <Likes nft_id={nft.nft_id} />
-                            <div>
-                                <CommentIcon/>
-                                {nft.comment_count}
+                            <div className="text-dark-quaternary font-bold">
+                                <p style={{ textAlign: "center", marginTop: 0 }}>
+                                    {nft.nft_name}
+                                </p>
+                                <div className="flex-wrap">
+                                    <Likes nft_id={nft.nft_id} />
+                                    <div className="">
+                                        <CommentIcon />
+                                        {nft.comment_count}
+                                    </div>
+                                </div>
                             </div>
                         </Grid>
                     </Link>
