@@ -34,10 +34,11 @@ function ProfilePage() {
             <WagmiWallet>
                 <div className="max-w-6xl w-full bg-light-secondary dark:bg-dark-secondary rounded-lg shadow-xl p-8">
                     <div className="border-b pb-4 mb-6  text-light-quaternary dark:text-dark-quaternary">
-                        <h1 className="font-heading text-5xl ">
+                    <div className="flex justify-between items-center w-full">                        <h1 className="font-heading text-5xl ">
                             Welcome, {session.username}
                         </h1>
                         <SignOutButton />
+                        </div>
                         <p className="text-xl leading-relaxed pt-4 ">
                             You can connect your wallet and if you have used it to
                             deploy any of the NFTs on our platform then you can

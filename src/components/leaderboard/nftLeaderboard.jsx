@@ -27,24 +27,24 @@ const NftLeaderboard = () => {
     };
 
     return (
-        <div className="bg-gradient-to-r from-green-100 to-green-300 p-4 md:p-6 rounded-lg shadow-md max-w-full mx-auto my-8">
-            <h2 className="text-xl md:text-2xl font-bold mb-2 md:mb-4 text-gray-800">
+<div className="leaderboard-container max-w-4xl">
+    <h2 className="leaderboard-heading">
                 NFT Leaderboard
             </h2>
-            <div className="overflow-x-auto bg-white rounded-lg">
-                <table className="w-full text-xs md:text-sm divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+            <div className="overflow-x-auto">
+            <table className="leaderboard-table">
+            <thead>
                         <tr>
-                            <th className="px-4 py-2 md:px-6 md:py-3 text-left font-semibold text-gray-900">
+                            <th className="table-header">
                                 Rank
                             </th>
-                            <th className="px-4 py-2 md:px-6 md:py-3 text-left font-semibold text-gray-900">
+                            <th className="table-header">
                                 NFT Name
                             </th>
-                            <th className="hidden md:table-cell px-4 py-2 md:px-6 md:py-3 text-left font-semibold text-gray-900">
+                            <th className="table-header">
                                 Collection
                             </th>
-                            <th className="px-4 py-2 md:px-6 md:py-3 text-left font-semibold text-gray-900">
+                            <th className="table-header">
                                 Score
                             </th>
                         </tr>
@@ -58,13 +58,13 @@ const NftLeaderboard = () => {
                                 }
                                 className="cursor-pointer hover:bg-gray-100"
                             >
-                                <td className="px-4 py-2 md:px-6 md:py-4">
+                                <td className="table-cell">
                                     {item.ranking}
                                 </td>
-                                <td className="px-4 py-2 md:px-6 md:py-4">
+                                <td className="table-cell">
                                     {item.nft_name}
                                 </td>
-                                <td className="hidden md:table-cell px-4 py-2 md:px-6 md:py-4">
+                                <td className="table-cell">
                                     <Link
                                         href={`/collection/${item.collection_id}/${item.collection_name}`}
                                         passHref
@@ -75,7 +75,7 @@ const NftLeaderboard = () => {
                                         </a>
                                     </Link>
                                 </td>
-                                <td className="px-4 py-2 md:px-6 md:py-4">
+                                <td className="table-cell">
                                     {item.score}
                                 </td>
                             </tr>

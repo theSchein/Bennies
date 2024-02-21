@@ -3,11 +3,12 @@
 
 import { useEffect, useState } from "react";
 import Switch from "@mui/material/Switch";
+import { useTheme } from "@mui/material/styles";
 import WbTwilightIcon from "@mui/icons-material/WbTwilight";
 
 const ThemeToggle = () => {
-
     const [darkMode, setDarkMode] = useState(false);
+    const theme = useTheme();
 
     useEffect(() => {
         // Check for theme preference in localStorage or system preference
@@ -34,13 +35,19 @@ const ThemeToggle = () => {
             <Switch
                 checked={!darkMode}
                 onChange={toggleTheme}
-                classes={{
-                    track: "custom-track",
-                    thumb: "custom-thumb",
+                sx={{
+                    '& .MuiSwitch-track': {
+                        backgroundColor: darkMode ? theme.palette.dark.secondary : theme.palette.light.secondary, // Custom track color
+                    },
+                    '& .MuiSwitch-thumb': {
+                        backgroundColor: darkMode ? theme.palette.dark.primary : theme.palette.light.tertiary, // Custom thumb color
+                    },
                 }}
             />
             <WbTwilightIcon
-                className={`text-light-primary dark:text-dark-primary `}
+                sx={{
+                    color: darkMode ? theme.palette.dark.primary : theme.palette.light.secondary, // Use theme colors for the icon
+                }}
             />
         </div>
     );

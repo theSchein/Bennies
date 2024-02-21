@@ -27,8 +27,8 @@ function Footer() {
             />
             <footer className="bg-light-tertiary dark:bg-dark-secondary text-light-quaternary dark:text-dark-quaternary">
                 <div className="container mx-auto">
-                    <div className="flex justify-between items-center">
-                        <div className="text-xl font-body">
+                    <div className="flex flex-col lg:flex-row justify-between items-center">
+                        <div className="text-xl font-body lg:block hidden">
                             <h1 className="font-subheading font-bold">
                                 {"Let's get in touch"}
                             </h1>

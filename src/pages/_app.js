@@ -3,19 +3,23 @@
 
 import { SessionProvider } from "next-auth/react";
 import Layout from "@/components/layout";
-import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from '@vercel/speed-insights/react';
+import { ThemeProvider } from "@mui/material/styles";
+import muiTheme from "@/styles/muiTheme";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
     return (
-        <SessionProvider session={pageProps.session}>
-            <Layout>
-                <Component {...pageProps} />
-                <SpeedInsights/>
-                <Analytics/>
-            </Layout>
-        </SessionProvider>
+        <ThemeProvider theme={muiTheme}>
+            <SessionProvider session={pageProps.session}>
+                <Layout>
+                    <Component {...pageProps} />
+                    <SpeedInsights />
+                    <Analytics />
+                </Layout>
+            </SessionProvider>
+        </ThemeProvider>
     );
 }
 

@@ -15,7 +15,7 @@ export default function Home() {
             </div>
 
             <SearchHomepage />
-            <div className="flex flex-col md:flex-row space-y-4 md:space-x-4 w-full max-w-4xl">
+            <div className="flex flex-col md:flex-row space-y-4 md:space-x-8 w-full max-w-4xl">
                 <NftLeaderboard />
                 <UserLeaderboard />
             </div>
