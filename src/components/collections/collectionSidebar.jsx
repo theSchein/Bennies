@@ -38,7 +38,6 @@ const CollectionSidebar = ({ collection, onNftsFetched }) => {
     if (isDeployer || isCollector) {
         viewingGroup = "collectors";
     }
-    console.log("viewingGroup", viewingGroup);
 
     // Call fetchNfts when sortOrder, sortBy, or page changes
     useEffect(() => {
@@ -71,10 +70,7 @@ const CollectionSidebar = ({ collection, onNftsFetched }) => {
             </p>
             <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                    <label
-                        htmlFor="sortBy"
-                        className="block "
-                    >
+                    <label htmlFor="sortBy" className="block ">
                         Sort By:
                     </label>
                     <select
@@ -89,10 +85,7 @@ const CollectionSidebar = ({ collection, onNftsFetched }) => {
                     </select>
                 </div>
                 <div className="flex justify-between items-center">
-                    <label
-                        htmlFor="sortOrder"
-                        className="block "
-                    >
+                    <label htmlFor="sortOrder" className="block ">
                         Order:
                     </label>
                     <select
@@ -119,9 +112,11 @@ const CollectionSidebar = ({ collection, onNftsFetched }) => {
                 </div>
             </div>
 
+            {/* HIDE THIS FOR NOW SINCE THE VIEWING GROUP IS NOT READY.
             {(viewingGroup === "holders" || viewingGroup === "collectors") && (
                 <MakeNews collectionId={collection.collection_id} />
-            )}
+            )} */}
+            <MakeNews collectionId={collection.collection_id} />
             <NewsFeed
                 collectionIds={[collection.collection_id]}
                 viewingGroup={viewingGroup}

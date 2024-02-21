@@ -126,6 +126,14 @@ CREATE TABLE news (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE ownership_counts (
+    user_id UUID NOT NULL,
+    collection_id UUID NOT NULL,
+    ownership_count INT NOT NULL,
+    PRIMARY KEY (user_id, collection_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (collection_id) REFERENCES collections(collection_id)
+);
 
 CREATE INDEX idx_nfts_collection_id ON nfts(collection_id);
 CREATE INDEX idx_likes_nft_id ON likes(nft_id);
