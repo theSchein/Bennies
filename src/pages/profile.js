@@ -42,7 +42,7 @@ function ProfilePage() {
                         </div>
                         <p className="text-xl leading-relaxed pt-4 ">
                             You can connect your wallet and find out what people are saying about your NFTs
-                            Thier may also be some news, events, and utilities for your NFTs that you haven't seen yet. 
+                            Thier may also be some news, events, and utilities for your NFTs that you did not know about. 
                         </p>
                         <div className="mb-10 mt-5 pt-4">
                             <h2 className="font-bold text-3xl mb-4 ">
