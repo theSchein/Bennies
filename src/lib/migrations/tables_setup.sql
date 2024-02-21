@@ -43,12 +43,12 @@ CREATE TABLE nfts (
 	contract_address varchar(255) NULL,
 	deployer_address varchar(255) NULL,
 	nft_name varchar(255) NULL,
-	token_type varchar(10) NULL,
+	token_type varchar(255) NULL,
 	token_uri_gateway varchar(255) NULL,
 	nft_description text NULL,
 	token_id varchar(255) NULL,
 	creation_date timestamp NULL,
-	media_url varchar(255) NULL,
+	media_url TEXT NULL,
 	nft_sales_link varchar(255) NULL,
 	nft_licence text NULL,
 	nft_context text NULL,
@@ -126,6 +126,14 @@ CREATE TABLE news (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE ownership_counts (
+    user_id UUID NOT NULL,
+    collection_id UUID NOT NULL,
+    ownership_count INT NOT NULL,
+    PRIMARY KEY (user_id, collection_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (collection_id) REFERENCES collections(collection_id)
+);
 
 CREATE INDEX idx_nfts_collection_id ON nfts(collection_id);
 CREATE INDEX idx_likes_nft_id ON likes(nft_id);

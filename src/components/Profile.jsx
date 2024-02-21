@@ -101,7 +101,7 @@ export function Profile() {
                     disabled={!connector.ready}
                     key={connector.id}
                     onClick={() => connect({ connector })}
-                    className={`bg-rainbow-gradient text-white font-bold py-2 px-4 mr-5 rounded-full shadow-md transform transition hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed {
+                    className={`btn m-5  rounded-full shadow-md transform transition hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed {
                         !connector.ready && "cursor-not-allowed"
                     }`}
                 >

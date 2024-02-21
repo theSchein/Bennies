@@ -14,6 +14,7 @@ const CollectionSidebar = ({ collection, onNftsFetched }) => {
     const [sortOrder, setSortOrder] = useState("ASC");
     const [sortBy, setSortBy] = useState("token_id");
     const [page, setPage] = useState(1);
+    const [searchQuery, setSearchQuery] = useState("");
 
     const fetchNfts = async () => {
         const query = `?collection_id=${collection.collection_id}&sort_by=${sortBy}&sort_order=${sortOrder}&page=${page}`;
@@ -44,7 +45,7 @@ const CollectionSidebar = ({ collection, onNftsFetched }) => {
     }, [sortOrder, sortBy, page, collection.collection_id]);
 
     return (
-        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow space-y-4">
+        <div className="bg-light-secondary dark:bg-dark-secondary text-light-quaternary dark:text-dark-quaternary p-4 rounded-lg shadow-lg space-y-4 opacity-85">
             <h1 className="font-heading text-3xl sm:text-4xl text-center mb-4">
                 {collection.collection_name}
             </h1>
@@ -55,13 +56,13 @@ const CollectionSidebar = ({ collection, onNftsFetched }) => {
                     pageData={collection}
                 />
             </div>
-            <h2 className="font-heading text-xl sm:text-2xl text-center mb-4">
+            <h2 className="font-bold text-xl sm:text-2xl text-center mb-4">
                 Items: {collection.num_collection_items}
             </h2>
-            <h3 className="font-heading text-xl sm:text-2xl text-center mb-4">
+            <h3 className="font-bold text-xl sm:text-2xl text-center mb-4">
                 Holders: {collection.num_owners}
             </h3>
-            <h3 className="font-heading text-xl sm:text-2xl text-center mb-4">
+            <h3 className="font-bold text-xl sm:text-2xl text-center mb-4">
                 Likes: {collection.num_likes}
             </h3>
             <p className="font-body text-base sm:text-lg text-center mb-4">
@@ -69,17 +70,14 @@ const CollectionSidebar = ({ collection, onNftsFetched }) => {
             </p>
             <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                    <label
-                        htmlFor="sortBy"
-                        className="block text-gray-700 dark:text-gray-300"
-                    >
+                    <label htmlFor="sortBy" className="block ">
                         Sort By:
                     </label>
                     <select
                         id="sortBy"
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value)}
-                        className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        className="mt-1 block w-full px-3 py-2  border-light-tertiary dark:border-dark-tertiary rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     >
                         <option value="token_id">Token ID</option>
                         <option value="like_count">Likes</option>
@@ -87,24 +85,38 @@ const CollectionSidebar = ({ collection, onNftsFetched }) => {
                     </select>
                 </div>
                 <div className="flex justify-between items-center">
-                    <label
-                        htmlFor="sortOrder"
-                        className="block text-gray-700 dark:text-gray-300"
-                    >
+                    <label htmlFor="sortOrder" className="block ">
                         Order:
                     </label>
                     <select
                         id="sortOrder"
                         value={sortOrder}
                         onChange={(e) => setSortOrder(e.target.value)}
-                        className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        className="mt-1 block w-full px-3 py-2 border-light-tertiary dark:border-dark-tertiary  rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     >
                         <option value="ASC">Low to High</option>
                         <option value="DESC">High to Low</option>
                     </select>
                 </div>
+                <div className="mb-4">
+                    <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Search within collection..."
+                        className="mt-1 block w-full px-3 py-2  border-light-tertiary dark:border-dark-tertiary rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                    />
+                    <button onClick={() => fetchNfts()} className="mt-2 w-full btn">
+                        Search
+                    </button>
+                </div>
             </div>
-            {isDeployer && <MakeNews collectionId={collection.collection_id} />}
+
+            {/* HIDE THIS FOR NOW SINCE THE VIEWING GROUP IS NOT READY.
+            {(viewingGroup === "holders" || viewingGroup === "collectors") && (
+                <MakeNews collectionId={collection.collection_id} />
+            )} */}
+            <MakeNews collectionId={collection.collection_id} />
             <NewsFeed
                 collectionIds={[collection.collection_id]}
                 viewingGroup={viewingGroup}

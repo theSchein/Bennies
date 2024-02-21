@@ -11,6 +11,9 @@ import IsOwner from "../../components/check/isOwner";
 import IsDeployer from "@/components/check/isDeployer";
 import Likes from "@/components/likes/likes";
 import Link from "next/link";
+import {getImageSource} from "@/components/utils/getImageSource";
+import fallbackImageUrl from "../../../public/placeholder.png";
+
 
 export async function getServerSideProps({ params }) {
     const { slug } = params;
@@ -36,9 +39,12 @@ export default function NftPage({ nft }) {
     const isOwner = IsOwner(nft.owners);
     const isDeployer = IsDeployer(nft.deployer_address);
 
+    const imageSource = getImageSource(nft.media_url, fallbackImageUrl);
+
     const handleModalToggle = () => {
         setModalOpen(!isModalOpen);
     };
+
 
     return (
         <div
@@ -58,9 +64,9 @@ export default function NftPage({ nft }) {
                     </h1>
                     <Link
                         href={`/collection/${nft.collection_id}/${nft.collection_name}`}
+                        className="font-bold"
                     >
-                        {" "}
-                        {nft.collection_name}{" "}
+                        {nft.collection_name}
                     </Link>
                     <p className="font-body text-base sm:text-lg break-words">
                         {nft.nft_description}
@@ -75,18 +81,17 @@ export default function NftPage({ nft }) {
                     </h2>
                     <div className="relative w-full h-64 sm:h-[500px] rounded overflow-hidden">
                         <div className="shadow-2xl rounded w-full h-full">
-                            <Image
-                                src={nft.media_url}
-                                alt={nft.nft_name}
-                                layout="fill"
-                                objectFit="contain"
-                                className="w-full h-full rounded"
-                            />
+                                <Image
+                                    src={imageSource}
+                                    alt={nft.nft_name}
+                                    layout="fill"
+                                    objectFit="contain"
+                                />
                         </div>
                     </div>
-                    <div className="flex flex-col sm:flex-row justify-between items-center text-center sm:text-left space-y-4 sm:space-y-0 sm:space-x-4">
-                        <h2 className="font-subheading text-xl m-2 sm:text-2xl break-words">
-                            {nft.owners.length === 1 ? "Owner:" : "Owners:"}
+                    <div className="flex flex-col sm:flex-row justify-between items-center text-center sm:text-left space-y-4 sm:space-y-0 sm:space-x-4 font-bold italic">
+                        <h2 className=" m-2 break-words">
+                            {nft.owners.length === 1 ? "Owner: " : "Owners:"}
                             {nft.owners.length > 5 ? (
                                 <span
                                     onClick={handleModalToggle}
@@ -100,7 +105,7 @@ export default function NftPage({ nft }) {
                                 </span>
                             )}
                         </h2>
-                        <h2 className="font-subheading text-xl m-2 sm:text-2xl break-words">
+                        <h2 className="break-words">
                             Deployer:{" "}
                             <span className="break-all">{nft.deployer_address}</span>
                         </h2>

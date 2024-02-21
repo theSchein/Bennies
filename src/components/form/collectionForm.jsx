@@ -50,7 +50,7 @@ const CollectionForm = ({ role, collection, isOpen, onClose }) => {
             <Modal open={isOpen} onClose={onClose}>
                 <Box
                     sx={style}
-                    className="bg-light-tertiary dark:bg-dark-secondary "
+                    className="bg-light-secondary dark:bg-dark-primary text-light-quaternary dark:text-dark-quaternary flex-wrap"
                 >
                     <h1 className="text-center text-2xl font-bold mb-4">
                         Edit Collection Page
@@ -68,7 +68,7 @@ const CollectionForm = ({ role, collection, isOpen, onClose }) => {
                             {isFieldEditable("nft_licence") && (
                                 <TextInput
                                     name="nft_licence"
-                                    label="Ownership License"
+                                    label="Ownership License: What rights does the owner have?"
                                     as="textarea"
                                 />
                             )}
@@ -76,7 +76,7 @@ const CollectionForm = ({ role, collection, isOpen, onClose }) => {
                             {isFieldEditable("collection_description") && (
                                 <TextInput
                                     name="collection_description"
-                                    label="Description"
+                                    label="Description: Tell us things about this collection"
                                     as="textarea"
                                 />
                             )}
@@ -84,13 +84,37 @@ const CollectionForm = ({ role, collection, isOpen, onClose }) => {
                             {isFieldEditable("collection_utility") && (
                                 <TextInput
                                     name="collection_utility"
-                                    label="Utility"
+                                    label="Utility: What can the owner do with this NFT?"
                                     as="textarea"
                                 />
                             )}
 
                             {isFieldEditable("category") && (
-                                <TextInput name="category" label="Category" />
+                                <div className="flex flex-col">
+                                    <label
+                                        htmlFor="category"
+                                        className="mb-2 font-medium text-sm sm:text-base"
+                                    >
+                                        Category
+                                    </label>
+                                    <select
+                                        name="category"
+                                        id="category"
+                                        className="p-2 border border-light-tertiary dark:border-dark-tertiary rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent mb-2"
+                                    >
+                                        <option value="">Select a category</option>
+                                        <option value="art">Art</option>
+                                        <option value="community">Community</option>
+                                        <option value="virtual-world">
+                                            Virtual World
+                                        </option>
+                                        <option value="collectible">
+                                            Collectible
+                                        </option>
+                                        <option value="event">Event Ticket</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
                             )}
 
                             <input

@@ -10,11 +10,10 @@ function AuthForm() {
         isLogin,
         switchAuthModeHandler,
         submitHandler,
-        modalIsOpen,        
+        modalIsOpen,
         modalMessage,
-        closeModal
+        closeModal,
     } = useAuthForm();
-    
 
     return (
         <section className="min-h-screen flex items-center justify-center bg-gradient-light dark:bg-gradient-dark py-6 px-4 sm:px-6 lg:px-8">
@@ -22,13 +21,18 @@ function AuthForm() {
                 <h1 className="text-center text-4xl font-bold text-light-quaternary dark:text-dark-quaternary mb-6">
                     {isLogin ? "Login" : "Sign Up"}
                 </h1>
-                <form onSubmit={submitHandler} className="space-y-6 text-light-quaternary dark:text-dark-quaternary">
+                <form
+                    onSubmit={submitHandler}
+                    className="space-y-6 text-light-quaternary dark:text-dark-quaternary"
+                >
                     <AuthInputField
                         type="text"
                         id="emailOrUsername"
                         required
                         ref={emailInputRef}
-                        placeholder="Enter Email or Username"
+                        placeholder={
+                            isLogin ? "Your Email or Username" : "Your Email"
+                        } 
                         label={isLogin ? "Email/Username" : "Your Email"}
                     />
                     {!isLogin && (
@@ -65,10 +69,10 @@ function AuthForm() {
                     </div>
                 </form>
             </div>
-            <AlertModal 
-                isOpen={modalIsOpen} 
-                message={modalMessage} 
-                onClose={closeModal} 
+            <AlertModal
+                isOpen={modalIsOpen}
+                message={modalMessage}
+                onClose={closeModal}
             />
         </section>
     );

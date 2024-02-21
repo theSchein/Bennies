@@ -1,5 +1,6 @@
 // pages/api/news/createNews.js
 // This api allows artist role to create news items for thier respective collections
+// Todo: add username to news or render it in its component
 
 import { getToken } from "next-auth/jwt";
 import db from "../../../lib/db";
@@ -21,17 +22,17 @@ export default async (req, res) => {
 
     const user_id = session.user.user_id;
     try {
-        const collection = await db.oneOrNone('SELECT artist_id FROM collections WHERE collection_id = $1', [collection_id]);
-        if (!collection || collection.artist_id !== user_id) {
-            return res.status(403).json({ error: 'You are not authorized to create news for this collection.' });
-        }
+        // const collection = await db.oneOrNone('SELECT artist_id FROM collections WHERE collection_id = $1', [collection_id]);
+        // if (!collection || collection.artist_id !== user_id) {
+        //     return res.status(403).json({ error: 'You are not authorized to create news for this collection.' });
+        // }
 
         const query = `
-            INSERT INTO news(collection_id, artist_id, title, content, viewing_group, created_at)
-            VALUES($1, $2, $3, $4, $5, NOW())
+            INSERT INTO news(collection_id, title, content, viewing_group, created_at)
+            VALUES($1, $2, $3, $4, NOW())
             RETURNING news_id;
         `;
-        const values = [collection_id, user_id, title, content, viewing_group];
+        const values = [collection_id, title, content, viewing_group];
         const result = await db.one(query, values);
 
         return res.status(201).json({ message: "News created.", newsId: result.news_id });

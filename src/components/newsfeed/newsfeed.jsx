@@ -38,10 +38,10 @@ const NewsFeed = ({ collectionIds, viewingGroup }) => {
             {newsItems.length > 0 ? (
                 <ul className="space-y-4">
                     {filteredNewsItems.map((item, index) => (
-                        <li key={index} className={`p-4 rounded-lg shadow ${item.viewing_group === 'holders' ? 'bg-blue-200' : item.viewing_group === 'collectors' ? 'bg-green-200' : 'bg-gray-200'}`}>
+                        <li key={index} className={`p-4 rounded-lg shadow ${item.viewing_group === 'holders' ? 'bg-blue-200' : item.viewing_group === 'collectors' ? 'bg-green-200' : 'bg-red-100'}`}>
                             <h3 className="text-xl font-semibold">{item.title}</h3>
                             <p className="mt-2">{item.content}</p>
-                            <small className="text-gray-600">Posted on: {new Date(item.created_at).toLocaleDateString()}</small>
+                            <small >Posted on: {new Date(item.created_at).toLocaleDateString()}</small>
                         </li>
                     ))}
                 </ul>

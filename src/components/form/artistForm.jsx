@@ -49,7 +49,7 @@ const ArtistForm = ({ role, artist, isOpen, onClose }) => {
             <Modal open={isOpen} onClose={onClose}>
                 <Box
                     sx={style}
-                    className="bg-light-tertiary dark:bg-dark-secondary "
+                    className="bg-light-secondary dark:bg-dark-primary text-light-quaternary dark:text-dark-quaternary flex-wrap"
                 >
                     <h1 className="text-center text-2xl font-bold mb-4">
                         Edit Artist Page

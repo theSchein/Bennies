@@ -55,3 +55,23 @@ h6 {
 .btn {
   @apply p-3 font-bold text-light-quaternary dark:text-dark-quaternary flex space-y-4 flex-col bg-light-primary dark:bg-dark-primary rounded-lg hover:bg-light-quaternary hover:text-light-primary dark:hover:bg-dark-tertiary dark:hover:text-dark-primary transition duration-300;
 }
+
+.leaderboard-container {
+  @apply bg-light-tertiary dark:bg-dark-quaternary  p-4 rounded-lg shadow-md mx-auto my-8;
+}
+
+.leaderboard-heading {
+  @apply text-xl font-bold mb-4 text-light-quaternary dark:text-dark-primary text-center md:text-2xl;
+}
+
+.leaderboard-table {
+  @apply w-full text-sm text-center divide-y divide-gray-200 bg-white rounded-lg overflow-hidden opacity-50;
+}
+
+.table-header {
+  @apply bg-light-primary dark:bg-dark-primary text-center font-semibold text-light-quaternary dark:text-dark-quaternary;
+}
+
+.table-cell {
+  @apply px-4 py-2 text-xs md:px-6 md:py-3 md:text-sm;
+}

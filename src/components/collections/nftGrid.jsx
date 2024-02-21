@@ -4,17 +4,15 @@ import Image from "next/image";
 import Link from "next/link";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Unstable_Grid2";
-import CommentIcon from '@mui/icons-material/Comment';
+import CommentIcon from "@mui/icons-material/Comment";
 
 const NftGrid = ({ nftData, query }) => {
     return (
         <Box sx={{ flexGrow: 1, padding: 2 }}>
             <Grid
                 container
-                spacing={{ xs: 2, md: 2}}
+                spacing={{ xs: 2, md: 2 }}
                 columns={{ xs: 4, sm: 8, md: 12 }}
-                
-                
             >
                 {nftData.map((nft, index) => (
                     <Link
@@ -34,7 +32,7 @@ const NftGrid = ({ nftData, query }) => {
                                 alignItems: "center",
                                 padding: 1,
                             }}
-                            className="transition duration-300 ease-in-out transform hover:scale-120 hover:shadow-lg rounded-lg"
+                            className="transition duration-300 bg-light-primary dark:bg-dark-secondary m-1 ease-in-out transform hover:scale-120 hover:shadow-lg rounded-lg"
                         >
                             <Box
                                 sx={{
@@ -42,8 +40,8 @@ const NftGrid = ({ nftData, query }) => {
                                     height: 400,
                                     position: "relative",
                                     marginBottom: 1,
+                                    color: "blue",
                                 }}
-                                
                             >
                                 <Image
                                     src={
@@ -56,13 +54,17 @@ const NftGrid = ({ nftData, query }) => {
                                     objectFit="contain" // Changed from "cover" to "contain"
                                 />
                             </Box>
-                            <p style={{ textAlign: "center", marginTop: 0 }}>
-                                {nft.nft_name}
-                            </p>
-                            <Likes nft_id={nft.nft_id} />
-                            <div>
-                            <CommentIcon />
-                            {nft.comment_count}
+                            <div className="text-dark-quaternary font-bold">
+                                <p style={{ textAlign: "center", marginTop: 0 }}>
+                                    {nft.nft_name}
+                                </p>
+                                <div className="flex-wrap">
+                                    <Likes nft_id={nft.nft_id} />
+                                    <div className="">
+                                        <CommentIcon />
+                                        {nft.comment_count}
+                                    </div>
+                                </div>
                             </div>
                         </Grid>
                     </Link>

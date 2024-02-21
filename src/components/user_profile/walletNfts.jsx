@@ -7,6 +7,7 @@ import Link from "next/link";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import {getImageSource} from "@/components/utils/getImageSource";
 import fallbackImageUrl from "../../../public/placeholder.png";
 
 function WalletNFTs() {
@@ -48,7 +49,7 @@ function WalletNFTs() {
                     </button>
                     <div className="w-full h-64 relative">
                         <Image
-                            src={nft.media_url ? nft.media_url : fallbackImageUrl}
+                            src={getImageSource( nft.media_url, fallbackImageUrl)}
                             alt={nft.nft_name || "Fallback Image"}
                             layout="fill"
                             objectFit="cover"
