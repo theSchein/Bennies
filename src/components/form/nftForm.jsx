@@ -21,6 +21,7 @@ const style = {
     boxShadow: 24,
     p: 4,
     borderRadius: 2,
+    whiteSpace: 'pre-wrap'
 };
 
 const NftForm = ({ role, nft, isOpen, onClose }) => {
@@ -46,7 +47,7 @@ const NftForm = ({ role, nft, isOpen, onClose }) => {
             <Modal open={isOpen} onClose={onClose}>
                 <Box
                     sx={style}
-                    className="bg-light-tertiary dark:bg-dark-secondary "
+                    className="bg-light-secondary dark:bg-dark-primary text-light-quaternary dark:text-dark-quaternary flex-wrap"
                 >
                     <h1 className="text-center text-2xl font-bold mb-4">
                         Edit NFT Page
@@ -64,7 +65,7 @@ const NftForm = ({ role, nft, isOpen, onClose }) => {
                             {isFieldEditable("nft_licence") && (
                                 <TextInput
                                     name="nft_licence"
-                                    label="Ownership License"
+                                    label="Ownership License: What rights does the owner have?"
                                     as="textarea"
                                 />
                             )}
@@ -72,7 +73,7 @@ const NftForm = ({ role, nft, isOpen, onClose }) => {
                             {isFieldEditable("nft_context") && (
                                 <TextInput
                                     name="nft_context"
-                                    label="Item Information"
+                                    label="NFT Information: Tell us things about this piece"
                                     as="textarea"
                                 />
                             )}
@@ -80,13 +81,37 @@ const NftForm = ({ role, nft, isOpen, onClose }) => {
                             {isFieldEditable("nft_utility") && (
                                 <TextInput
                                     name="nft_utility"
-                                    label="Utility"
+                                    label="Utility: What can the owner do with this NFT?"
                                     as="textarea"
                                 />
                             )}
 
                             {isFieldEditable("category") && (
-                                <TextInput name="category" label="Category" />
+                                <div className="flex flex-col">
+                                    <label
+                                        htmlFor="category"
+                                        className="mb-2 font-medium text-sm sm:text-base"
+                                    >
+                                        Category
+                                    </label>
+                                    <select
+                                        name="category"
+                                        id="category"
+                                        className="p-2 border border-light-tertiary dark:border-dark-tertiary rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent mb-2"
+                                    >
+                                        <option value="">Select a category</option>
+                                        <option value="art">Art</option>
+                                        <option value="community">Community</option>
+                                        <option value="virtual-world">
+                                            Virtual World
+                                        </option>
+                                        <option value="collectible">
+                                            Collectible
+                                        </option>
+                                        <option value="event">Event Ticket</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
                             )}
 
                             <input
