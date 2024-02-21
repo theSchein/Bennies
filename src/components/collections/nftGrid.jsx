@@ -4,17 +4,15 @@ import Image from "next/image";
 import Link from "next/link";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Unstable_Grid2";
-import CommentIcon from '@mui/icons-material/Comment';
+import CommentIcon from "@mui/icons-material/Comment";
 
 const NftGrid = ({ nftData, query }) => {
     return (
         <Box sx={{ flexGrow: 1, padding: 2 }}>
             <Grid
                 container
-                spacing={{ xs: 2, md: 2}}
+                spacing={{ xs: 2, md: 2 }}
                 columns={{ xs: 4, sm: 8, md: 12 }}
-                
-                
             >
                 {nftData.map((nft, index) => (
                     <Link
@@ -43,7 +41,6 @@ const NftGrid = ({ nftData, query }) => {
                                     position: "relative",
                                     marginBottom: 1,
                                 }}
-                                
                             >
                                 <Image
                                     src={
@@ -61,8 +58,8 @@ const NftGrid = ({ nftData, query }) => {
                             </p>
                             <Likes nft_id={nft.nft_id} />
                             <div>
-                            <CommentIcon />
-                            {nft.comment_count}
+                                <CommentIcon/>
+                                {nft.comment_count}
                             </div>
                         </Grid>
                     </Link>

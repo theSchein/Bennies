@@ -6,7 +6,7 @@ export default async (req, res) => {
         return res.status(405).json({ error: "Method not allowed" });
     }
 
-    const { query, page = 1, limit = 12 } = req.query; 
+    const { query, page = 1, limit = 12 } = req.query;
 
     if (!query) {
         return res.status(400).json({ error: "Query is required" });
@@ -16,18 +16,24 @@ export default async (req, res) => {
 
     try {
         // Search collections with pagination
-        const collectionResults = await db.any(`
+        const collectionResults = await db.any(
+            `
             SELECT collection_id, collection_name, media_url, num_collection_items FROM collections
             WHERE textsearchable_index_col @@ plainto_tsquery('english', $1)
             ORDER BY collection_name
             LIMIT $2 OFFSET $3;
-        `, [query, limit, offset]);
+        `,
+            [query, limit, offset],
+        );
 
         // Calculate total number of collections for pagination metadata (optional)
-        const totalCollections = await db.one(`
+        const totalCollections = await db.one(
+            `
             SELECT COUNT(*) FROM collections
             WHERE textsearchable_index_col @@ plainto_tsquery('english', $1);
-        `, [query]);
+        `,
+            [query],
+        );
 
         // Assuming you want to show collections first and then NFTs, calculate remaining limit and offset for NFTs
         const remainingLimit = Math.max(0, limit - collectionResults.length);
@@ -36,12 +42,36 @@ export default async (req, res) => {
         // Search NFTs with adjusted pagination if there's remaining limit
         let nftResults = [];
         if (remainingLimit > 0) {
-            nftResults = await db.any(`
-                SELECT nft_id, nft_name, media_url, contract_address FROM nfts
-                WHERE textsearchable_index_col @@ plainto_tsquery('english', $1)
-                ORDER BY nft_name
-                LIMIT $2 OFFSET $3;
-            `, [query, remainingLimit, nftOffset]);
+            nftResults = await db.any(
+                `
+            SELECT 
+            n.nft_id, 
+            n.nft_name, 
+            n.media_url, 
+            n.contract_address, 
+            c.collection_name,
+            COALESCE(comment_counts.comment_count, 0) AS comment_count
+        FROM 
+            nfts n
+        LEFT JOIN 
+            collections c ON n.collection_id = c.collection_id
+        LEFT JOIN (
+            SELECT 
+                nft_id, 
+                COUNT(comment_id) AS comment_count
+            FROM 
+                comments
+            GROUP BY 
+                nft_id
+        ) AS comment_counts ON n.nft_id = comment_counts.nft_id
+        WHERE 
+            n.textsearchable_index_col @@ plainto_tsquery('english', $1)
+        ORDER BY 
+            n.nft_name
+        LIMIT $2 OFFSET $3;
+            `,
+                [query, remainingLimit, nftOffset],
+            );
         }
 
         res.status(200).json({

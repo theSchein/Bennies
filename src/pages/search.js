@@ -7,8 +7,10 @@ import { useSearchParams } from "next/navigation";
 import SearchBar from "@/components/search/SearchBar";
 import Link from "next/link";
 import Image from "next/image";
-import {getImageSource} from "@/components/utils/getImageSource";
+import { getImageSource } from "@/components/utils/getImageSource";
 import fallbackImageUrl from "../../public/placeholder.png";
+import Likes from "@/components/likes/likes";
+import CommentIcon from "@mui/icons-material/Comment";
 
 const Search = () => {
     const searchParams = useSearchParams();
@@ -96,7 +98,7 @@ const Search = () => {
                                 legacyBehavior
                             >
                                 <a className="block transform transition duration-300 ease-in-out hover:-translate-y-2">
-                                    <div className="bg-light-secondary dark:bg-dark-secondary rounded-lg overflow-hidden shadow-lg hover:shadow-2xl h-90 flex flex-col">
+                                    <div className="bg-light-secondary dark:bg-dark-secondary rounded-lg overflow-hidden shadow-lg hover:shadow-2xl flex flex-col">
                                         <div className="w-full h-80 relative">
                                             <Image
                                                 src={imageSource}
@@ -104,23 +106,27 @@ const Search = () => {
                                                 layout="fill"
                                                 objectFit="cover"
                                             />
-                                            )
                                         </div>
-                                        <div className="p-4 flex-grow">
-                                            <h3 className="text-light-quaternary dark:text-dark-quaternary text-lg font-bold truncate">
-                                                {nft.nft_name}
-                                            </h3>
-                                            <p className="text-light-quaternary dark:text-dark-quaternary text-sm mt-1">
-                                                Address:{" "}
-                                                {nft.contract_address.substring(
-                                                    0,
-                                                    20,
-                                                )}
-                                                ...
-                                            </p>
-                                            <p className="text-light-quaternary dark:text-dark-quaternary text-sm mt-2 line-clamp-1">
-                                                {nft.nft_description}
-                                            </p>
+                                        <div className="p-4 flex-grow flex justify-between">
+                                            <div>
+                                                <h3 className="text-light-quaternary dark:text-dark-quaternary text-lg font-bold truncate">
+                                                    {nft.nft_name}
+                                                </h3>
+                                                <p className="text-light-quaternary dark:text-dark-quaternary text-sm mt-1 italic">
+                                                    {nft.collection_name}
+                                                </p>
+                                            </div>
+                                            <div className="flex flex-col items-end ">
+                                                <div className="flex items-center">
+                                                    <Likes />
+                                                </div>
+                                                <div className="flex items-center mt-2">
+                                                    <CommentIcon color="inherit" />
+                                                    <span className="mr-2 text-light-quaternary dark:text-dark-quaternary">
+                                                        {nft.comment_count}
+                                                    </span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </a>

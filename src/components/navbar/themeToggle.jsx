@@ -46,7 +46,7 @@ const ThemeToggle = () => {
             />
             <WbTwilightIcon
                 sx={{
-                    color: darkMode ? theme.palette.dark.primary : theme.palette.light.secondary, // Use theme colors for the icon
+                    color: darkMode ? theme.palette.dark.primary : theme.palette.light.secondary,
                 }}
             />
         </div>
