@@ -20,7 +20,7 @@ const UserLeaderboard = () => {
     return (
 <div className="leaderboard-container max-w-4xl">
     <h2 className="leaderboard-heading">
-        User Comment Leaderboard
+        Commenter Leaderboard
     </h2>
     <div className="overflow-x-auto">
         <table className="leaderboard-table">

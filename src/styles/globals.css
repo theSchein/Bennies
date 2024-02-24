@@ -75,3 +75,10 @@ h6 {
 .table-cell {
   @apply px-4 py-2 text-xs md:px-6 md:py-3 md:text-sm;
 }
+
+.bg-level-0 {
+  @apply bg-light-secondary dark:bg-dark-secondary;
+}
+.bg-level-1 {
+  @apply bg-light-tertiary dark:bg-dark-primary;
+}
