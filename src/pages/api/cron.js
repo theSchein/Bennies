@@ -9,22 +9,32 @@ export default async function handler(req, res) {
         return res.status(401).send("Unauthorized");
     }
 
-    try {
-        const updateOwnersQuery = `
-        UPDATE collections
-        SET num_owners = derived.num_owners
-        FROM (
-            SELECT 
-                n.collection_id, 
-                COUNT(DISTINCT u.owner) AS num_owners
-            FROM nfts n
-            CROSS JOIN LATERAL unnest(n.owners) AS u(owner)
-            GROUP BY n.collection_id
-        ) AS derived
-        WHERE collections.collection_id = derived.collection_id;
-    `;
+    const taskType = req.query.taskType;
 
-        // Update total number of likes for each collection
+    try {
+
+        if (taskType === 'daily') {
+        // Refresh the materialized views
+        await db.query('REFRESH MATERIALIZED VIEW CONCURRENTLY collection_nft_aggregates;');
+        await db.query("REFRESH MATERIALIZED VIEW nft_leaderboard;");
+        await db.query("REFRESH MATERIALIZED VIEW comment_leaderboard;");
+        } else if (taskType === 'hourly') {
+            
+            const updateOwnersQuery = `
+            UPDATE collections
+            SET num_owners = derived.num_owners
+            FROM (
+                SELECT 
+                    n.collection_id, 
+                    COUNT(DISTINCT u.owner) AS num_owners
+                FROM nfts n
+                CROSS JOIN LATERAL unnest(n.owners) AS u(owner)
+                GROUP BY n.collection_id
+            ) AS derived
+            WHERE collections.collection_id = derived.collection_id;
+        `;
+        await db.query(updateOwnersQuery);
+
         const updateLikesQuery = `
         UPDATE collections
         SET num_likes = derived.total_likes
@@ -44,14 +54,8 @@ export default async function handler(req, res) {
         ) AS derived
         WHERE collections.collection_id = derived.collection_id;
     `;
-
-        await db.query(updateOwnersQuery);
         await db.query(updateLikesQuery);
-
-        // Refresh the materialized views
-        await db.query('REFRESH MATERIALIZED VIEW CONCURRENTLY collection_nft_aggregates;');
-        await db.query("REFRESH MATERIALIZED VIEW nft_leaderboard;");
-        await db.query("REFRESH MATERIALIZED VIEW comment_leaderboard;");
+        }
 
         res.status(200).send("Cron job executed successfully");
     } catch (error) {
