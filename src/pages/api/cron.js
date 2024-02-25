@@ -18,6 +18,8 @@ export default async function handler(req, res) {
         await db.query('REFRESH MATERIALIZED VIEW CONCURRENTLY collection_nft_aggregates;');
         await db.query("REFRESH MATERIALIZED VIEW nft_leaderboard;");
         await db.query("REFRESH MATERIALIZED VIEW comment_leaderboard;");
+
+        await refreshOwnershipCounts();
         } else if (taskType === 'hourly') {
             
             const updateOwnersQuery = `
@@ -62,4 +64,27 @@ export default async function handler(req, res) {
         console.error("Error executing cron job:", error);
         res.status(500).send("Internal Server Error");
     }
+}
+
+async function refreshOwnershipCounts() {
+    // Step 1: Optionally, clear the existing counts to start fresh
+    // This step depends on your application's requirements
+    // await db.query("DELETE FROM ownership_counts;");
+
+    // Step 2: Calculate the new counts and update the table
+    const updateOwnershipCountsQuery = `
+        INSERT INTO ownership_counts (user_id, collection_id, ownership_count)
+        SELECT 
+            u.user_id, 
+            n.collection_id, 
+            COUNT(n.nft_id) AS ownership_count
+        FROM nfts n
+        JOIN wallets w ON w.wallet_address = ANY(n.owners)
+        JOIN users u ON u.user_id = w.user_id
+        GROUP BY u.user_id, n.collection_id
+        ON CONFLICT (user_id, collection_id) DO UPDATE 
+        SET ownership_count = EXCLUDED.ownership_count;
+    `;
+
+    await db.query(updateOwnershipCountsQuery);
 }

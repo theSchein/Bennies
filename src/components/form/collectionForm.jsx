@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import TextInput from "./textInput";
 import useCollectionForm from "../hooks/useCollectionForm";
+import { Controller } from "react-hook-form";
 import AlertModal from "../alert";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
@@ -90,31 +91,43 @@ const CollectionForm = ({ role, collection, isOpen, onClose }) => {
                             )}
 
                             {isFieldEditable("category") && (
-                                <div className="flex flex-col">
-                                    <label
-                                        htmlFor="category"
-                                        className="mb-2 font-medium text-sm sm:text-base"
-                                    >
-                                        Category
-                                    </label>
-                                    <select
-                                        name="category"
-                                        id="category"
-                                        className="p-2 border border-light-tertiary dark:border-dark-tertiary rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent mb-2"
-                                    >
-                                        <option value="">Select a category</option>
-                                        <option value="art">Art</option>
-                                        <option value="community">Community</option>
-                                        <option value="virtual-world">
-                                            Virtual World
-                                        </option>
-                                        <option value="collectible">
-                                            Collectible
-                                        </option>
-                                        <option value="event">Event Ticket</option>
-                                        <option value="other">Other</option>
-                                    </select>
-                                </div>
+                                <Controller
+                                    name="category"
+                                    control={methods.control}
+                                    render={({ field }) => (
+                                        <div className="flex flex-col">
+                                            <label
+                                                htmlFor="category"
+                                                className="mb-2 font-medium text-sm sm:text-base"
+                                            >
+                                                Category
+                                            </label>
+                                            <select
+                                                {...field}
+                                                id="category"
+                                                className="p-2 border border-light-tertiary dark:border-dark-tertiary rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent mb-2"
+                                            >
+                                                <option value="">
+                                                    Select a category
+                                                </option>
+                                                <option value="art">Art</option>
+                                                <option value="community">
+                                                    Community
+                                                </option>
+                                                <option value="virtual-world">
+                                                    Virtual World
+                                                </option>
+                                                <option value="collectible">
+                                                    Collectible
+                                                </option>
+                                                <option value="event">
+                                                    Event Ticket
+                                                </option>
+                                                <option value="other">Other</option>
+                                            </select>
+                                        </div>
+                                    )}
+                                />
                             )}
 
                             <input

@@ -25,6 +25,7 @@ const useCollectionForm = (role, collection) => {
                 ...formData,
                 collection_id: collection.collection_id
             };
+            console.log('dataToSend: ', dataToSend);
 
 
             const response = await fetch('/api/collection/updateCollection', {
