@@ -44,12 +44,12 @@ export default function NftPage({ nft }) {
 
     return (
         <div
-            className="min-h-screen bg-primary flex flex-col items-center justify-center
-    py-4 sm:py-6 lg:py-8 px-3 sm:px-6 lg:px-8 space-y-4 sm:space-y-6 bg-gradient-light dark:bg-gradient-dark
+            className=" 
+    bg-gradient-light dark:bg-gradient-dark
     text-light-quaternary dark:text-dark-quaternary"
         >
             <NftDetails nft={nft} />
-            <CommentSection nft={nft} />
+            {/* <CommentSection nft={nft} /> */}
         </div>
     );
 }

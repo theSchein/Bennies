@@ -4,6 +4,7 @@
 import React from "react";
 import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
+import { Controller } from "react-hook-form";
 import TextInput from "./textInput";
 import useCollectionForm from "../hooks/useCollectionForm";
 import AlertModal from "../alert";
@@ -17,10 +18,11 @@ const style = {
     transform: "translate(-50%, -50%)",
     width: "auto",
     maxWidth: "500px",
-    bgcolor: "background.paper",
+    // bgcolor: "background.paper",
     boxShadow: 24,
     p: 4,
     borderRadius: 2,
+    // color: "text.quaternary",
 };
 
 const CollectionForm = ({ role, collection, isOpen, onClose }) => {
@@ -50,7 +52,7 @@ const CollectionForm = ({ role, collection, isOpen, onClose }) => {
             <Modal open={isOpen} onClose={onClose}>
                 <Box
                     sx={style}
-                    className="bg-light-secondary dark:bg-dark-primary text-light-quaternary dark:text-dark-quaternary flex-wrap"
+                    className="bg-light-quaternary dark:bg-dark-quaternary text-light-primary dark:text-dark-primary flex-wrap"
                 >
                     <h1 className="text-center text-2xl font-bold mb-4">
                         Edit Collection Page
@@ -66,39 +68,47 @@ const CollectionForm = ({ role, collection, isOpen, onClose }) => {
                             )}
 
                             {isFieldEditable("nft_licence") && (
-                                <div className="flex flex-col text-light-quaternary dar:text-dark-quaternary">
+                                <div className="flex flex-col text-light-secondary dark:text-dark-secondary">
                                     <label
-                                        htmlFor="category"
+                                        htmlFor="nft_licence"
                                         className="mb-2 font-medium text-sm sm:text-base"
-                                        
                                     >
                                         Art License
                                     </label>
-
-                                    <select
-                                        name="category"
-                                        id="category"
-                                        className="p-2 border border-light-tertiary dark:border-dark-tertiary rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent mb-2"
-                                    >
-                                        <option value="">Select a License</option>
-                                        <option value="cc0">CC0</option>
-                                        <option value="cc_by_nc_4">
-                                            CC BY-NC 4.0
-                                        </option>
-                                        <option value="gnu">
-                                            GNU General Public License
-                                        </option>
-                                        <option value="mit">MIT License</option>
-                                        <option value="nft_2">
-                                            NFT License 2.0
-                                        </option>
-                                        <option value="other">Other</option>
-                                    </select>
+                                    <Controller
+                                        name="nft_licence"
+                                        control={methods.control}
+                                        render={({ field }) => (
+                                            <select
+                                                {...field}
+                                                id="nft_licence"
+                                                className="p-2 border text-light-quaternary dark:text-dark-quaternary rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent mb-2"
+                                            >
+                                                <option value="">
+                                                    Select a License
+                                                </option>
+                                                <option value="cc0">CC0</option>
+                                                <option value="cc_by_nc_4">
+                                                    CC BY-NC 4.0
+                                                </option>
+                                                <option value="complete">
+                                                    Holder Owns the Art Completely
+                                                </option>
+                                                <option value="mit">
+                                                    MIT License
+                                                </option>
+                                                <option value="nft_2">
+                                                    NFT License 2.0
+                                                </option>
+                                                <option value="other">Other</option>
+                                            </select>
+                                        )}
+                                    />
                                     <a
                                         href="https://medium.com/the-link-art-blocks/licensing-cheat-sheet-54223616ea50"
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="mt-2 italic text-xs sm:text-sm text-primary hover:underline"
+                                        className="mt-2 italic text-xs sm:text-sm text-light-tertiary dark:text-dark-secondary hover:underline"
                                     >
                                         Learn more about licensing
                                     </a>
@@ -122,7 +132,7 @@ const CollectionForm = ({ role, collection, isOpen, onClose }) => {
                             )}
 
                             {isFieldEditable("category") && (
-                                <div className="flex flex-col text-light-quaternary dar:text-dark-quaternary">
+                                <div className="flex flex-col text-light-secondary dark:text-dark-secondary">
                                     <label
                                         htmlFor="category"
                                         className="mb-2 font-medium text-sm sm:text-base"
@@ -132,7 +142,7 @@ const CollectionForm = ({ role, collection, isOpen, onClose }) => {
                                     <select
                                         name="category"
                                         id="category"
-                                        className="p-2 border border-light-tertiary dark:border-dark-tertiary rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent mb-2"
+                                        className="p-2 border text-light-quaternary dark:text-dark-quaternary rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent mb-2"
                                     >
                                         <option value="">Select a category</option>
                                         <option value="art">Art</option>
