@@ -6,7 +6,6 @@ import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import TextInput from "./textInput";
 import useCollectionForm from "../hooks/useCollectionForm";
-import { Controller } from "react-hook-form";
 import AlertModal from "../alert";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
@@ -67,11 +66,43 @@ const CollectionForm = ({ role, collection, isOpen, onClose }) => {
                             )}
 
                             {isFieldEditable("nft_licence") && (
-                                <TextInput
-                                    name="nft_licence"
-                                    label="Ownership License: What rights does the owner have?"
-                                    as="textarea"
-                                />
+                                <div className="flex flex-col text-light-quaternary dar:text-dark-quaternary">
+                                    <label
+                                        htmlFor="category"
+                                        className="mb-2 font-medium text-sm sm:text-base"
+                                        
+                                    >
+                                        Art License
+                                    </label>
+
+                                    <select
+                                        name="category"
+                                        id="category"
+                                        className="p-2 border border-light-tertiary dark:border-dark-tertiary rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent mb-2"
+                                    >
+                                        <option value="">Select a License</option>
+                                        <option value="cc0">CC0</option>
+                                        <option value="cc_by_nc_4">
+                                            CC BY-NC 4.0
+                                        </option>
+                                        <option value="gnu">
+                                            GNU General Public License
+                                        </option>
+                                        <option value="mit">MIT License</option>
+                                        <option value="nft_2">
+                                            NFT License 2.0
+                                        </option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                    <a
+                                        href="https://medium.com/the-link-art-blocks/licensing-cheat-sheet-54223616ea50"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="mt-2 italic text-xs sm:text-sm text-primary hover:underline"
+                                    >
+                                        Learn more about licensing
+                                    </a>
+                                </div>
                             )}
 
                             {isFieldEditable("collection_description") && (
@@ -91,43 +122,31 @@ const CollectionForm = ({ role, collection, isOpen, onClose }) => {
                             )}
 
                             {isFieldEditable("category") && (
-                                <Controller
-                                    name="category"
-                                    control={methods.control}
-                                    render={({ field }) => (
-                                        <div className="flex flex-col">
-                                            <label
-                                                htmlFor="category"
-                                                className="mb-2 font-medium text-sm sm:text-base"
-                                            >
-                                                Category
-                                            </label>
-                                            <select
-                                                {...field}
-                                                id="category"
-                                                className="p-2 border border-light-tertiary dark:border-dark-tertiary rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent mb-2"
-                                            >
-                                                <option value="">
-                                                    Select a category
-                                                </option>
-                                                <option value="art">Art</option>
-                                                <option value="community">
-                                                    Community
-                                                </option>
-                                                <option value="virtual-world">
-                                                    Virtual World
-                                                </option>
-                                                <option value="collectible">
-                                                    Collectible
-                                                </option>
-                                                <option value="event">
-                                                    Event Ticket
-                                                </option>
-                                                <option value="other">Other</option>
-                                            </select>
-                                        </div>
-                                    )}
-                                />
+                                <div className="flex flex-col text-light-quaternary dar:text-dark-quaternary">
+                                    <label
+                                        htmlFor="category"
+                                        className="mb-2 font-medium text-sm sm:text-base"
+                                    >
+                                        Category
+                                    </label>
+                                    <select
+                                        name="category"
+                                        id="category"
+                                        className="p-2 border border-light-tertiary dark:border-dark-tertiary rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent mb-2"
+                                    >
+                                        <option value="">Select a category</option>
+                                        <option value="art">Art</option>
+                                        <option value="community">Community</option>
+                                        <option value="virtual-world">
+                                            Virtual World
+                                        </option>
+                                        <option value="collectible">
+                                            Collectible
+                                        </option>
+                                        <option value="event">Event Ticket</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
                             )}
 
                             <input

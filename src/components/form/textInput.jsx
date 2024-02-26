@@ -21,7 +21,7 @@ const TextInput = ({ name, label, as: Component = "input", ...rest }) => {
                 lineHeight: '1.5', // Adjust line height for better readability
                 fontSize: '1rem', // Adjust font size as needed
                 fontWeight: 'medium', // Adjust font weight as needed
-                color: 'darkMode ? theme.palette.dark.secondary : theme.palette.light.secondary', 
+                color: 'darkMode ? theme.palette.dark.secondary : theme.palette.light.quaternary', 
                 '&.Mui-focused': {
                     color: 'darkMode ? theme.palette.dark.secondary : theme.palette.light.secondary', // Color when the input is focused
                 },

@@ -51,7 +51,6 @@ const EditButton = ({ isOwner, isDeployer, pageData }) => {
                                         ? theme.palette.dark.text.primary
                                         : theme.palette.light.text.primary,
                             },
-                            // Apply other styles as needed
                         }}
                     >
                         Update this Page
@@ -60,7 +59,7 @@ const EditButton = ({ isOwner, isDeployer, pageData }) => {
                         <EditForm
                             isOpen={showEditForm}
                             onClose={handleCloseEditForm}
-                            role={role}
+                            role={"deployer"} //ONLY FOR ETH DENVER CHANGE BACK TO ROLE LATER
                             pageData={pageData}
                         />
                     )}
