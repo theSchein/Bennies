@@ -139,23 +139,35 @@ const CollectionForm = ({ role, collection, isOpen, onClose }) => {
                                     >
                                         Category
                                     </label>
-                                    <select
+                                    <Controller
                                         name="category"
-                                        id="category"
-                                        className="p-2 border text-light-quaternary dark:text-dark-quaternary rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent mb-2"
-                                    >
-                                        <option value="">Select a category</option>
-                                        <option value="art">Art</option>
-                                        <option value="community">Community</option>
-                                        <option value="virtual-world">
-                                            Virtual World
-                                        </option>
-                                        <option value="collectible">
-                                            Collectible
-                                        </option>
-                                        <option value="event">Event Ticket</option>
-                                        <option value="other">Other</option>
-                                    </select>
+                                        control={methods.control}
+                                        render={({ field }) => (
+                                            <select
+                                                {...field}
+                                                id="category"
+                                                className="p-2 border text-light-quaternary dark:text-dark-quaternary rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent mb-2"
+                                            >
+                                                <option value="">
+                                                    Select a category
+                                                </option>
+                                                <option value="art">Art</option>
+                                                <option value="community">
+                                                    Community
+                                                </option>
+                                                <option value="virtual-world">
+                                                    Virtual World
+                                                </option>
+                                                <option value="collectible">
+                                                    Collectible
+                                                </option>
+                                                <option value="event">
+                                                    Event Ticket
+                                                </option>
+                                                <option value="other">Other</option>
+                                            </select>
+                                        )}
+                                    />
                                 </div>
                             )}
 
