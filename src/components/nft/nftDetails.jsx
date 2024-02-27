@@ -14,6 +14,7 @@ import { getImageSource } from "../utils/getImageSource";
 import fallbackImageUrl from "../../../public/placeholder.png";
 import StoreIcon from "@mui/icons-material/Store";
 import NewsFeed from "../newsfeed/newsfeed";
+import Modal from "@mui/material/Modal";
 
 const NftDetails = ({ nft }) => {
     const [isModalOpen, setModalOpen] = useState(false);
