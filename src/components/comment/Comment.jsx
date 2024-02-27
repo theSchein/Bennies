@@ -10,7 +10,7 @@ import Likes from "../likes/likes";
 function Comment({ comment, addReply, nft, depth, toggleReloadComments }) {
     const [showReplyForm, setShowReplyForm] = useState(false);
     const [nestedText, setNestedText] = useState("");
-    const [showReplies, setShowReplies] = useState(true);
+    const [showReplies, setShowReplies] = useState(false);
 
     const handleNestedSubmit = (e) => {
         e.preventDefault();
