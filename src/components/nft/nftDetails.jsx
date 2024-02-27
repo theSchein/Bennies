@@ -125,7 +125,7 @@ const NftDetails = ({ nft }) => {
                     <h2 className="text-2xl font-bold mb-4 italic dark:text-dark-primary">News Feed</h2>
                     <NewsFeed
                         collectionIds={[nft.collection_id]}
-                        viewingGroup="public"
+                        viewingGroup="holders"
                     />
                 </div>
             </div>
