@@ -3,7 +3,6 @@
 // It grabs the nft metadata by slug from the database.
 
 import db from "../../lib/db";
-import CommentSection from "../../components/comment/CommentSection";
 import NftDetails from "../../components/nft/nftDetails"; // Import the new component
 
 export async function getServerSideProps({ params }) {
@@ -49,7 +48,6 @@ export default function NftPage({ nft }) {
     text-light-quaternary dark:text-dark-quaternary"
         >
             <NftDetails nft={nft} />
-            {/* <CommentSection nft={nft} /> */}
         </div>
     );
 }
