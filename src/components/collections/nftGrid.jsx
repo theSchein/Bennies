@@ -5,6 +5,8 @@ import Link from "next/link";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Unstable_Grid2";
 import CommentIcon from "@mui/icons-material/Comment";
+import {getImageSource} from "@/components/utils/getImageSource";
+import fallbackImageUrl from "../../../public/placeholder.png";
 
 const NftGrid = ({ nftData, query }) => {
     return (
@@ -43,11 +45,10 @@ const NftGrid = ({ nftData, query }) => {
                                 }}
                             >
                                 <Image
-                                    src={
-                                        nft.media_url
-                                            ? nft.media_url
-                                            : fallbackImageUrl
-                                    }
+                                    src={getImageSource(
+                                        nft.media_url,
+                                        fallbackImageUrl,
+                                    )}
                                     alt={nft.nft_name}
                                     layout="fill"
                                     objectFit="contain"

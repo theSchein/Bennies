@@ -11,8 +11,8 @@ import NewsFeed from "../newsfeed/newsfeed";
 
 const CollectionSidebar = ({ collection, onNftsFetched }) => {
     const [nftData, setNftData] = useState([]);
-    const [sortOrder, setSortOrder] = useState("ASC");
-    const [sortBy, setSortBy] = useState("token_id");
+    const [sortOrder, setSortOrder] = useState("DESC");
+    const [sortBy, setSortBy] = useState("like_count");
     const [page, setPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
 
