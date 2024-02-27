@@ -12,7 +12,7 @@ const useNftForm = (role, nft) => {
     function determineEditableFields(role) {
         switch (role) {
             case "deployer":
-                return ["nft_sales_link", "nft_licence", "nft_context", "nft_utility", "nft_category"]; 
+                return ["nft_sales_link", "nft_licence", "nft_context", "nft_utility", "category"]; 
             case "owner":
                 return ["nft_context", "nft_utility", "category"]; 
             default:

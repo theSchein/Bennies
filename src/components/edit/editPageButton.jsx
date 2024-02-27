@@ -8,8 +8,10 @@ import { useState } from "react";
 import Button from "@mui/material/Button";
 import EditForm from "./editForm";
 import Link from "next/link";
+import { useTheme } from "@mui/material/styles";
 
 const EditButton = ({ isOwner, isDeployer, pageData }) => {
+    const theme = useTheme();
     const [showEditForm, setShowEditForm] = useState(false);
     const { data: session } = useSession();
     const handleOpenEditForm = () => setShowEditForm(true);
@@ -28,14 +30,36 @@ const EditButton = ({ isOwner, isDeployer, pageData }) => {
         <div className=" max-w-2xl mx-auto">
             {session ? (
                 <div className="btn">
-                    <Button onClick={handleOpenEditForm} className="btn">
+                    <Button
+                        onClick={handleOpenEditForm}
+                        sx={{
+                            backgroundColor:
+                                theme.palette.mode === "dark"
+                                    ? theme.palette.dark.primary
+                                    : theme.palette.light.primary,
+                            color:
+                                theme.palette.mode === "dark"
+                                    ? theme.palette.dark.text.quaternary
+                                    : theme.palette.light.text.quaternary,
+                            "&:hover": {
+                                backgroundColor:
+                                    theme.palette.mode === "dark"
+                                        ? theme.palette.dark.quaternary
+                                        : theme.palette.light.quaternary,
+                                color:
+                                    theme.palette.mode === "dark"
+                                        ? theme.palette.dark.text.primary
+                                        : theme.palette.light.text.primary,
+                            },
+                        }}
+                    >
                         Update this Page
                     </Button>
                     {showEditForm && (
                         <EditForm
                             isOpen={showEditForm}
                             onClose={handleCloseEditForm}
-                            role={role}
+                            role={"deployer"} //ONLY FOR ETH DENVER CHANGE BACK TO ROLE LATER
                             pageData={pageData}
                         />
                     )}

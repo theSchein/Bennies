@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     }
 
     try {
-        const result = await db.query('SELECT rank, username, score FROM comment_leaderboard LIMIT 10;');
+        const result = await db.query('SELECT rank, username, score FROM comment_leaderboard LIMIT 5;');
         if (result) {
             res.status(200).json({ userLeaderboard: result });
         } else {

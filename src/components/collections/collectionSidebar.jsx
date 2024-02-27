@@ -11,8 +11,8 @@ import NewsFeed from "../newsfeed/newsfeed";
 
 const CollectionSidebar = ({ collection, onNftsFetched }) => {
     const [nftData, setNftData] = useState([]);
-    const [sortOrder, setSortOrder] = useState("ASC");
-    const [sortBy, setSortBy] = useState("token_id");
+    const [sortOrder, setSortOrder] = useState("DESC");
+    const [sortBy, setSortBy] = useState("like_count");
     const [page, setPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
 
@@ -117,6 +117,8 @@ const CollectionSidebar = ({ collection, onNftsFetched }) => {
                 <MakeNews collectionId={collection.collection_id} />
             )} */}
             <MakeNews collectionId={collection.collection_id} />
+            <h2 className="text-2xl font-bold mb-4 italic ">News Feed</h2>
+
             <NewsFeed
                 collectionIds={[collection.collection_id]}
                 viewingGroup={viewingGroup}

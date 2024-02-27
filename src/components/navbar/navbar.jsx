@@ -19,7 +19,7 @@ import ThemeToggle from "./themeToggle";
 import Link from "next/link";
 import Notifications from "../notifications/notifications";
 
-const pages = ["pitchdeck", "search"];
+const pages = ["about", "search"];
 
 function Navbar() {
     const { data: session, status } = useSession();

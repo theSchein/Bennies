@@ -11,8 +11,17 @@ export default async function handler(req, res) {
     try {
         const { collection_id, ...updateFields } = req.body;
 
+        // Exclude fields that should not be updated directly
+        const fieldsToExclude = ["textsearchable_index_col"]; // Add any other fields to exclude as needed
+        const filteredUpdateFields = Object.keys(updateFields)
+            .filter(key => !fieldsToExclude.includes(key))
+            .reduce((obj, key) => {
+                obj[key] = updateFields[key];
+                return obj;
+            }, {});
+
         // Construct the SET part of the SQL query dynamically based on the fields to update
-        const setQuery = Object.keys(updateFields)
+        const setQuery = Object.keys(filteredUpdateFields)
             .map((key, index) => `${key} = $${index + 2}`)
             .join(', ');
 
@@ -20,7 +29,8 @@ export default async function handler(req, res) {
             throw new Error('No fields to update');
         }
 
-        const values = [collection_id, ...Object.values(updateFields)];
+        const values = [collection_id, ...Object.values(filteredUpdateFields)];
+
 
         await db.query(
             `UPDATE collections SET ${setQuery} WHERE collection_id = $1`,

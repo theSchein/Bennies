@@ -25,6 +25,7 @@ const useCollectionForm = (role, collection) => {
                 ...formData,
                 collection_id: collection.collection_id
             };
+            console.log('dataToSend: ', dataToSend);
 
 
             const response = await fetch('/api/collection/updateCollection', {
@@ -43,7 +44,6 @@ const useCollectionForm = (role, collection) => {
             setError('');
             return true;
         } catch (error) {
-            console.error('Error updating Collection:', error);
             setError(error.message || 'Failed to update Collection');
             setIsSuccessful(false);
             return false;

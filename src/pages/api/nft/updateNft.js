@@ -11,8 +11,16 @@ export default async function handler(req, res) {
     try {
         const { nft_id, ...updateFields } = req.body;
 
+        const fieldsToExclude = ["textsearchable_index_col", "collection_name", "nft_category"]; // Add any other fields to exclude as needed
+        const filteredUpdateFields = Object.keys(updateFields)
+            .filter(key => !fieldsToExclude.includes(key))
+            .reduce((obj, key) => {
+                obj[key] = updateFields[key];
+                return obj;
+            }, {});
+
         // Construct the SET part of the SQL query dynamically based on the fields to update
-        const setQuery = Object.keys(updateFields)
+        const setQuery = Object.keys(filteredUpdateFields)
             .map((key, index) => `${key} = $${index + 2}`)
             .join(', ');
 
@@ -20,7 +28,7 @@ export default async function handler(req, res) {
             throw new Error('No fields to update');
         }
 
-        const values = [nft_id, ...Object.values(updateFields)];
+        const values = [nft_id, ...Object.values(filteredUpdateFields)];
 
         await db.query(
             `UPDATE nfts SET ${setQuery} WHERE nft_id = $1`,

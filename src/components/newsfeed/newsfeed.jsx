@@ -34,7 +34,6 @@ const NewsFeed = ({ collectionIds, viewingGroup }) => {
 
     return (
         <div className="news-feed mt-8">
-            <h2 className="text-2xl font-bold mb-4">News Feed</h2>
             {newsItems.length > 0 ? (
                 <ul className="space-y-4">
                     {filteredNewsItems.map((item, index) => (
