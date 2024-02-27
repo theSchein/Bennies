@@ -18,7 +18,7 @@ export default async function handler(req, res) {
                     nft_leaderboard
                 ORDER BY
                     score DESC
-                LIMIT 10;
+                LIMIT 5;
             `;
             const result = await db.query(query);
             const nftLeaderboard = result;
