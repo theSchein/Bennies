@@ -52,7 +52,7 @@ export default function About() {
                         <li>
                         <span className="font-bold">More Data More Chains:</span> We will have not just ETH NFTs but
                             also support L2s like polygon, base as well as other
-                            layer 1's like Solana.
+                            layer 1&apos;s like Solana.
                         </li>
                         <li>
                         <span className="font-bold">Profiles:</span>  Integration with platforms like Farcaster and
