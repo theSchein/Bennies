@@ -87,20 +87,20 @@ const CollectionForm = ({ role, collection, isOpen, onClose }) => {
                                                 <option value="">
                                                     Select a License
                                                 </option>
-                                                <option value="cc0">CC0</option>
-                                                <option value="cc_by_nc_4">
+                                                <option value="CC0">CC0</option>
+                                                <option value="CC BY-NC 4.0">
                                                     CC BY-NC 4.0
                                                 </option>
-                                                <option value="complete">
-                                                    Holder Owns the Art Completely
+                                                <option value="Holder Has Total Rights">
+                                                    Holder Has Total Rights
                                                 </option>
-                                                <option value="mit">
+                                                <option value="MIT License">
                                                     MIT License
                                                 </option>
-                                                <option value="nft_2">
+                                                <option value="NFT License 2.0">
                                                     NFT License 2.0
                                                 </option>
-                                                <option value="other">Other</option>
+                                                <option value="Other">Other</option>
                                             </select>
                                         )}
                                     />
@@ -151,20 +151,20 @@ const CollectionForm = ({ role, collection, isOpen, onClose }) => {
                                                 <option value="">
                                                     Select a category
                                                 </option>
-                                                <option value="art">Art</option>
-                                                <option value="community">
+                                                <option value="Art">Art</option>
+                                                <option value="Community">
                                                     Community
                                                 </option>
-                                                <option value="virtual-world">
+                                                <option value="Virtual World">
                                                     Virtual World
                                                 </option>
-                                                <option value="collectible">
+                                                <option value="Collectible">
                                                     Collectible
                                                 </option>
-                                                <option value="event">
+                                                <option value="Event">
                                                     Event Ticket
                                                 </option>
-                                                <option value="other">Other</option>
+                                                <option value="Other">Other</option>
                                             </select>
                                         )}
                                     />

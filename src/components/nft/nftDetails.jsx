@@ -41,22 +41,22 @@ const NftDetails = ({ nft }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Left Column */}
                 <div className="bg-light-secondary dark:bg-dark-secondary p-6 rounded-lg space-y-6">
-                    <h1 className="font-heading text-3xl text-light-quaternary dark:text-dark-quaternary mb-4 break-words">
+                    <h1 className="font-heading text-4xl text-light-quaternary dark:text-dark-quaternary mb-4 break-words">
                         {nft.nft_name}
                     </h1>
                     <Link
                         href={`/collection/${nft.collection_id}/${nft.collection_name}`}
-                        className="text-2xl font-bold italic text-light-quaternary dark:text-dark-quaternary"
+                        className="text-3xl font-bold italic text-light-quaternary dark:text-dark-quaternary hover:text-light-tertiary dark:hover:text-dark-tertiary"
                     >
                         {nft.collection_name}
                     </Link>
-                    <div className="space-y-2">
-                        <p className="font-bold text-lg text-light-quaternary dark:text-dark-quaternary">
-                            Category:
-                        </p>
-                        <p className="font-body font-bold text-lg text-light-quaternary dark:text-dark-quaternary">
-                            {nft.category || nft.nft_category}
-                        </p>
+                    <div className="flex items-center space-x-4">
+                        <div className="bg-light-tertiary dark:bg-dark-tertiary p-2 rounded-lg shadow">
+                            <p className="font-bold text-lg text-light-quaternary dark:text-dark-primary">
+                                {nft.category || nft.nft_category}
+                            </p>
+                        </div>
+                        <Likes />
                     </div>
                     <div className="text-center">
                         <EditPageButton
@@ -68,6 +68,14 @@ const NftDetails = ({ nft }) => {
                     <p className="font-body text-lg text-light-quaternary dark:text-dark-quaternary break-words">
                         {nft.nft_description}
                     </p>
+                    <div className="bg-light-tertiary dark:bg-dark-tertieary shadow-xl p-3 rounded-xl">
+                        <p className="font-bold text-xl text-light-quaternary dark:text-dark-quaternary m-3">
+                            Utility
+                        </p>
+                        <p className="font-body text-lg text-light-quaternary dark:text-dark-quaternary break-words m-3">
+                            {nft.nft_utility}
+                        </p>
+                    </div>
                     <CommentSection nft={nft} />
                 </div>
 
@@ -81,27 +89,26 @@ const NftDetails = ({ nft }) => {
                             objectFit="contain"
                         />
                     </div>
-                    <div className="flex justify-between items-center">
-                        <p className="font-body italic text-lg text-light-quaternary dark:text-dark-primary break-words">
+                    <div className="flex items-center">
+                        <div className="flex p-2 bg-light-secondary rounded-md">
+                        <p className="font-body italic text-lg text-light-quaternary dark:text-dark-quaternary break-words">
                             License:
                         </p>
-                        <p className="font-body text-lg font-bold text-light-quaternary dark:text-dark-primary break-words">
+                        <p className="font-body text-lg font-bold text-light-quaternary dark:text-dark-quaternary break-words ml-2">
                             {nft.nft_licence}
                         </p>
+                        </div>
                         <a
                             href={nft.sales_link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-light-quaternary dark:text-dark-primary hover:text-light-secondary dark:hover:text-dark-secondary"
+                            className="ml-auto"
                         >
                             <StoreIcon
-                                className="cursor-pointer"
+                                className="text-light-quaternary dark:text-dark-primary hover:text-light-secondary dark:hover:text-dark-secondary"
                                 style={{ fontSize: 40 }}
                             />
                         </a>
-                    </div>
-                    <div>
-                        Utility:{"We need to add utility here "}
                     </div>
                     <div className="text-lg font-bold italic text-light-quaternary dark:text-dark-primary">
                         <p className="break-words">
@@ -114,7 +121,11 @@ const NftDetails = ({ nft }) => {
                             Deployer: {nft.deployer_address}
                         </p>
                     </div>
-                    <NewsFeed collectionIds={[nft.collection_id]} viewingGroup="public" />
+                    <h2 className="text-2xl font-bold mb-4 italic dark:text-dark-primary">News Feed</h2>
+                    <NewsFeed
+                        collectionIds={[nft.collection_id]}
+                        viewingGroup="public"
+                    />
                 </div>
             </div>
 

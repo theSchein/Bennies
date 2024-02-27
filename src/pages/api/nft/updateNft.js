@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     try {
         const { nft_id, ...updateFields } = req.body;
 
-        const fieldsToExclude = ["textsearchable_index_col", "collection_name"]; // Add any other fields to exclude as needed
+        const fieldsToExclude = ["textsearchable_index_col", "collection_name", "nft_category"]; // Add any other fields to exclude as needed
         const filteredUpdateFields = Object.keys(updateFields)
             .filter(key => !fieldsToExclude.includes(key))
             .reduce((obj, key) => {

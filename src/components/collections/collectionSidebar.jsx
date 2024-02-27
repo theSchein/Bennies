@@ -117,6 +117,8 @@ const CollectionSidebar = ({ collection, onNftsFetched }) => {
                 <MakeNews collectionId={collection.collection_id} />
             )} */}
             <MakeNews collectionId={collection.collection_id} />
+            <h2 className="text-2xl font-bold mb-4 italic ">News Feed</h2>
+
             <NewsFeed
                 collectionIds={[collection.collection_id]}
                 viewingGroup={viewingGroup}
