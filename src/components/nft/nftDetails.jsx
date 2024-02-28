@@ -57,7 +57,7 @@ const NftDetails = ({ nft }) => {
                                 {nft.category || nft.nft_category}
                             </p>
                         </div>
-                        <Likes />
+                        <Likes nft_id={nft.nft_id} />
                     </div>
                     <div className="text-center">
                         <EditPageButton
