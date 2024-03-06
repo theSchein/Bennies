@@ -5,6 +5,7 @@
 
 import db from "../../../lib/db";
 import retry from 'async-retry';
+import uploadFileToSpaces from "./uploadFileToSpaces";
 const { Alchemy, Network } = require("alchemy-sdk");
 
 const config = {
@@ -46,6 +47,8 @@ export default async function (req, res) {
         }
     }
 
+    // example function to test ability
+    // uploadFileToSpaces("ipfs://QmfCvPP6vPAeqAr6fEvEWzWxHZ89ZeYezvWo6Wbpsgx9E2", "testfolder");
     const contract = req.query.contract;
 
     if (!contract) {
@@ -159,8 +162,17 @@ export default async function (req, res) {
                         ? JSON.parse(NFT.metadata)
                         : NFT.metadata;
                 let image = NFT && NFT.metadata ? NFT.metadata.image : "Blank";
-                if (image.startsWith("ipfs://")) {
-                    image = image.replace("ipfs://", "https://ipfs.io/ipfs/");
+                // if (image.startsWith("ipfs://")) {
+                //     image = image.replace("ipfs://", "https://ipfs.io/ipfs/");
+                // }
+
+                try {
+                    const spacesImageUrl = await uploadFileToSpaces(image, `${collData.contract_address}/${NFT.tokenId}`);
+                    image = spacesImageUrl; // Update the image URL to the one in Digital Ocean Spaces
+                } catch (error) {
+                    console.error("Failed to upload image to Spaces:", error);
+                    // Handle the error, decide whether to skip this NFT, use a placeholder, etc.
+                    image = 'Blank'; // Example fallback
                 }
 
                 const load = await getNftMetadataWithRetry(

@@ -1,46 +1,70 @@
 // uploadFileToSpaces.js
 // this function takes a media image url and uploads it according to the parameters passed to it
 
-import axios from 'axios';
-import s3 from '../../../lib/s3';
+import axios from "axios";
+import s3 from "../../../lib/s3";
 
 async function uploadFileToSpaces(imageUrl, destFileName) {
-    console.log("Uploading file to spaces:", imageUrl, destFileName);
+    if (imageUrl === "Blank") {
+        console.error("Image URL is 'Blank', skipping upload.");
+        return "Blank";
+    }
+    console.log("Checking if file exists in Spaces:", destFileName);
     try {
-        // Replace IPFS URL with a gateway URL if necessary
-        const gatewayUrl = imageUrl.replace("ipfs://", "https://ipfs.io/ipfs/");
+        // Attempt to retrieve file metadata
+        await s3
+            .headObject({
+                Bucket: "shuk",
+                Key: destFileName,
+            })
+            .promise();
+
+        console.log("File already exists at:", destFileName);
+        // Construct the URL of the existing file
+        const existingFileUrl = `https://shuk.nyc3.cdn.digitaloceanspaces.com/${destFileName}`;
+        return existingFileUrl;
+    } catch (error) {
+        if (error.code === "NotFound") {
+            console.log("File does not exist, proceeding with upload.");
+        } else {
+            console.error("Error checking file existence:", error);
+            throw error;
+        }
+    }
+    try {
+        let gatewayUrl = imageUrl;
+        if (imageUrl.startsWith("ipfs://")) {
+            gatewayUrl = imageUrl.replace("ipfs://", "https://ipfs.io/ipfs/");
+        } else if (
+            !imageUrl.startsWith("http://") &&
+            !imageUrl.startsWith("https://")
+        ) {
+            console.error("Unsupported URL scheme:", imageUrl);
+            return "Blank"; // Or return a placeholder image URL
+        }
 
         // Download the image using axios
-        const response = await axios({
-            method: 'get',
-            url: gatewayUrl,
-            responseType: 'arraybuffer'
+        const response = await axios.get(gatewayUrl, {
+            responseType: "arraybuffer",
         });
-
-        const fileContent = Buffer.from(response.data, 'binary');
+        const fileContent = response.data;
 
         // Setting up S3 upload parameters
         const params = {
             Bucket: "shuk",
             Key: destFileName,
             Body: fileContent,
-            ACL: "public-read", // Make the file publicly accessible
+            ACL: "public-read",
         };
 
         // Uploading files to the bucket
-        return new Promise((resolve, reject) => {
-            s3.upload(params, function (err, data) {
-                if (err) {
-                    console.error("Error uploading file to spaces:", err);
-                    return reject(err);
-                }
-                console.log("File uploaded successfully:", data.Location);
-                resolve(data);
-            });
-        });
-    } catch (error) {
-        console.error("Error downloading or uploading the file:", error);
-        throw error; // Rethrow or handle error as needed
+        const { Location } = await s3.upload(params).promise();
+        console.log("File uploaded successfully at:", Location);
+        const cdnUrl = `https://shuk.nyc3.cdn.digitaloceanspaces.com/${destFileName}`;
+        console.log("CDN URL:", cdnUrl);
+        return cdnUrl;    } catch (error) {
+        console.error("Error uploading file to Spaces:", error);
+        throw error; // Rethrow to handle it in the calling code
     }
 }
 
