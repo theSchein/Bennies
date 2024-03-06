@@ -35,6 +35,25 @@ CREATE TABLE collections (
 	category varchar(255)
 );
 
+CREATE TABLE subcollections (
+	subcollection_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+	collection_id UUID REFERENCES collections(collection_id),
+	artist_id UUID REFERENCES artists(artist_id),
+	subcollection_name VARCHAR(255) NOT NULL,
+	num_subcollection_items INT NULL,
+	num_owners INT NULL,
+	num_likes INT NULL,
+	deployer_address VARCHAR(255) NULL,
+	contract_address VARCHAR(255) NULL,
+	token_type VARCHAR(10) NULL,
+	nft_licence TEXT NULL,
+	subcollection_description TEXT NULL,
+	media_url VARCHAR(255) NULL,
+	subcollection_utility TEXT NULL,
+	category VARCHAR(255),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
 CREATE TABLE nfts (
 	nft_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
 	contract_address_token_id varchar(255) NOT NULL,
