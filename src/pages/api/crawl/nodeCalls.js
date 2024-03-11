@@ -205,27 +205,9 @@ async function fetchTokenMetadata(contractAddress, tokenId) {
 
     // Attempt to fetch as ERC-721
     try {
-        const contract721 = new web3.eth.Contract(
-            erc721MetadataAbi,
-            contractAddress,
-        );
-        let tokenURI, owner;
-        try {
-            tokenURI = await contract721.methods.tokenURI(tokenId).call();
-        } catch (error) {
-            console.error(
-                `Failed to fetch tokenURI for token ${tokenId}:`,
-                error.message,
-            );
-        }
-        try {
-            owner = await contract721.methods.ownerOf(tokenId).call();
-        } catch (error) {
-            console.error(
-                `Failed to fetch owner for token ${tokenId}:`,
-                error.message,
-            );
-        }
+        const contract721 = new web3.eth.Contract(erc721MetadataAbi, contractAddress);
+        const tokenURI = await contract721.methods.tokenURI(tokenId).call();
+        const owner = await contract721.methods.ownerOf(tokenId).call();
         if (tokenURI) {
             metadata = { ...metadata, tokenURI, owner, contractType: "ERC-721" };
         }
@@ -236,34 +218,12 @@ async function fetchTokenMetadata(contractAddress, tokenId) {
     // If ERC-721 fetch failed, attempt to fetch as ERC-1155
     if (!metadata.tokenURI) {
         try {
-            const contract1155 = new web3.eth.Contract(
-                erc1155MetadataAbi,
-                contractAddress,
-            );
-            let tokenURI, owner;
-            try {
-                tokenURI = await contract1155.methods.uri(tokenId).call();
-            } catch (error) {
-                console.error(
-                    `Failed to fetch tokenURI for token ${tokenId}:`,
-                    error.message,
-                );
-            }
-            try {
-                owner = await contract1155.methods.ownerOf(tokenId).call();
-            } catch (error) {
-                console.error(
-                    `Failed to fetch owner for token ${tokenId}:`,
-                    error.message,
-                );
-            }
+            const contract1155 = new web3.eth.Contract(erc1155MetadataAbi, contractAddress);
+            const tokenURI = await contract1155.methods.uri(tokenId).call();
+            // Removed the owner fetching for ERC-1155
             if (tokenURI) {
-                metadata = {
-                    ...metadata,
-                    tokenURI,
-                    owner,
-                    contractType: "ERC-1155",
-                };
+                metadata = { ...metadata, tokenURI, contractType: "ERC-1155" };
+                // Note: We're not fetching owner here because ERC-1155 does not support ownerOf
             }
         } catch (erc1155Error) {
             console.error("ERC-1155 uri fetch failed:", erc1155Error.message);
@@ -273,21 +233,13 @@ async function fetchTokenMetadata(contractAddress, tokenId) {
     // Fetch additional metadata from the tokenURI if available
     if (metadata.tokenURI) {
         try {
-            const response = await fetch(
-                metadata.tokenURI.startsWith("ipfs://")
-                    ? metadata.tokenURI.replace("ipfs://", "https://ipfs.io/ipfs/")
-                    : metadata.tokenURI,
-            );
+            const response = await fetch(metadata.tokenURI.startsWith("ipfs://") ? metadata.tokenURI.replace("ipfs://", "https://ipfs.io/ipfs/") : metadata.tokenURI);
             const tokenMetadata = await response.json();
             metadata = { ...metadata, ...tokenMetadata };
         } catch (fetchError) {
-            console.error(
-                "Failed to fetch token metadata from URI:",
-                fetchError.message,
-            );
+            console.error("Failed to fetch token metadata from URI:", fetchError.message);
         }
     }
-
     return metadata;
 }
 
