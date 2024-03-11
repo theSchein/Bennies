@@ -1,4 +1,5 @@
 import web3 from "../../../lib/ethersProvider";
+import tokenIdFinder from "./nodeCalls";
 
 // Minimal ABIs for different checks and interactions
 const erc721Abi = [
@@ -13,16 +14,33 @@ const erc721Abi = [
     },
 ];
 const erc1155Abi = [
-    "function uri(uint256 tokenId) external view returns (string memory)",
+    {
+        constant: true,
+        inputs: [{ name: "tokenId", type: "uint256" }],
+        name: "uri",
+        outputs: [{ name: "", type: "string" }],
+        payable: false,
+        stateMutability: "view",
+        type: "function",
+    },
 ];
-const proxyAbi = ["function implementation() view returns (address)"];
+const proxyAbi = [
+    {
+        constant: true,
+        name: "implementation",
+        outputs: [{ name: "", type: "address" }],
+        payable: false,
+        stateMutability: "view",
+        type: "function",
+    },
+];
 
 async function getImplementationAddress(contractAddress) {
     try {
-        const proxyContract = new ethers.Contract(contractAddress, proxyAbi, web3);
+        const implementationAddress = new web3.eth.Contract(proxyAbi, contractAddress);
         console.log("Fetching implementation address for", contractAddress);
-        return await proxyContract.implementation();
-    } catch (error) {
+        return implementationAddress;
+        } catch (error) {
         console.error("Error fetching implementation address:", error);
         return null;
     }
@@ -42,6 +60,7 @@ export default async function handler(req, res) {
         // // Fetch and log the contract's bytecode
         // const bytecode = await web3.getCode(contractAddress);
         // console.log(`Bytecode for contract at ${contractAddress}: ${bytecode.substring(0, 100)}...`);
+        tokenIdFinder(contractAddress);
 
         // Attempt with ERC-721 ABI
         try {
@@ -53,6 +72,7 @@ export default async function handler(req, res) {
                     : uri721,
             );
             const metadata721 = await response721.json();
+            console.log("Metadata fetched 721:", metadata721);
             return res.status(200).json(metadata721);
         } catch (erc721Error) {
             console.error("ERC-721 tokenURI call failed:", erc721Error.message);
@@ -68,6 +88,7 @@ export default async function handler(req, res) {
                     : uri1155,
             );
             const metadata1155 = await response1155.json();
+            console.log("Metadata fetched 1155:", metadata1155);
             return res.status(200).json(metadata1155);
         } catch (erc1155Error) {
             console.error("ERC-1155 uri call failed:", erc1155Error.message);
