@@ -4,7 +4,10 @@
 import { tokenIdFinder, fetchTokenMetadata } from "./nodeCalls";
 import  { addCollectionToDatabase, addNftToDatabase } from "./databaseOperations";
 import {fetchCollectionData} from "./externalApiCalls";
-import uploadFileToSpaces from "./uploadFileToSpaces";
+
+async function sleep(milliseconds) {
+    return new Promise(resolve => setTimeout(resolve, milliseconds));
+}
 
 export default async function uploadByContract(req, res) {
     if (req.method !== "GET") {
@@ -15,6 +18,15 @@ export default async function uploadByContract(req, res) {
     if (!contract) {
         return res.status(400).json({ message: "Contract address query parameter is required." });
     }
+
+    const contractType = req.query.contractType;
+    if (!contractType) {
+        return res.status(400).json({ message: "Contract type query parameter is required." });
+    }
+    console.log("Processing contract:", contractType);
+
+
+
 
     try {
 
@@ -34,7 +46,7 @@ export default async function uploadByContract(req, res) {
         
 
         // Fetch token IDs for the contract
-        const { type: contractType, tokenIds } = await tokenIdFinder(contract);
+        const  tokenIds  = await tokenIdFinder(contract, contractType);
         if (!tokenIds || tokenIds.length === 0) {
             return res.status(404).json({ message: "No token IDs found for the given contract address." });
         }
@@ -42,23 +54,12 @@ export default async function uploadByContract(req, res) {
         // Process each token ID
         for (const tokenId of tokenIds) {
             console.log(`Processing token ${tokenId} of contract ${contract}`);
-            const metadata = await fetchTokenMetadata(contract, tokenId);
+            const metadata = await fetchTokenMetadata(contract, tokenId, contractType);
             if (!metadata) {
                 console.error(`Failed to fetch metadata for token ${tokenId} of contract ${contract}`);
                 continue; // Skip to the next token if metadata could not be fetched
             }
 
-            // Handle image upload to Spaces
-            let image = metadata.image || "Blank";
-            try {
-                if (image && !image.startsWith("http")) {
-                    const spacesImageUrl = await uploadFileToSpaces(image, `${contract}/${tokenId}`);
-                    image = spacesImageUrl; // Update the image URL to the one in Digital Ocean Spaces
-                }
-            } catch (error) {
-                console.error("Failed to upload image to Spaces:", error);
-                image = "Blank"; // Fallback image
-            }
 
             // Prepare and add NFT data to the database
             const nftData = {
@@ -67,7 +68,7 @@ export default async function uploadByContract(req, res) {
                 nft_name: metadata.name,
                 token_type: contractType,
                 token_uri: metadata.tokenURI,
-                media_link: image,
+                media_link: metadata.image,
                 deployer_address:  collectionData.deployer, 
                 nft_description: metadata.description,
                 owner: metadata.owner, 
@@ -75,6 +76,7 @@ export default async function uploadByContract(req, res) {
             };
 
             await addNftToDatabase(nftData);
+            await sleep(50); //50ms respite to avoid rate limiting
         }
 
         return res.status(200).json({

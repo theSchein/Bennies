@@ -3,6 +3,7 @@
 // This also grabs all the metadata we need for a given contract and token id.
 
 import web3 from "../../../lib/ethersProvider";
+import getContractCreationBlock from "@/components/utils/getContractCreationBlock";
 
 // ABI for ERC-721 metadata function
 const erc721MetadataAbi = [
@@ -105,142 +106,142 @@ const proxyAbi = [
     },
 ];
 
-async function fetchEventsInBlockRange(
-    contractInstance,
-    eventName,
-    fromBlock,
-    toBlock,
-) {
-    try {
-        return await contractInstance.getPastEvents(eventName, {
-            fromBlock,
-            toBlock,
-        });
-    } catch (error) {
-        console.error(
-            `Error fetching events from block ${fromBlock} to ${toBlock}:`,
-            error.message,
-        );
-        throw error; // Rethrow the error to handle it in the calling function
+async function fetchEvents(contractInstance, fromBlock, toBlock) {
+    const MAX_RESULTS = 10000;
+    let events = [];
+    let range = toBlock - fromBlock;
+    let midBlock;
+
+    while (range > 0) {
+        try {
+            const fetchedEvents = await contractInstance.getPastEvents("Transfer", {
+                fromBlock,
+                toBlock: fromBlock + range,
+            });
+
+            if (fetchedEvents.length < MAX_RESULTS) {
+                events = events.concat(fetchedEvents);
+                fromBlock += range + 1; // Move to the next range
+                range = toBlock - fromBlock; // Calculate remaining range
+            } else {
+                // Halve the range if the result set is too large
+                range = Math.floor(range / 2);
+            }
+        } catch (error) {
+            if (error.message.includes("query returned more than 10000 results")) {
+                // Halve the range if the result set is too large
+                range = Math.floor(range / 2);
+            } else {
+                console.error(`Error fetching events: ${error.message}`);
+                break; // Exit on unexpected errors
+            }
+        }
     }
+
+    return events;
 }
 
-async function fetchImplementationAddress(contractAddress) {
-    try {
-        const implementationAddress = new web3.eth.Contract(
-            proxyAbi,
-            contractAddress,
-        );
-        console.log("Fetching implementation address for", contractAddress);
-        return implementationAddress;
-    } catch (error) {
-        console.error("Error fetching implementation address:", error);
-        return null;
-    }
-}
-
-async function tokenIdFinder(contractAddress) {
+async function tokenIdFinder(contractAddress, contractType) {
     if (!contractAddress) {
         console.error("Missing contract address");
         return null;
     }
 
-    let tokenIds = [];
-    let contractType = "";
+    const creationDetails = await getContractCreationBlock(contractAddress);
+    if (!creationDetails) {
+        console.error("Could not determine contract deployment block.");
+        return null;
+    }
 
-    // Attempt with ERC-721 ABI
-    try {
-        const contract721 = new web3.eth.Contract(
-            erc721TransferEventAbi,
-            contractAddress,
-        );
-        const events721 = await contract721.getPastEvents("Transfer", {
-            fromBlock: 0,
-            toBlock: "latest",
+    const currentBlock = await web3.eth.getBlockNumber();
+    const MAX_RANGE = 10000;
+    let allTokenIds = new Set();
+
+    const abi =
+        contractType === "ERC-721"
+            ? erc721TransferEventAbi
+            : erc1155TransferSingleEventAbi;
+    const contractInstance = new web3.eth.Contract(abi, contractAddress);
+
+    // Ensure block numbers are handled as Numbers
+    const startBlockNumber = Number(creationDetails.blockNumber);
+    const currentBlockNumber = Number(currentBlock);
+
+    for (
+        let startBlock = startBlockNumber;
+        startBlock <= currentBlockNumber;
+        startBlock += MAX_RANGE
+    ) {
+        const endBlock = Math.min(startBlock + MAX_RANGE - 1, currentBlockNumber);
+        const events = await fetchEvents(contractInstance, startBlock, endBlock);
+
+        events.forEach((event) => {
+            const tokenId = event.returnValues.tokenId || event.returnValues.id; // Adjust based on the event structure
+            allTokenIds.add(tokenId);
         });
-        tokenIds = events721
-            .map((event) => event.returnValues.tokenId)
-            .filter((tokenId) => tokenId !== undefined);
-        if (tokenIds.length > 0) {
-            contractType = "ERC-721";
-        }
-    } catch (erc721Error) {
-        console.error("ERC-721 tokenURI call failed:", erc721Error.message);
     }
 
-    // If no ERC-721 token IDs found, attempt with ERC-1155 ABI
-    if (tokenIds.length === 0) {
-        console.log("No ERC-721 token IDs found, attempting with ERC-1155 ABI");
-        try {
-            const contract1155 = new web3.eth.Contract(
-                erc1155TransferSingleEventAbi,
-                contractAddress,
-            );
-            const events1155 = await contract1155.getPastEvents("TransferSingle", {
-                fromBlock: 0,
-                toBlock: "latest",
-            });
-            tokenIds = events1155
-                .map((event) => event.returnValues.id)
-                .filter((id) => id !== undefined);
-            if (tokenIds.length > 0) {
-                contractType = "ERC-1155";
-            }
-        } catch (erc1155Error) {
-            console.error("ERC-1155 uri call failed:", erc1155Error.message);
-        }
-    }
-
-    if (tokenIds.length > 0) {
-        return { type: contractType, tokenIds };
+    if (allTokenIds.size > 0) {
+        return Array.from(allTokenIds); // Convert the Set to an Array
     } else {
         console.log("No token IDs found for the given contract address.");
         return null;
     }
 }
 
-// Function to fetch metadata for a given contract address and token ID
-async function fetchTokenMetadata(contractAddress, tokenId) {
+// Adjust the function signature to accept contractType
+async function fetchTokenMetadata(contractAddress, tokenId, contractType) {
     let metadata = {};
 
-    // Attempt to fetch as ERC-721
-    try {
-        const contract721 = new web3.eth.Contract(erc721MetadataAbi, contractAddress);
-        const tokenURI = await contract721.methods.tokenURI(tokenId).call();
-        const owner = await contract721.methods.ownerOf(tokenId).call();
-        if (tokenURI) {
-            metadata = { ...metadata, tokenURI, owner, contractType: "ERC-721" };
-        }
-    } catch (erc721Error) {
-        console.error("ERC-721 fetch failed:", erc721Error.message);
-    }
-
-    // If ERC-721 fetch failed, attempt to fetch as ERC-1155
-    if (!metadata.tokenURI) {
+    if (contractType === "ERC-721") {
         try {
-            const contract1155 = new web3.eth.Contract(erc1155MetadataAbi, contractAddress);
+            const contract721 = new web3.eth.Contract(
+                erc721MetadataAbi,
+                contractAddress,
+            );
+            const tokenURI = await contract721.methods.tokenURI(tokenId).call();
+            const owner = await contract721.methods.ownerOf(tokenId).call();
+            if (tokenURI) {
+                metadata = { ...metadata, tokenURI, owner, contractType: "ERC-721" };
+            }
+        } catch (error) {
+            console.error("ERC-721 fetch failed:", error.message);
+        }
+    } else if (contractType === "ERC-1155") {
+        try {
+            const contract1155 = new web3.eth.Contract(
+                erc1155MetadataAbi,
+                contractAddress,
+            );
             const tokenURI = await contract1155.methods.uri(tokenId).call();
-            // Removed the owner fetching for ERC-1155
+            // ERC-1155 does not have a direct ownerOf method; ownership might need to be determined differently.
             if (tokenURI) {
                 metadata = { ...metadata, tokenURI, contractType: "ERC-1155" };
-                // Note: We're not fetching owner here because ERC-1155 does not support ownerOf
             }
-        } catch (erc1155Error) {
-            console.error("ERC-1155 uri fetch failed:", erc1155Error.message);
+        } catch (error) {
+            console.error("ERC-1155 uri fetch failed:", error.message);
         }
+    } else {
+        console.error("Unsupported contract type:", contractType);
+        return null;
     }
 
     // Fetch additional metadata from the tokenURI if available
     if (metadata.tokenURI) {
         try {
-            const response = await fetch(metadata.tokenURI.startsWith("ipfs://") ? metadata.tokenURI.replace("ipfs://", "https://ipfs.io/ipfs/") : metadata.tokenURI);
+            const response = await fetch(
+                metadata.tokenURI.startsWith("ipfs://")
+                    ? metadata.tokenURI.replace("ipfs://", "https://ipfs.io/ipfs/")
+                    : metadata.tokenURI,
+            );
             const tokenMetadata = await response.json();
             metadata = { ...metadata, ...tokenMetadata };
-        } catch (fetchError) {
-            console.error("Failed to fetch token metadata from URI:", fetchError.message);
+        } catch (error) {
+            console.error("Failed to fetch token metadata from URI:", error.message);
         }
     }
+
     return metadata;
 }
 
-export { fetchImplementationAddress, tokenIdFinder, fetchTokenMetadata };
+export { tokenIdFinder, fetchTokenMetadata };

@@ -3,19 +3,17 @@
 // TODO: Password protect this page.
 
 import { useState } from "react";
-import Image from "next/image";
-import { ethers } from "ethers";
 
 export default function AdminPage() {
     const [contract, setContract] = useState("");
-    const [details, setDetails] = useState(null);
-    const [tokenId, setTokenId] = useState("");
+    const [contractType, setContractType] = useState(""); // For contract type (ERC-721 or ERC-1155)
+    const [category, setCategory] = useState(""); // For category
     const [metadata, setMetadata] = useState(null);
 
     const fetchDetails = async () => {
         try {
             const response = await fetch(
-                `api/crawl/uploadByContract?contract=${contract}`,
+                `/api/crawl/uploadByContract?contract=${contract}&contractType=${contractType}`,  // &category=${encodeURIComponent(category)}`,
             );
             const metadata = await response.json();
             setMetadata(metadata);
@@ -23,19 +21,6 @@ export default function AdminPage() {
             console.error("Error fetching NFT details:", error);
         }
     };
-
-    // const fetchMetadata = async () => {
-    //     try {
-    //         console.log("Sending api metadata for", contract, tokenId);
-    //         const response = await fetch(
-    //             `/api/crawl/metadata?contractAddress=${contract}&tokenId=${tokenId}`,
-    //         );
-    //         const data = await response.json();
-    //         setMetadata(data);
-    //     } catch (error) {
-    //         console.error("Error fetching NFT metadata:", error);
-    //     }
-    // };
 
     return (
         <div>
@@ -46,20 +31,29 @@ export default function AdminPage() {
                 onChange={(e) => setContract(e.target.value)}
                 placeholder="Enter Contract Address"
             />
-            {/* <input
+            <select
+                value={contractType}
+                onChange={(e) => setContractType(e.target.value)}
+                placeholder="Select Contract Type"
+            >
+                <option value="">Select Contract Type</option>
+                <option value="ERC-721">ERC-721</option>
+                <option value="ERC-1155">ERC-1155</option>
+            </select>
+            <input
                 type="text"
-                value={tokenId}
-                onChange={(e) => setTokenId(e.target.value)}
-                placeholder="Enter Token ID"
-            /> */}
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                placeholder="Enter Category"
+            />
             <button onClick={fetchDetails}>Fetch Metadata</button>
 
             {metadata && (
                 <div>
                     <p>Name: {metadata.name}</p>
                     <p>Description: {metadata.description}</p>
-                    <p>image link: {metadata.image} </p>I
-                    <p>token URI: </p>
+                    <p>Image link: {metadata.image}</p>
+                    <p>Token URI: {metadata.tokenURI}</p>
                 </div>
             )}
         </div>
