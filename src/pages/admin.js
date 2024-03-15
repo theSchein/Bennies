@@ -2,6 +2,7 @@
 // This is the admin page that is used to add NFTs and collections to the database.
 // TODO: Password protect this page.
 
+import Universe from "@/components/universe/universe";
 import { useState } from "react";
 
 export default function AdminPage() {
@@ -13,7 +14,7 @@ export default function AdminPage() {
     const fetchDetails = async () => {
         try {
             const response = await fetch(
-                `/api/crawl/uploadByContract?contract=${contract}&contractType=${contractType}`,  // &category=${encodeURIComponent(category)}`,
+                `/api/crawl/uploadByContract?contract=${contract}&contractType=${contractType}`,
             );
             const metadata = await response.json();
             setMetadata(metadata);
@@ -40,13 +41,8 @@ export default function AdminPage() {
                 <option value="ERC-721">ERC-721</option>
                 <option value="ERC-1155">ERC-1155</option>
             </select>
-            <input
-                type="text"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                placeholder="Enter Category"
-            />
-            <button onClick={fetchDetails}>Fetch Metadata</button>
+
+            <button className='btn' onClick={fetchDetails}>Fetch Metadata</button>
 
             {metadata && (
                 <div>
@@ -56,6 +52,7 @@ export default function AdminPage() {
                     <p>Token URI: {metadata.tokenURI}</p>
                 </div>
             )}
+            <Universe />
         </div>
     );
 }
