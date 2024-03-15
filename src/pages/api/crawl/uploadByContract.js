@@ -1,248 +1,108 @@
 // pages/api/crawl/uploadByContract.js
 // This nifty api takes a contract address and adds the nft and collection data to the database.
-// Uses alchemy and moralis, may need upgraded in the future.
-// Currently only on ethereum chain but can be expanded to other chains.
 
-import db from "../../../lib/db";
-import retry from 'async-retry';
-const { Alchemy, Network } = require("alchemy-sdk");
+import { tokenIdFinder, fetchTokenMetadata } from "./nodeCalls";
+import { addCollectionToDatabase, addNftToDatabase } from "./databaseOperations";
+import { fetchCollectionData } from "./externalApiCalls";
 
-const config = {
-    apiKey: process.env.ALCHEMY_API_KEY,
-    network: Network.ETH_MAINNET,
-};
-
-const alchemy = new Alchemy(config);
-let isMoralisStarted = false;
-
-// to get around the rate limit
-function sleep(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+async function sleep(milliseconds) {
+    return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
-export default async function (req, res) {
+export default async function uploadByContract(req, res) {
     if (req.method !== "GET") {
         return res.status(405).json({ message: "Method Not Allowed" });
     }
 
-    const Moralis = require("moralis").default;
-    const { EvmChain } = require("@moralisweb3/common-evm-utils");
-    const chain = EvmChain.ETHEREUM;
-
-    if (!isMoralisStarted) {
-        try {
-            await Moralis.start({
-                apiKey: process.env.MORALIS_API_KEY,
-            });
-            isMoralisStarted = true;
-        } catch (error) {
-            if (!error.message.includes("Modules are started already")) {
-                console.error("Error initializing Moralis:", error);
-                return res.status(500).json({
-                    message: "Internal Server Error.",
-                    error: error.message,
-                });
-            }
-        }
-    }
-
     const contract = req.query.contract;
-
     if (!contract) {
         return res
             .status(400)
-            .json({ message: "contract address query parameter is required." });
+            .json({ message: "Contract address query parameter is required." });
     }
 
-    // // helper function to enable exponential backoff retries with alchemy
-    async function getNftMetadataWithRetry(contract, tokenId, contractType) {
-        return await retry(async () => {
-            return await alchemy.nft.getNftMetadata(String(contract), String(tokenId), String(contractType));
-        }, {
-            retries: 100,
-            factor: 3,
-            minTimeout: 3000,
-            maxTimeout: 60000,
-            onRetry: (error, attempt) => {
-                console.log(`Retry attempt ${attempt} for getNftMetadata due to error: ${error.message}`);
-            },
-        });
+    const contractType = req.query.contractType;
+    if (!contractType) {
+        return res
+            .status(400)
+            .json({ message: "Contract type query parameter is required." });
     }
-    async function getNftOwnersWithRetry(contract, tokenId) {
-        return await retry(async () => {
-            return await alchemy.nft.getOwnersForNft(String(contract), String(tokenId));
-        }, {
-            retries: 100,
-            factor: 3,
-            minTimeout: 3000,
-            maxTimeout: 60000,
-            onRetry: (error, attempt) => {
-                console.log(`Retry attempt ${attempt} for getNftOwners due to error: ${error.message}`);
-            },
-        });
-    }
-
+    console.log("Processing contract:", contractType);
 
     try {
-        let cursor = null;
+        const collectionData = await fetchCollectionData(contract);
+        if (!collectionData) {
+            console.error("Failed to fetch collection data");
+            return res
+                .status(500)
+                .json({ message: "Failed to fetch collection data" });
+        }
 
-        do {
-            // Add Collection to database
-            const coll_response = await alchemy.nft.getContractMetadata(
-                String(contract),
-            );
+        const collectionId = await addCollectionToDatabase(collectionData);
+        if (!collectionId) {
+            console.error("Failed to add or find collection in database");
+            return res.status(500).json({ message: "Failed to process collection" });
+        }
 
-            const collData = {
-                contract_address: coll_response.address,
-                collection_name: coll_response.name,
-                token_type: coll_response.tokenType,
-                num_collection: coll_response.totalSupply,
-                deployer: coll_response.contractDeployer,
-            };
+        // Fetch token IDs for the contract
+        const tokenIds = await tokenIdFinder(contract, contractType);
+        if (!tokenIds || tokenIds.length === 0) {
+            return res
+                .status(404)
+                .json({
+                    message: "No token IDs found for the given contract address.",
+                });
+        }
 
-            console.log("Collection Data:", collData); 
-
-            // Check if the entry already exists in the database
-            const existingEntry = await db.oneOrNone(
-                "SELECT contract_address FROM collections WHERE contract_address = $1",
-                [collData.contract_address],
-            );
-
-            if (!existingEntry) {
-                // Add the NFT data to the database
-                await db.none(
-                    `
-          INSERT INTO collections(
-              contract_address, 
-              collection_name,
-              token_type,
-              num_collection_items,
-              deployer_address
-              )
-              VALUES($1, $2, $3, $4, $5)
-                        `,
-                    [
-                        collData.contract_address,
-                        collData.collection_name,
-                        collData.token_type,
-                        collData.num_collection,
-                        collData.deployer,
-                    ],
-                );
-                console.log(
-                    "Added collection to database:",
-                    collData.collection_name,
-                );
+        // Process each token ID
+        for (const tokenId of tokenIds) {
+            console.log(`Processing token ${tokenId} of contract ${contract}`);
+            if (tokenId === undefined) {
+                console.error("Token ID is undefined, skipping...");
+                continue;
             }
 
-            let collectionId = null;
-
-            const collectionResult = await db.oneOrNone(
-                "SELECT collection_id FROM collections WHERE contract_address = $1",
-                [collData.contract_address],
-            );
-
-            if (collectionResult) {
-                collectionId = collectionResult.collection_id;
-            }
-
-            // Add NFTs to database
-            const response = await Moralis.EvmApi.nft.getContractNFTs({
-                address: contract,
-                chain,
-                cursor: cursor,
-            });
-
-            for (const NFT of response.result) {
-                const metadata =
-                    typeof NFT.metadata === "string"
-                        ? JSON.parse(NFT.metadata)
-                        : NFT.metadata;
-                let image = NFT && NFT.metadata ? NFT.metadata.image : "Blank";
-                if (image.startsWith("ipfs://")) {
-                    image = image.replace("ipfs://", "https://ipfs.io/ipfs/");
+            let metadata;
+            try {
+                metadata = await fetchTokenMetadata(contract, tokenId, contractType);
+                if (!metadata || metadata.tokenURI === undefined) {
+                    console.error(
+                        `Metadata fetch failed for token ${tokenId}, skipping...`,
+                    );
+                    continue; // Skip to the next iteration if metadata is incomplete
                 }
 
-                const load = await getNftMetadataWithRetry(
-                    String(contract),
-                    String(NFT.tokenId),
-                    String(NFT.contract_type),
-                );
-                const deployer = load.contract.contractDeployer;
-                const description = load.description;
-
-                const owners = await getNftOwnersWithRetry(
-                    String(contract),
-                    String(NFT.tokenId),
-                );
-
+                // Prepare and add NFT data to the database
                 const nftData = {
                     contract_address: contract,
-                    token_id: NFT.tokenId,
-                    nft_name: load.title,
-                    token_type: NFT.contractType,
-                    token_uri: NFT.tokenUri,
-                    media_link: image,
-                    deployer_address: deployer,
-                    nft_description: description,
-                    spam: NFT.possibleSpam,
-                    owner: owners.owners,
+                    token_id: tokenId.toString(),
+                    nft_name: metadata.name,
+                    token_type: contractType,
+                    token_uri: metadata.tokenURI,
+                    media_link: metadata.image,
+                    deployer_address: collectionData.deployer,
+                    nft_description: metadata.description,
+                    owner: metadata.owner,
+                    collection_id: collectionId,
                 };
 
-                // Check if the entry already exists in the database
-                const existingEntry = await db.oneOrNone(
-                    "SELECT contract_address_token_id FROM nfts WHERE contract_address_token_id = $1",
-                    [nftData.contract_address + nftData.token_id],
-                );
-
-                if (!existingEntry) {
-                    // Add the NFT data to the database
-                    await db.none(
-                        `
-            INSERT INTO nfts(
-                contract_address_token_id,
-                contract_address, 
-                owners,
-                nft_name,
-                token_type, 
-                token_uri_gateway,
-                media_url, 
-                deployer_address,
-                nft_description,
-                token_id,
-                collection_id)
-                VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-            `,
-                        [
-                            nftData.contract_address + nftData.token_id,
-                            nftData.contract_address,
-                            nftData.owner,
-                            nftData.nft_name,
-                            nftData.token_type,
-                            nftData.token_uri,
-                            nftData.media_link,
-                            nftData.deployer_address,
-                            nftData.nft_description,
-                            nftData.token_id,
-                            collectionId,
-                        ],
-                    );
-                }
-                console.log("Added NFT to database:", nftData.token_id);
-                await sleep(1750);
+                await addNftToDatabase(nftData);
+            } catch (error) {
+                console.error(`Error processing token ${tokenId}:`, error);
+                continue; // Ensure the loop continues even if an error occurs
             }
-            cursor = response.pagination.cursor;
-        } while (cursor != "" && cursor != null);
 
-        // Send the response after processing all the NFTs
+            await sleep(50); // 50ms respite to avoid rate limiting
+        }
+
         return res.status(200).json({
             success: true,
-            message: "NFTs added to database",
+            message: "NFTs processed and added to database",
         });
     } catch (error) {
-        console.error(error);
+        console.error("Error processing contract:", error);
         return res
             .status(500)
-            .json({ message: "Internal Server Error.", error: error.message });
+            .json({ message: "Internal Server Error", error: error.message });
     }
 }
