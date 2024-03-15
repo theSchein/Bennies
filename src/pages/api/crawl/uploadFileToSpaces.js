@@ -59,9 +59,7 @@ async function uploadFileToSpaces(imageUrl, destFileName) {
 
         // Uploading files to the bucket
         const { Location } = await s3.upload(params).promise();
-        console.log("File uploaded successfully at:", Location);
         const cdnUrl = `https://shuk.nyc3.cdn.digitaloceanspaces.com/${destFileName}`;
-        console.log("CDN URL:", cdnUrl);
         return cdnUrl;    } catch (error) {
         console.error("Error uploading file to Spaces:", error);
         throw error; // Rethrow to handle it in the calling code

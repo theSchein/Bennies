@@ -1,5 +1,5 @@
 import db from "../../../lib/db";
-import uploadFileToSpaces from "../../../lib/crawl/uploadFileToSpaces";
+import uploadFileToSpaces from "../crawl/uploadFileToSpaces";
 
 
 async function processNftImages() {
