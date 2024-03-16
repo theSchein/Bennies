@@ -1,6 +1,6 @@
 // pages/api/cron/weekly.js
 import db from "../../../lib/db";
-import uploadFileToSpaces from "../../../lib/crawl/uploadFileToSpaces";
+import uploadFileToSpaces from "../crawl/uploadFileToSpaces";
 
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
