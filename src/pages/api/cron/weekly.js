@@ -3,9 +3,8 @@ import db from "../../../lib/db";
 import uploadFileToSpaces from "../crawl/uploadFileToSpaces";
 
 export default async function handler(req, res) {
-    if (req.method !== 'POST') {
-        // Only allow POST requests for this endpoint
-        return res.status(405).json({ error: 'Method not allowed' });
+    if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
+        return res.status(401).send("Unauthorized");
     }
 
     try {
