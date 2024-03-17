@@ -9,8 +9,8 @@
       "schedule": "0 * * * *"
     },
     {
-      "path": "/api/cron/weekly",
-      "schedule": "0 0 * * 0"
+      "path": "/api/cron/ten_minutely",
+      "schedule": "*/10 * * * *"
     }
   ]
 }
