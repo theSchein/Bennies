@@ -58,7 +58,7 @@ function Footer() {
                                 />
                                 <button
                                     type="submit"
-                                    className="w-full py-2 sm:py-3 bg-gradient-to-r from-light-primary to-light-quaternary dark:from-dark-secondary dark:to-dark-tertiary text-white rounded-lg font-body hover:from-yellow-600 hover:to-amber-950 dark:hover:from-yellow-600 dark:hover:to-amber-950 transition duration-300"
+                                    className="w-full py-2 sm:py-3  rounded-lg font-body btn"
                                 >
                                     Submit
                                 </button>

@@ -34,7 +34,7 @@ function Navbar() {
     };
 
     const authPage = session ? "profile" : "signin";
-    const allPages = [...pages, authPage];
+    const allPages = [...pages]; //, authPage];
 
     return (
         <div className="font-heading bg-light-quaternary dark:bg-dark-quaternary text-light-tertiary dark:text-dark-primary bg-opacity-80">
