@@ -1,10 +1,10 @@
-// pages/api/cron/weekly.js
+// pages/api/processNftImages.js
 import db from "../../../lib/db";
-import uploadFileToSpaces from "../crawl/uploadFileToSpaces";
+import uploadFileToSpaces from "./uploadFileToSpaces"; 
 
 export default async function handler(req, res) {
-    if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
-        return res.status(401).send("Unauthorized");
+    if (req.method !== 'GET') {
+        return res.status(405).end("Method Not Allowed");
     }
 
     try {
@@ -13,7 +13,7 @@ export default async function handler(req, res) {
         `);
 
         let processedCount = 0;
-        const maxProcessCount = 5000; // Limit to 5000 NFTs
+        const maxProcessCount = 10000; // Limit to 5000 NFTs to avoid timeouts
 
         for (const nft of nftsToProcess) {
             if (processedCount >= maxProcessCount) {
@@ -28,8 +28,7 @@ export default async function handler(req, res) {
             processedCount++; // Increment the counter after each successful process
         }
 
-        console.log(`Finished processing ${processedCount} NFT images.`);
-        res.status(200).json({ message: `NFT images processed successfully. Total processed: ${processedCount}` });
+        res.status(200).json({ message: `Processed ${processedCount} NFT images successfully.` });
     } catch (error) {
         console.error("Failed to process NFT images:", error);
         res.status(500).json({ error: "Failed to process NFT images" });

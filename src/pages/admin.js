@@ -8,8 +8,19 @@ import { useState } from "react";
 export default function AdminPage() {
     const [contract, setContract] = useState("");
     const [contractType, setContractType] = useState(""); // For contract type (ERC-721 or ERC-1155)
-    const [category, setCategory] = useState(""); // For category
+
     const [metadata, setMetadata] = useState(null);
+
+    const handleProcessImages = async () => {
+        try {
+            const response = await fetch('/api/crawl/processNftImages');
+            const data = await response.json();
+            alert(data.message); // Simple feedback mechanism
+        } catch (error) {
+            console.error('Error processing images:', error);
+            alert('An error occurred. Please check the console for details.');
+        }
+    };
 
     const fetchDetails = async () => {
         try {
@@ -53,6 +64,7 @@ export default function AdminPage() {
                 </div>
             )}
             <Universe />
+            <button className="btn" onClick={handleProcessImages}>Process NFT Images</button>
         </div>
     );
 }
