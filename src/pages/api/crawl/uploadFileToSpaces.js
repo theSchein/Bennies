@@ -2,8 +2,9 @@ import axios from "axios";
 import s3 from "../../../lib/s3";
 import { PassThrough } from "stream";
 
-const MAX_RETRIES = 3; // Adjust based on your preference
-const RETRY_DELAY = 1000; // Delay between retries in milliseconds
+const MAX_RETRIES = 10; // Adjust based on your preference
+const RETRY_DELAY = 1500; // Delay between retries in milliseconds
+const REQUEST_TIMEOUT = 30000; // Timeout for the Axios request in milliseconds
 
 async function uploadFileToSpaces(imageUrl, destFileName) {
     if (imageUrl === "Blank") {
@@ -25,15 +26,31 @@ async function uploadFileToSpaces(imageUrl, destFileName) {
     // Function to download and upload with retry logic
     const downloadAndUpload = async (attempt = 0) => {
         try {
-            console.log(`Attempt ${attempt + 1}: Downloading and uploading ${imageUrl}`);
-            const response = await axios({
+            console.log(
+                `Attempt ${attempt + 1}: Downloading and uploading ${imageUrl}`,
+            );
+            const sourceUrl = imageUrl.replace("ipfs://", "https://ipfs.io/ipfs/");
+            const sourceStream = axios({
                 method: "get",
-                url: imageUrl.replace("ipfs://", "https://ipfs.io/ipfs/"),
+                url: sourceUrl,
                 responseType: "stream",
-            });
+            }).then((response) => response.data);
 
             const pass = new PassThrough();
-            response.data.pipe(pass);
+            const timeoutId = setTimeout(() => {
+                console.log(`Request timed out after ${REQUEST_TIMEOUT}ms`);
+                pass.emit("error", new Error("Request timed out"));
+            }, REQUEST_TIMEOUT);
+
+            sourceStream
+                .then((stream) => {
+                    stream.pipe(pass);
+                    stream.on("end", () => clearTimeout(timeoutId));
+                })
+                .catch((error) => {
+                    clearTimeout(timeoutId);
+                    pass.emit("error", error);
+                });
 
             const uploadParams = {
                 Bucket: "shuk",
@@ -50,7 +67,10 @@ async function uploadFileToSpaces(imageUrl, destFileName) {
                 await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY));
                 return downloadAndUpload(attempt + 1);
             } else {
-                console.error("Max retries reached, failed to download and upload:", error.message);
+                console.error(
+                    "Max retries reached, failed to download and upload:",
+                    error.message,
+                );
                 throw error;
             }
         }
