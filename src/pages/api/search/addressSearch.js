@@ -44,12 +44,21 @@ export default async function handler(req, res) {
         }
 
         let nftResults = [];
-        let collectionIds = new Set();
 
         for (let nft of nfts.ownedNfts) {
             const contractAddressTokenId = `${nft.contract.address.toLowerCase()}${nft.tokenId}`; // Ensure contract address is lowercase
             const existingEntries = await db.manyOrNone(
-                "SELECT * FROM nfts WHERE LOWER(contract_address_token_id) = LOWER($1)", // Case-insensitive comparison
+                `
+                SELECT nfts.*, 
+                collections.collection_name, 
+                collections.collection_description AS collection_description,
+                collections.nft_licence AS collection_licence,
+                collections.collection_utility AS collection_utility,
+                collections.category AS collection_category
+                FROM nfts
+                LEFT JOIN collections ON nfts.collection_id = collections.collection_id
+                WHERE LOWER(nfts.contract_address_token_id) = LOWER($1)
+            `,
                 [contractAddressTokenId],
             );
 
@@ -67,19 +76,10 @@ export default async function handler(req, res) {
                 }
 
                 nftResults.push(existingEntry);
-                collectionIds.add(existingEntry.collection_id);
             }
         }
 
-        let collections = [];
-        if (collectionIds.size > 0) {
-            collections = await db.manyOrNone(
-                `SELECT * FROM collections WHERE collection_id = ANY($1::uuid[])`,
-                [Array.from(collectionIds)],
-            );
-        }
-
-        return res.status(200).json({ nfts: nftResults, collections });
+        return res.status(200).json({ nfts: nftResults });
     } catch (error) {
         console.error("Search API error:", error);
         return res

@@ -3,8 +3,8 @@ import { useState } from "react";
 import { useSession } from "next-auth/react";
 import Modal from "../ui/Modal";
 import AuthForm from "../auth/authForm";
-import NftGrid from "../collections/nftGrid";
 import { LinearProgress } from "@mui/material";
+import NftTile from "../nft/nftTile";
 
 function SearchHomepage() {
     const { data: session } = useSession();
@@ -46,7 +46,10 @@ function SearchHomepage() {
     return (
         <div className="flex flex-col items-center w-full">
             <div className="max-w-2xl w-full mt-5 px-4 sm:px-0">
-                <form onSubmit={handleSearchSubmit} className="w-full flex flex-col items-center">
+                <form
+                    onSubmit={handleSearchSubmit}
+                    className="w-full flex flex-col items-center"
+                >
                     <input
                         type="text"
                         value={searchTerm}
@@ -63,15 +66,15 @@ function SearchHomepage() {
                 </form>
                 {isLoading && (
                     <div className="w-full mt-4">
-                        <LinearProgress 
-                          sx={{
-                            height: 4,
-                            borderRadius: 5,
-                            '& .MuiLinearProgress-bar': {
-                              borderRadius: 5,
-                              backgroundColor: '#1a90ff', // Customize the progress bar color here
-                            }
-                          }}
+                        <LinearProgress
+                            sx={{
+                                height: 4,
+                                borderRadius: 5,
+                                "& .MuiLinearProgress-bar": {
+                                    borderRadius: 5,
+                                    backgroundColor: "#1a90ff", // Customize the progress bar color here
+                                },
+                            }}
                         />
                     </div>
                 )}
@@ -80,8 +83,12 @@ function SearchHomepage() {
                 <AuthForm />
             </Modal>
             {!isLoading && searchResults && (
-                <div className="w-full">
-                    <NftGrid nftData={searchResults} />
+                <div className="w-full px-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 gap-4 justify-items-center">
+                        {searchResults.map((nft) => (
+                            <NftTile key={nft.nft_id} nft={nft} />
+                        ))}
+                    </div>
                 </div>
             )}
         </div>
