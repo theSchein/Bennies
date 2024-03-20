@@ -1,6 +1,7 @@
 import { getToken } from "next-auth/jwt";
 import db from "../../../lib/db";
 const { Alchemy, Network } = require("alchemy-sdk");
+import web3 from "../../../lib/ethersProvider";
 
 const config = {
     apiKey: process.env.ALCHEMY_API_KEY,
@@ -19,11 +20,22 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { address } = req.body;
+        let { address } = req.body;
         if (!address) {
             return res.status(400).json({
                 error: "Missing owner address or ENS name in request body",
             });
+        }
+
+        // Check if the input is an ENS name (ends with .eth)
+        if (address.endsWith(".eth")) {
+            // Resolve the ENS name to an address
+            address = await web3.eth.ens.getAddress(address);
+            if (!address) {
+                return res
+                    .status(404)
+                    .json({ error: "ENS name could not be resolved" });
+            }
         }
 
         const nfts = await alchemy.nft.getNftsForOwner(address.toLowerCase()); // Ensure address is lowercase
