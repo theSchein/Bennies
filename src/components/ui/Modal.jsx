@@ -1,8 +1,21 @@
 // components/ui/Modal.jsx
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 
 function Modal({ isOpen, onClose, children }) {
-    if (!isOpen) return null;
+    // Add event listener to close the modal on pressing the Escape key
+    useEffect(() => {
+        const handleEsc = (event) => {
+            if (event.key === "Escape") {
+                onClose();
+            }
+        };
+
+        window.addEventListener("keydown", handleEsc);
+
+        return () => {
+            window.removeEventListener("keydown", handleEsc);
+        };
+    }, [onClose]);
 
     // Function to handle the click event
     const handleBackdropClick = (event) => {
@@ -12,20 +25,7 @@ function Modal({ isOpen, onClose, children }) {
         }
     };
 
-    // Add event listener to close the modal on pressing the Escape key
-    useEffect(() => {
-        const handleEsc = (event) => {
-            if (event.key === 'Escape') {
-                onClose();
-            }
-        };
-
-        window.addEventListener('keydown', handleEsc);
-
-        return () => {
-            window.removeEventListener('keydown', handleEsc);
-        };
-    }, [onClose]);
+    if (!isOpen) return null;
 
     return (
         <div

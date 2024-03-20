@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useSession } from "next-auth/react";
 import Modal from "../ui/Modal";
 import AuthForm from "../auth/authForm";
-import { LinearProgress } from "@mui/material";
+import { useTheme, LinearProgress } from "@mui/material";
 import NftTile from "../nft/nftTile";
 
 function SearchHomepage() {
@@ -12,6 +12,7 @@ function SearchHomepage() {
     const [searchResults, setSearchResults] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const theme = useTheme(); // Access the current theme
 
     const handleSearchSubmit = async (e) => {
         e.preventDefault();
@@ -59,7 +60,7 @@ function SearchHomepage() {
                     />
                     <button
                         type="submit"
-                        className="px-6 py-2 w-full btn rounded-full transition ease-in duration-200 text-lg sm:text-base"
+                        className="px-6 py-2 w-full btn rounded-full transition ease-in duration-200 text-lg sm:text-base mb-3"
                     >
                         {session ? "Search Address" : "Sign in to Search"}
                     </button>
@@ -70,9 +71,16 @@ function SearchHomepage() {
                             sx={{
                                 height: 4,
                                 borderRadius: 5,
+                                backgroundColor:
+                                    theme.palette.mode === "light"
+                                        ? theme.palette.light.quaternary
+                                        : theme.palette.dark.quaternary, // Adjust the background color based on the theme
                                 "& .MuiLinearProgress-bar": {
                                     borderRadius: 5,
-                                    backgroundColor: "#1a90ff", // Customize the progress bar color here
+                                    backgroundColor:
+                                        theme.palette.mode === "light"
+                                            ? theme.palette.light.primary
+                                            : theme.palette.dark.tertiary, // Adjust the progress indicator color based on the theme
                                 },
                             }}
                         />
