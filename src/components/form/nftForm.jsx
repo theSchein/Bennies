@@ -26,6 +26,7 @@ const style = {
 };
 
 const NftForm = ({ role, nft, isOpen, onClose }) => {
+    console.log("nft data boiii:", nft);
     const methods = useForm({
         defaultValues: nft,
     });
@@ -48,20 +49,20 @@ const NftForm = ({ role, nft, isOpen, onClose }) => {
             <Modal open={isOpen} onClose={onClose}>
                 <Box
                     sx={style}
-                    className="bg-light-quaternary dark:bg-dark-quaternary text-light-primary dark:text-dark-primary flex-wrap"
+                    className="bg-light-secondary dark:bg-dark-quaternary text-light-quaternary dark:text-dark-primary flex-wrap"
                 >
                     <h1 className="text-center text-2xl font-bold mb-4">
                         Edit NFT Page
                     </h1>
                     <FormProvider {...methods}>
                         <form onSubmit={methods.handleSubmit(handleSubmit)}>
-                            {isFieldEditable("nft_sales_link") && (
+                            {/* {isFieldEditable("nft_sales_link") && (
                                 <TextInput
                                     name="nft_sales_link"
                                     label="Sales Link"
                                     as="textarea"
                                 />
-                            )}
+                            )} */}
 
                             {isFieldEditable("nft_licence") && (
                                 <div className="flex flex-col text-light-secondary dark:text-dark-secondary">
@@ -166,6 +167,21 @@ const NftForm = ({ role, nft, isOpen, onClose }) => {
                                     />
                                 </div>
                             )}
+
+                            <div className="flex items-center mb-4">
+                                <input
+                                    {...methods.register("updateCollection")}
+                                    type="checkbox"
+                                    id="updateCollection"
+                                    className="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                />
+                                <label
+                                    htmlFor="updateCollection"
+                                    className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                                >
+                                    Propagate changes to the collection
+                                </label>
+                            </div>
 
                             <input
                                 type="submit"

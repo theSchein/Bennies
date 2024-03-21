@@ -21,10 +21,18 @@ const useNftForm = (role, nft) => {
     }
     const onSubmit = async (formData) => {
         try {
-            // Include nft_id in the data to be sent
+            const { updateCollection, ...nftData } = formData;
+            // Filter out null values and collection-specific fields
+            const filteredFormData = Object.entries(nftData).reduce((acc, [key, value]) => {
+                if (value != null && !key.startsWith('collection_')) {
+                    acc[key] = value;
+                }
+                return acc;
+            }, {});
+
             const dataToSend = {
-                ...formData,
-                nft_id: nft.nft_id
+                ...filteredFormData,
+                nft_id: nft.nft_id,
             };
 
             const response = await fetch('/api/nft/updateNft', {
@@ -37,6 +45,27 @@ const useNftForm = (role, nft) => {
 
             if (!response.ok) {
                 throw new Error('Failed to update NFT');
+            }
+
+            if (updateCollection) {
+                const collectionDataToSend = {
+                    collection_id: nft.collection_id,
+                    ...(formData.nft_licence && { nft_licence: formData.nft_licence }),
+                    ...(formData.nft_utility && { collection_utility: formData.nft_utility }),
+                    ...(formData.category && { category: formData.category }),
+                };
+
+                const collectionResponse = await fetch('/api/collection/updateCollection', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(collectionDataToSend),
+                });
+
+                if (!collectionResponse.ok) {
+                    throw new Error('Failed to update collection');
+                }
             }
 
             setIsSuccessful(true); 

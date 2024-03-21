@@ -59,13 +59,13 @@ const CollectionForm = ({ role, collection, isOpen, onClose }) => {
                     </h1>
                     <FormProvider {...methods}>
                         <form onSubmit={methods.handleSubmit(handleSubmit)}>
-                            {isFieldEditable("media_url") && (
+                            {/* {isFieldEditable("media_url") && (
                                 <TextInput
                                     name="media_url"
                                     label="Collection Image"
                                     as="textarea"
                                 />
-                            )}
+                            )} */}
 
                             {isFieldEditable("nft_licence") && (
                                 <div className="flex flex-col text-light-secondary dark:text-dark-secondary">

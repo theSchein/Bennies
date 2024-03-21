@@ -24,11 +24,13 @@ export async function getServerSideProps({ params }) {
 export default function CollectionPage({ collection }) {
     const [nftData, setNftData] = useState([]);
 
-
     return (
         <div className="min-h-screen bg-primary flex flex-col sm:flex-row items-start justify-start py-6 px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-0 sm:space-x-6 bg-gradient-light dark:bg-gradient-dark text-light-quaternary dark:text-dark-quaternary">
-            <div className="flex-none w-full sm:w-72"> 
-                <CollectionSidebar collection={collection} onNftsFetched={setNftData} />
+            <div className="flex-none w-full sm:w-72 md:w-80 lg:w-96">
+                <CollectionSidebar
+                    collection={collection}
+                    onNftsFetched={setNftData}
+                />
             </div>
             <div className="flex-grow">
                 <NftGrid nftData={nftData} />
