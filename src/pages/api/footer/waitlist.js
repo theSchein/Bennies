@@ -20,10 +20,10 @@ export default async function handler(req, res) {
             // Check if the email already exists
             const checkResult = await db.oneOrNone('SELECT * FROM waitlist WHERE email = $1', [email]);
 
-            if (checkResult) {
-                // Email already exists in the database
-                return res.status(409).json({ message: 'Email already registered' });
-            }
+            // if (checkResult) {
+            //     // Email already exists in the database
+            //     return res.status(409).json({ message: 'Email already registered' });
+            // }
 
             // Insert new record into the database
             const insertQuery = await db.result('INSERT INTO waitlist (name, email) VALUES ($1, $2)', [name, email]);

@@ -21,7 +21,7 @@ const useWaitlistForm = () => {
         });
 
         if (response.ok) {
-            setModalMessage("You've been added to the Newsletter!");
+            setModalMessage("Thank you for your thoughts, we will be in touch soon");
             setShowModal(true);
             setName("");
             setEmail("");
