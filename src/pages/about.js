@@ -6,8 +6,8 @@ export default function About() {
                     DISCOVRY.XYZ
                 </h1>
                 <p className="text-xl sm:text-2xl text-center">
-                    Finding out what your NFT does is hard, and marketplaces only
-                    show you how much they cost and not what to do with them.
+                    Finding out what your NFT does is hard, and I want to make it easy.
+                    Marketplaces only show you how much they cost and not what to do with them.
                 </p>
                 <p className="text-xl sm:text-2xl text-center mt-4">
                     Discovry.xyz shows you not just what people think of your NFT,
@@ -21,20 +21,16 @@ export default function About() {
                     </h2>
                     <ul className="space-y-4 text-lg sm:text-xl">
                         <li>
-                            1. Sign in and link a wallet to your profile; all your
-                            NFTs listed on the app will be here.
+                            1. Type in an Ethereum address into the search bar and register, to find 
+                            all NFTs associated with that address.
                         </li>
                         <li>
-                            2. Click on an NFT to go to its page and see what utility
-                            it may have and what people are saying about it!
+                            2. See what sort of perks and events the holder of each NFT has. 
+                            Click on the NFT to go to its page and see and what people are saying about it!
                         </li>
                         <li>
                             3. Go to the collection page to see upcoming events for
                             the public or (just for holders).
-                        </li>
-                        <li>
-                            4. If you are an NFT creator or owner, you can add
-                            utility to your NFTs and engage with the community.
                         </li>
                     </ul>
                 </div>
@@ -51,8 +47,7 @@ export default function About() {
                         </li>
                         <li>
                         <span className="font-bold">More Data More Chains:</span> We will have not just ETH NFTs but
-                            also support L2s like polygon, base as well as other
-                            layer 1&apos;s like Solana.
+                            also support Bitcoin ordinals and Solana.
                         </li>
                         <li>
                         <span className="font-bold">Profiles:</span>  Integration with platforms like Farcaster and

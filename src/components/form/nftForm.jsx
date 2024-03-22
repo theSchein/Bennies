@@ -65,7 +65,7 @@ const NftForm = ({ role, nft, isOpen, onClose }) => {
                             )} */}
 
                             {isFieldEditable("nft_licence") && (
-                                <div className="flex flex-col text-light-secondary dark:text-dark-secondary">
+                                <div className="flex flex-col text-light-quaternary dark:text-dark-primary">
                                     <label
                                         htmlFor="nft_licence"
                                         className="mb-2 font-medium text-sm sm:text-base"
@@ -79,7 +79,7 @@ const NftForm = ({ role, nft, isOpen, onClose }) => {
                                             <select
                                                 {...field}
                                                 id="nft_licence"
-                                                className="p-2 border text-light-quaternary dark:text-dark-quaternary rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent mb-2"
+                                                className="p-2 border text-light-quaternary dark:text-dark-quaternaryternary dark:text-dark-quaternary rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent mb-2"
                                             >
                                                 <option value="">
                                                     Select a License
@@ -105,31 +105,35 @@ const NftForm = ({ role, nft, isOpen, onClose }) => {
                                         href="https://medium.com/the-link-art-blocks/licensing-cheat-sheet-54223616ea50"
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="mt-2 italic text-xs sm:text-sm text-light-tertiary dark:text-dark-secondary hover:underline"
+                                        className="mt-2 italic text-xs sm:text-sm text-light-quaternary dark:text-dark-quaternary hover:underline"
                                     >
                                         Learn more about licensing
                                     </a>
                                 </div>
                             )}
 
-                            {isFieldEditable("nft_context") && (
-                                <TextInput
-                                    name="nft_context"
-                                    label="Additional NFT Information: Tell us things about this piece"
-                                    as="textarea"
-                                />
-                            )}
+                            <div className="text-light-quaternary">
+                                {isFieldEditable("nft_context") && (
+                                    <TextInput
+                                        name="nft_context"
+                                        label="Additional NFT Information: Tell us things about this piece"
+                                        as="textarea"
+                                        className="text-light-quaternary dark:text-dark-primary"
+                                    />
+                                )}
 
-                            {isFieldEditable("nft_utility") && (
-                                <TextInput
-                                    name="nft_utility"
-                                    label="Utility: What can the owner do with this NFT?"
-                                    as="textarea"
-                                />
-                            )}
+                                {isFieldEditable("nft_utility") && (
+                                    <TextInput
+                                        name="nft_utility"
+                                        label="Utility: What can the owner do with this NFT?"
+                                        as="textarea"
+                                        className="text-light-quaternary dark:text-dark-primary"
+                                    />
+                                )}
+                            </div>
 
                             {isFieldEditable("category") && (
-                                <div className="flex flex-col text-light-secondary dark:text-dark-secondary">
+                                <div className="flex flex-col text-light-quaternary dark:text-dark-quaternary">
                                     <label
                                         htmlFor="category"
                                         className="mb-2 font-medium text-sm sm:text-base"
@@ -177,7 +181,7 @@ const NftForm = ({ role, nft, isOpen, onClose }) => {
                                 />
                                 <label
                                     htmlFor="updateCollection"
-                                    className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                                    className="ml-2 text-sm font-medium text-light-quaternary dark:text-dark-quaternary"
                                 >
                                     Propagate changes to the collection
                                 </label>

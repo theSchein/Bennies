@@ -5,6 +5,11 @@ import { PassThrough } from "stream";
 const MAX_RETRIES = 10; // Adjust based on your preference
 const RETRY_DELAY = 1500; // Delay between retries in milliseconds
 const REQUEST_TIMEOUT = 30000; // Timeout for the Axios request in milliseconds
+const IPFS_GATEWAYS = [
+    "https://ipfs.io/ipfs/",
+    "https://gateway.pinata.cloud/ipfs/",
+    // Add more gateways as needed
+];
 
 async function uploadFileToSpaces(imageUrl, destFileName) {
     if (imageUrl === "Blank") {
@@ -24,7 +29,7 @@ async function uploadFileToSpaces(imageUrl, destFileName) {
     }
 
     // Function to download and upload with retry logic
-    const downloadAndUpload = async (attempt = 0) => {
+    const downloadAndUpload = async (attempt = 0, gatewayIndex = 0) => {
         try {
             console.log(
                 `Attempt ${attempt + 1}: Downloading and uploading ${imageUrl}`,
@@ -62,7 +67,11 @@ async function uploadFileToSpaces(imageUrl, destFileName) {
             await s3.upload(uploadParams).promise();
             return `https://shuk.nyc3.cdn.digitaloceanspaces.com/${destFileName}`;
         } catch (error) {
-            if (attempt < MAX_RETRIES - 1) {
+            if (error.response && error.response.status === 410 && gatewayIndex < IPFS_GATEWAYS.length - 1) {
+                // If content is gone and other gateways are available, try the next gateway
+                console.log(`Switching to next IPFS gateway and retrying...`);
+                return downloadAndUpload(attempt, gatewayIndex + 1);
+            } else if (attempt < MAX_RETRIES - 1) {
                 console.log(`Retry ${attempt + 1}: Waiting ${RETRY_DELAY}ms`);
                 await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY));
                 return downloadAndUpload(attempt + 1);
