@@ -6,8 +6,8 @@ const MAX_RETRIES = 10; // Adjust based on your preference
 const RETRY_DELAY = 1500; // Delay between retries in milliseconds
 const REQUEST_TIMEOUT = 30000; // Timeout for the Axios request in milliseconds
 const IPFS_GATEWAYS = [
-    "https://ipfs.io/ipfs/",
     "https://gateway.pinata.cloud/ipfs/",
+    "https://ipfs.io/ipfs/",
     // Add more gateways as needed
 ];
 
