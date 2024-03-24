@@ -19,7 +19,10 @@ import ThemeToggle from "./themeToggle";
 import Link from "next/link";
 import Notifications from "../notifications/notifications";
 
-const pages = ["about", "search"];
+const pages = [
+    { label: "About", path: "about" },
+    { label: "Search NFTs", path: "search" }, // Updated label
+];
 
 function Navbar() {
     const { data: session, status } = useSession();
@@ -33,8 +36,8 @@ function Navbar() {
         setAnchorElNav(null);
     };
 
-    const authPage = session ? "profile" : "signin";
-    const allPages = [...pages]; //, authPage];
+    const authPage = session ? { label: "Profile", path: "profile" } : { label: "Sign In", path: "signin" };
+    const allPages = [...pages, authPage];
 
     return (
         <div className="font-heading bg-light-quaternary dark:bg-dark-quaternary text-light-tertiary dark:text-dark-primary bg-opacity-80">
@@ -48,10 +51,12 @@ function Navbar() {
             >
                 <Container maxWidth="xl">
                     <Toolbar disableGutters>
-                        <Link href="/">
-                            <DiamondIcon
-                                sx={{ display: { xs: "flex", md: "flex" }, mr: 1 }}
-                            />
+                        <Link href="/" passHref legacyBehavior>
+                            <a>
+                                <DiamondIcon
+                                    sx={{ display: { xs: "flex", md: "flex" }, mr: 1 }}
+                                />
+                            </a>
                         </Link>
 
                         {/* Hamburger menu icon for mobile */}
@@ -89,7 +94,7 @@ function Navbar() {
                             >
                                 {allPages.map((page) => (
                                     <MenuItem
-                                        key={page}
+                                        key={page.label}
                                         onClick={handleCloseNavMenu}
                                     >
                                         <Typography
@@ -101,15 +106,11 @@ function Navbar() {
                                                 textDecoration: "inherit",
                                             }}
                                         >
-                                            <a
-                                                href={`/${page}`}
-                                                style={{
-                                                    textDecoration: "inherit",
-                                                    color: "inherit",
-                                                }}
-                                            >
-                                                {page}
-                                            </a>
+                                            <Link href={`/${page.path}`} passHref legacyBehavior>
+                                                <a style={{ textDecoration: "inherit", color: "inherit" }}>
+                                                    {page.label}
+                                                </a>
+                                            </Link>
                                         </Typography>
                                     </MenuItem>
                                 ))}
@@ -122,12 +123,15 @@ function Navbar() {
                         >
                             {allPages.map((page) => (
                                 <Button
-                                    href={`/${page}`}
-                                    key={page}
+                                    key={page.label}
                                     onClick={handleCloseNavMenu}
                                     sx={{ my: 2, color: "inherit", fontWeight: 700 }}
                                 >
-                                    {page}
+                                    <Link href={`/${page.path}`} passHref legacyBehavior>
+                                        <a style={{ textDecoration: "none", color: "inherit" }}>
+                                            {page.label}
+                                        </a>
+                                    </Link>
                                 </Button>
                             ))}
                         </Box>
