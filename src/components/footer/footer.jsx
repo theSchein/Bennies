@@ -39,15 +39,16 @@ function Footer() {
 
                         <div className="mt-10 bg-light-primary dark:bg-dark-primary p-4 sm:p-6 lg:p-8 rounded-2xl bg-opacity-50 shadow-xl max-w-md mb-5 w-full">
                             <h3 className="text-xl sm:text-2xl lg:text-2xl mb-4 text-secondary font-subheading font-bold text-center">
-                                {"Sign up for our Newsletter"}
+                                {"Tell me what you think!"}
                             </h3>
                             <form onSubmit={handleSubmit}>
-                                <input
+                                <textarea
                                     className="w-full p-2 sm:p-3 mb-3 border-2 border-light-tertiary dark:border-dark-secondary rounded-lg"
-                                    type="text"
-                                    placeholder="Name"
+                                    type="textarea"
+                                    placeholder="Suggestion, Question, or Feedback?"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
+                                    rows="3"
                                 />
                                 <input
                                     className="w-full p-2 sm:p-3 mb-3 border-2 border-light-tertiary dark:border-dark-secondary rounded-lg"
@@ -58,7 +59,7 @@ function Footer() {
                                 />
                                 <button
                                     type="submit"
-                                    className="w-full py-2 sm:py-3 bg-gradient-to-r from-light-primary to-light-quaternary dark:from-dark-secondary dark:to-dark-tertiary text-white rounded-lg font-body hover:from-yellow-600 hover:to-amber-950 dark:hover:from-yellow-600 dark:hover:to-amber-950 transition duration-300"
+                                    className="w-full py-2 sm:py-3  rounded-lg font-body btn"
                                 >
                                     Submit
                                 </button>

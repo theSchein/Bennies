@@ -10,6 +10,7 @@ const nextConfig = {
             "live---metadata-5covpqijaa-uc.a.run.app",
             "shuk.nyc3.digitaloceanspaces.com",
             "shuk.nyc3.cdn.digitaloceanspaces.com",
+            "runi.splinterlands.com",
         ],
     },
 };

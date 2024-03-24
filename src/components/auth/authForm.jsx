@@ -16,7 +16,7 @@ function AuthForm() {
     } = useAuthForm();
 
     return (
-        <section className="min-h-screen flex items-center justify-center bg-gradient-light dark:bg-gradient-dark py-6 px-4 sm:px-6 lg:px-8">
+        <section className=" flex items-center justify-center py-6 px-4 sm:px-6 lg:px-8">
             <div className="max-w-md w-full space-y-6 bg-light-primary dark:bg-dark-primary p-6 rounded-lg shadow-xl ">
                 <h1 className="text-center text-4xl font-bold text-light-quaternary dark:text-dark-quaternary mb-6">
                     {isLogin ? "Login" : "Sign Up"}

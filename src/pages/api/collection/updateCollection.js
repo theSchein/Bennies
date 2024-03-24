@@ -35,7 +35,10 @@ export default async function handler(req, res) {
         await db.query(
             `UPDATE collections SET ${setQuery} WHERE collection_id = $1`,
             values
-        );
+        ).catch(err => {
+            console.error("SQL Error:", err);
+            throw err; // Rethrow the error to be caught by the outer catch block
+        });
 
         res.status(200).json({ message: 'Collection updated successfully' });
     } catch (error) {

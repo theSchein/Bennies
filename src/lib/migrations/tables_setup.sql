@@ -105,7 +105,7 @@ CREATE TABLE likes (
 
 CREATE TABLE waitlist (
 	waitlist_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-	"name" varchar(255) NOT NULL,
+	"name" TEXT NOT NULL,
 	email varchar(255) NOT NULL,
 	joined_at timestamp NULL DEFAULT (now() AT TIME ZONE 'UTC'::text)
 );

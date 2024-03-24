@@ -35,7 +35,6 @@ module.exports = {
       'gradient-dark-comment': 'linear-gradient(to right, #C5A880, #0F0F0F)',
       'gradient-light': 'linear-gradient(to bottom, #F5F5F5, #DFD7BF)',
       'gradient-light-comment': 'linear-gradient(to right, #F2EAD3, #3F2305)',
-
     }
   },
 },

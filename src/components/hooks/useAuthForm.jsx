@@ -1,4 +1,4 @@
-// components/hoks/useAuthForm.js
+// components/hooks/useAuthForm.js
 // logic for signing in and signing up
 
 import { useState, useRef } from "react";
@@ -59,27 +59,31 @@ function useAuthForm() {
         const enteredIdentifier = emailInputRef.current.value;
         const enteredPassword = passwordInputRef.current.value;
         const passwordError = validatePassword(enteredPassword);
-
+    
         if (passwordError) {
             setModalMessage(passwordError);
             setModalIsOpen(true);
             return;
         }
-
+    
         if (isLogin) {
             // Attempt to sign in
             const result = await signIn("credentials", {
                 redirect: false,
                 identifier: enteredIdentifier,
                 password: enteredPassword,
+                callbackUrl: window.location.href, // Stay on the same page
             });
-
+    
             if (result.error) {
                 setModalMessage(result.error);
                 setModalIsOpen(true);
+            } else if (result.url) {
+                // If there's a specific URL to redirect to, use it, otherwise reload
+                window.location.href = result.url;
             } else {
-                // Redirect on successful login
-                router.push("/profile");
+                // Reload the page to reflect the new session state
+                router.reload();
             }
         } else {
             // Attempt to create a new user
@@ -90,7 +94,7 @@ function useAuthForm() {
                     enteredUsername,
                     enteredPassword,
                 );
-
+    
                 if (result.error) {
                     setModalMessage(result.error);
                     setModalIsOpen(true);
@@ -100,14 +104,15 @@ function useAuthForm() {
                         redirect: false,
                         identifier: enteredIdentifier,
                         password: enteredPassword,
+                        callbackUrl: window.location.href, // Stay on the same page
                     });
-
-                    if (!signInResult.error) {
-                        // Redirect to profile page after successful sign-in
-                        router.push("/profile");
+    
+                    if (!signInResult.error && signInResult.url) {
+                        // If there's a specific URL to redirect to, use it, otherwise reload
+                        window.location.href = signInResult.url;
                     } else {
-                        setModalMessage(signInResult.error);
-                        setModalIsOpen(true);
+                        // Reload the page to reflect the new session state
+                        router.reload();
                     }
                 }
             } catch (error) {
@@ -117,6 +122,7 @@ function useAuthForm() {
             }
         }
     };
+    
 
     return {
         emailInputRef,
