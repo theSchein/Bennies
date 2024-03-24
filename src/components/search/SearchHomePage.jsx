@@ -60,7 +60,7 @@ function SearchHomepage() {
                     />
                     <button
                         type="submit"
-                        className="px-6 py-2 w-full btn rounded-full transition ease-in duration-200 text-lg sm:text-base mb-3"
+                        className="px-6 py-2 w-full btn rounded-full text-center  items-center transition ease-in duration-200 text-lg sm:text-base mb-3"
                     >
                         {session ? "Search Address" : "Sign in to Search"}
                     </button>
