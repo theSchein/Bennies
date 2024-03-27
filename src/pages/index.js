@@ -12,6 +12,10 @@ export default function Home() {
                 </h1>
             </div>
 
+            <div className="bg-light-secondary dark:bg-dark-secondary g-opacity-90 py-3 px-2 sm:px-6 lg:px-3 rounded-xl shadow-xl max-w-xl mb-3">
+                <h3 className="italic bold text-light-quaternary dark:text-dark-quaternary">Find the value, not just the price, of NFTs</h3>
+                </div>
+
             <SearchHomepage />
 
         </div>

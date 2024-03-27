@@ -90,6 +90,17 @@ function SearchHomepage() {
             <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
                 <AuthForm />
             </Modal>
+            {searchResults === null && !isLoading && (
+                <div className="w-full px-2 mt-4 text-center flex justify-center">
+                    <div className="max-w-xl">
+                        <p className="text-lg md:text-xl text-primary dark:text-dark-primary">
+                            Enter an Ethereum wallet address or ENS name to see all
+                            NFTs owned by the address their benefits like art license,
+                            utility, perks of ownership, and events.
+                        </p>
+                    </div>
+                </div>
+            )}
             {!isLoading && searchResults && (
                 <div className="w-full px-2">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 gap-4 justify-items-center">

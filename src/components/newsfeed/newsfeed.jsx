@@ -45,7 +45,9 @@ const NewsFeed = ({ collectionIds, viewingGroup }) => {
                     ))}
                 </ul>
             ) : (
-                <p className="text-gray-500">No news items to display.</p>
+                <div className='p-2 rounded-md shadow bg-light-secondary dark:bg-dark-secondary'> 
+                <p className="text-light-quaternary dark:text-dark-quaternary">No news items to display.</p>
+                </div>
             )}
         </div>
     );
