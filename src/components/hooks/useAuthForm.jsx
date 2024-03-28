@@ -9,7 +9,7 @@ function useAuthForm() {
     const emailInputRef = useRef();
     const usernameInputRef = useRef();
     const passwordInputRef = useRef();
-    const [isLogin, setIsLogin] = useState(true);
+    const [isLogin, setIsLogin] = useState(false);
     const router = useRouter();
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [modalMessage, setModalMessage] = useState("");
