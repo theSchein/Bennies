@@ -11,7 +11,7 @@ import { useTheme } from "@mui/material/styles";
 function NftTile({ nft }) {
     const theme = useTheme();
     const license = nft.license || nft.collection_licence;
-    const utility = nft.utility || nft.collection_utility;
+    const utility = nft.nft_utility || nft.collection_utility;
     const category = nft.category || nft.collection_category;
 
     const isOwner = IsOwner(nft.owners);
@@ -76,7 +76,7 @@ function NftTile({ nft }) {
                         Ownership Perks
                     </p>
                     <p className="font-body  text-light-quaternary dark:text-dark-quaternary break-words m-3">
-                        {nft.nft_utility}
+                        {utility}
                     </p>
                 </div>
                 {isOwner || isDeployer ? <EditPageButton pageData={nft} /> : null}

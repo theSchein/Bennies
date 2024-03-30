@@ -8,6 +8,9 @@ const NewsFeed = ({ collectionIds, viewingGroup }) => {
             try {
                 let aggregatedNewsItems = [];
                 for (const collectionId of collectionIds) {
+                    // Skip fetching if collectionId is null or undefined
+                    if (!collectionId) continue;
+        
                     const response = await fetch(`/api/news/fetchNews?collection_id=${collectionId}`);
                     if (!response.ok) throw new Error(`Failed to fetch news items for collection ${collectionId}`);
                     const data = await response.json();

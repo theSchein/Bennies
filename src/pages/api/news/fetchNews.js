@@ -9,7 +9,12 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: "Method Not Allowed" });
     }
 
-    const { collection_id, viewing_group } = req.query;
+    let { collection_id, viewing_group } = req.query;
+
+    // Check if collection_id is 'null' and handle accordingly
+    if (collection_id === 'null') {
+        return res.status(400).json({ error: "Invalid collection_id" });
+    }
 
     // Optional: Check if the user is authenticated if needed for certain viewing groups
     const session = await getToken({ req });
