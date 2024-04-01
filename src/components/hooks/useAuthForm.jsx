@@ -39,18 +39,18 @@ function useAuthForm() {
     }
 
     function validatePassword(password) {
-        if (password.length < 8) {
-            return "Password should be at least 8 characters.";
+        if (password.length < 5) {
+            return "Password should be at least 5 characters.";
         }
-        if (!/[A-Z]/.test(password)) {
-            return "Password should contain at least one uppercase letter.";
-        }
-        if (!/[a-z]/.test(password)) {
-            return "Password should contain at least one lowercase letter.";
-        }
-        if (!/[0-9]/.test(password)) {
-            return "Password should contain at least one number.";
-        }
+        // if (!/[A-Z]/.test(password)) {
+        //     return "Password should contain at least one uppercase letter.";
+        // }
+        // if (!/[a-z]/.test(password)) {
+        //     return "Password should contain at least one lowercase letter.";
+        // }
+        // if (!/[0-9]/.test(password)) {
+        //     return "Password should contain at least one number.";
+        // }
         return null;
     }
 
