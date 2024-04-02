@@ -53,7 +53,7 @@ function NftTile({ nft }) {
             <div className="p-4 space-y-2">
                 <h2 className="text-xl font-bold break-words">{nft.nft_name}</h2>
                 <div className="flex justify-between items-center p-4">
-                    <div className="flex items-center bg-light-tertiary dark:bg-dark-tertiary text-light-quaternary dark:text-dark-primary rounded-lg shadow px-3 py-1">
+                    <div className="flex items-center bg-light-tertiary dark:bg-dark-tertiary text-light-quaternary dark:text-dark-primary rounded-lg shadow px-3 py-1 mr-1">
                         <p className="text-sm sm:text-md">
                             Category:{" "}
                             <span className="font-bold text-sm sm:text-md ">
@@ -61,7 +61,7 @@ function NftTile({ nft }) {
                             </span>
                         </p>
                     </div>
-                    <div className="flex items-center bg-light-tertiary dark:bg-dark-tertiary text-light-quaternary dark:text-dark-primary rounded-lg shadow px-3 py-1">
+                    <div className="flex items-center bg-light-tertiary dark:bg-dark-tertiary text-light-quaternary dark:text-dark-primary rounded-lg shadow px-3 py-1 ml-1">
                         <p className="text-sm sm:text-md">
                             License:{" "}
                             <span className="font-bold text-sm sm:text-md ">
