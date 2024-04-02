@@ -22,21 +22,23 @@ function AuthForm() {
                     {isLogin ? "Welcome Back!" : "Get Started"}
                 </h1>
                 <p className="text-center text-light-quaternary dark:text-dark-quaternary mb-6">
-                    {isLogin
-                        ? "Please login to continue."
-                        : "Create your account"}
+                    {isLogin ? "Please login to continue." : "Create your account"}
                 </p>
                 <form
                     onSubmit={submitHandler}
                     className="space-y-6 text-light-quaternary dark:text-dark-quaternary"
                 >
                     <AuthInputField
-                        type="email"
+                        type="text" // Changed to text to allow non-email input for usernames
                         id="email"
                         required
                         ref={emailInputRef}
-                        placeholder="Your Email"
-                        label="Email"
+                        placeholder={
+                            isLogin ? "Enter your Username or Email" : "Enter your Email" // Made the placeholder more concise
+                        }
+                        label={
+                            isLogin ? "Username / Email" : "Email" // Adjusted spacing for consistency
+                        }
                     />
                     {!isLogin && (
                         <AuthInputField
@@ -53,7 +55,9 @@ function AuthForm() {
                         id="password"
                         required
                         ref={passwordInputRef}
-                        placeholder="Create a Password"
+                        placeholder={
+                            isLogin ? "Enter your password" : "Create a password"
+                        }
                         label="Password"
                     />
                     <div className="flex flex-col space-y-4">

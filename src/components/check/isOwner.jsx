@@ -6,6 +6,10 @@ const IsOwner = (owners) => {
     const { data: session } = useSession();
     let isOwner = false;
 
+    if (!owners) {
+        owners = [];
+    }
+
     if (session && session.wallets && owners) {
         const lowerCaseWallets = session.wallets.map(wallet => wallet.toLowerCase());
         const lowerCaseOwners = owners.map(owner => owner.toLowerCase());

@@ -14,9 +14,9 @@ export async function getServerSideProps({ params }) {
     collections.collection_utility AS collection_utility,
     collections.category AS collection_category,
     collections.nft_licence AS collection_licence
-            FROM nfts
-        JOIN collections ON nfts.collection_id = collections.collection_id
-        WHERE nft_id = $1
+    FROM nfts
+    LEFT JOIN collections ON nfts.collection_id = collections.collection_id
+    WHERE nft_id = $1;
     `;
     try {
         let nft = await db.one(nftDataQuery, [slug[0]]);

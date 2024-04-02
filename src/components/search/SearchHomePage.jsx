@@ -55,7 +55,7 @@ function SearchHomepage() {
                         type="text"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder="Enter wallet address"
+                        placeholder="Enter any Ethereum wallet or ENS address"
                         className="mb-4 w-full p-4 border-2 border-gray-300 rounded-full focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary text-sm sm:text-base"
                     />
                     <button

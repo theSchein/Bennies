@@ -11,7 +11,13 @@ const nextConfig = {
             "shuk.nyc3.digitaloceanspaces.com",
             "shuk.nyc3.cdn.digitaloceanspaces.com",
             "runi.splinterlands.com",
-            "media-proxy.artblocks.io",        ],
+            "media-proxy.artblocks.io",
+            "ipfs.pixura.io",
+            "media.veefriends.com",
+            "ipfs.infura.io",
+            "api.pudgypenguins.io",
+                    
+        ],
     },
 };
 

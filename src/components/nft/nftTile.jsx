@@ -71,14 +71,16 @@ function NftTile({ nft }) {
                     </div>
                 </div>
 
-                <div className="bg-light-tertiary dark:bg-dark-tertieary shadow-xl p-3 rounded-xl">
-                    <p className="font-bold text-light-quaternary dark:text-dark-quaternary m-3">
-                        Ownership Perks
-                    </p>
-                    <p className="font-body  text-light-quaternary dark:text-dark-quaternary break-words m-3">
-                        {utility}
-                    </p>
-                </div>
+                {utility && (
+                    <div className="bg-light-tertiary dark:bg-dark-tertieary shadow-xl p-3 rounded-xl">
+                        <p className="font-bold text-light-quaternary dark:text-dark-quaternary m-3">
+                            Ownership Perks
+                        </p>
+                        <p className="font-body text-light-quaternary dark:text-dark-quaternary break-words m-3">
+                            {utility}
+                        </p>
+                    </div>
+                )}
                 {isOwner || isDeployer ? <EditPageButton pageData={nft} /> : null}
             </div>
             <div className="px-4 pb-4">

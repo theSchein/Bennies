@@ -18,7 +18,7 @@ import Modal from "@mui/material/Modal";
 
 const NftDetails = ({ nft }) => {
     const [isModalOpen, setModalOpen] = useState(false);
-    const isOwner = IsOwner(nft.owners);
+    const isOwner = IsOwner(nft.owners || []);
     const isDeployer = IsDeployer(nft.deployer_address);
     const imageSource = getImageSource(nft.media_url, fallbackImageUrl);
 

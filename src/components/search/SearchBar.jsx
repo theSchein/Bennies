@@ -13,7 +13,7 @@ function SearchBar() {
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search..."
+                placeholder="Enter any NFT name or collection name"
                 className="w-3/4 p-2 sm:p-3 border-2 border-gray-300 rounded-full focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary text-sm sm:text-base"
             />
             <button
