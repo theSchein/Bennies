@@ -25,7 +25,7 @@ const CollectionSidebar = ({ collection, onNftsFetched }) => {
             setNftData(data);
         }
     };
-    const allOwnerAddresses = nftData.map((nft) => nft.owners).flat();
+    const allOwnerAddresses = nftData && Array.isArray(nftData) ? nftData.map((nft) => nft.owners ? nft.owners : []).flat() : [];
     const uniqueOwnerAddresses = [...new Set(allOwnerAddresses)];
     const isOwner = IsOwner(uniqueOwnerAddresses);
     const isCollector = IsCollector(allOwnerAddresses);

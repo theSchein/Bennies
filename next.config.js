@@ -16,6 +16,10 @@ const nextConfig = {
             "media.veefriends.com",
             "ipfs.infura.io",
             "api.pudgypenguins.io",
+            "www.miladymaker.net",
+            "miladymaker.net",
+            "raw.githubusercontent.com",
+            "metadata.degods.com",
                     
         ],
     },

@@ -6,8 +6,12 @@ const IsCollector = (owners) => {
     const { data: session } = useSession();
     let isCollector = false;
 
-    if (session && session.wallets && owners.length) {
+    // Ensure owners is an array and filter out any null or undefined values
+    owners = owners ? owners.filter(owner => owner != null) : [];
+
+    if (session && session.wallets && owners.length > 0) {
         const lowerCaseWallets = session.wallets.map(wallet => wallet.toLowerCase());
+        // Now safe to assume all owners are non-null and can be converted to lowercase
         const lowerCaseOwners = owners.map(owner => owner.toLowerCase());
 
         // Create a map to count occurrences of each wallet in the owners array
