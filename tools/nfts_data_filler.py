@@ -5,6 +5,7 @@ import os
 from dotenv import load_dotenv
 from urllib.parse import urlparse
 import json
+import argparse
 
 # Load environment variables
 load_dotenv(dotenv_path='.env.local')
@@ -30,7 +31,11 @@ def connect_db():
 def fetch_metadata_from_token_uri(token_uri):
     """Fetch the metadata from a token URI."""
     try:
-        response = requests.get(token_uri, timeout=5)  # Set a reasonable timeout
+        # Check if the token URI is an IPFS URI and convert it to a HTTP URL
+        if token_uri.startswith('ipfs://'):
+            token_uri = token_uri.replace('ipfs://', 'https://ipfs.io/ipfs/')
+        
+        response = requests.get(token_uri, timeout=10)  # Set a reasonable timeout
         response.raise_for_status()
         data = response.json()
         return data
@@ -38,15 +43,17 @@ def fetch_metadata_from_token_uri(token_uri):
         print(f"Error fetching or parsing token URI {token_uri}: {e}")
         return None
 
-def update_nfts_metadata(conn, dry_run=True):
+def update_nfts_metadata(conn, contract_address=None, dry_run=True):
     cursor = conn.cursor(cursor_factory=DictCursor)
     
     # Find all NFTs with no or null names or descriptions
-    cursor.execute("""
+    sql_query = """
         SELECT nft_id, token_uri_gateway
         FROM nfts
-        WHERE nft_name IS NULL OR nft_name = '' OR nft_description IS NULL OR nft_description = ''
-    """)
+        WHERE (nft_name IS NULL OR nft_name = '' OR nft_description IS NULL OR nft_description = '') {}
+    """.format(f"AND contract_address = '{contract_address}'" if contract_address else "")
+
+    cursor.execute(sql_query)
     
     nfts_to_update = cursor.fetchall()
     
@@ -78,10 +85,13 @@ def update_nfts_metadata(conn, dry_run=True):
     cursor.close()
 
 def main():
+    parser = argparse.ArgumentParser(description='Update NFT metadata for a specific collection or all collections.')
+    parser.add_argument('--contract_address', type=str, help='Contract Addy to update NFTs for', default=None)
+    args = parser.parse_args()
     conn = connect_db()
     if conn is not None:
         dry_run_input = input("Perform a dry run? (yes/no): ").lower() == 'yes'
-        update_nfts_metadata(conn, dry_run=dry_run_input)
+        update_nfts_metadata(conn, contract_address=args.contract_address, dry_run=dry_run_input)
         conn.close()
 
 if __name__ == '__main__':
