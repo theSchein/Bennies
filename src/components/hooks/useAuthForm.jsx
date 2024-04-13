@@ -20,6 +20,20 @@ function useAuthForm() {
         setIsLogin((prevState) => !prevState);
     };
 
+    const handlePasswordReset = async () => {
+        const email = emailInputRef.current.value;
+        const result = await signIn('email', {
+            email,
+            redirect: false
+        });
+        if (result.error) {
+            setModalMessage("Failed to send reset email. Please check your email address and try again.");
+        } else {
+            setModalMessage("Check your email for the password reset link.");
+        }
+        setModalIsOpen(true);
+    };
+
     async function createUser(email_address, username, password) {
         const response = await fetch("/api/auth/register", {
             method: "POST",
@@ -131,6 +145,7 @@ function useAuthForm() {
         isLogin,
         switchAuthModeHandler,
         submitHandler,
+        handlePasswordReset,
         modalIsOpen,
         modalMessage,
         closeModal,

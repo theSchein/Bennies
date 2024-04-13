@@ -3,8 +3,20 @@
 
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
+import EmailProvider from "next-auth/providers/email";
+import nodemailer from "nodemailer";
 import db from "../../../lib/db";
 import bcryptjs from "bcryptjs";
+
+const smtpTransport = nodemailer.createTransport({
+    host: process.env.EMAIL_SERVER_HOST,
+    port: process.env.EMAIL_SERVER_PORT,
+    auth: {
+        user: process.env.EMAIL_SERVER_USER,
+        pass: process.env.EMAIL_SERVER_PASSWORD,
+    },
+    secure: true,
+});
 
 export default NextAuth({
     session: {
@@ -31,7 +43,7 @@ export default NextAuth({
 
                 const wallets = await db.manyOrNone(
                     "SELECT wallet_address FROM wallets WHERE user_id = $1",
-                    [user.user_id]
+                    [user.user_id],
                 );
 
                 const isValid = await bcryptjs.compare(
@@ -42,7 +54,7 @@ export default NextAuth({
                     throw new Error("Invalid Credentials!");
                     //return Promise.resolve(null);
                 }
-                user.wallets = wallets.map(w => w.wallet_address);
+                user.wallets = wallets.map((w) => w.wallet_address);
 
                 return Promise.resolve(user);
             },

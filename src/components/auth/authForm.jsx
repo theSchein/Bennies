@@ -1,8 +1,11 @@
 import useAuthForm from "../hooks/useAuthForm";
 import AuthInputField from "./authInputField";
 import AlertModal from "../alert";
+import { useRouter } from "next/router";
+
 
 function AuthForm() {
+    const router = useRouter();
     const {
         emailInputRef,
         usernameInputRef,
@@ -10,10 +13,12 @@ function AuthForm() {
         isLogin,
         switchAuthModeHandler,
         submitHandler,
+        handlePasswordReset,
         modalIsOpen,
         modalMessage,
         closeModal,
     } = useAuthForm();
+
 
     return (
         <section className="flex items-center justify-center py-6 px-4 sm:px-6 lg:px-8">
@@ -29,12 +34,14 @@ function AuthForm() {
                     className="space-y-6 text-light-quaternary dark:text-dark-quaternary"
                 >
                     <AuthInputField
-                        type="text" // Changed to text to allow non-email input for usernames
+                        type="text"
                         id="email"
                         required
                         ref={emailInputRef}
                         placeholder={
-                            isLogin ? "Enter your Username or Email" : "Enter your Email" // Made the placeholder more concise
+                            isLogin
+                                ? "Enter your Username or Email"
+                                : "Enter your Email"
                         }
                         label={
                             isLogin ? "Username / Email" : "Email" // Adjusted spacing for consistency
@@ -60,6 +67,15 @@ function AuthForm() {
                         }
                         label="Password"
                     />
+                    <div className="flex justify-between items-center">
+                        <button
+                            type="button"
+                            onClick={() => router.push("/auth/reset-request")}
+                            className="text-sm p-3 italic text-blue-500 hover:underline"
+                        >
+                            Forgot password?
+                        </button>
+                    </div>
                     <div className="flex flex-col space-y-4">
                         <button className="p-3 btn">
                             {isLogin ? "Log In" : "Sign Up"}
