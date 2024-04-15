@@ -1,3 +1,4 @@
+## nfts_data_filler.py
 import requests
 import psycopg2
 from psycopg2.extras import DictCursor

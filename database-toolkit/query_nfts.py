@@ -1,4 +1,4 @@
-# tools/query_nfts.py
+# query_nfts.py
 import os
 import psycopg2
 from psycopg2 import sql
