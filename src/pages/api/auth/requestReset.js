@@ -1,6 +1,6 @@
 import db from "../../../lib/db";
 import jwt from "jsonwebtoken";
-import nodemailer from "nodemailer";
+import client from "@/lib/postmarkClient";
 
 export default async (req, res) => {
     if (req.method !== "POST") {
@@ -25,26 +25,14 @@ export default async (req, res) => {
             { expiresIn: '1h' } 
         );
 
-        // Configure your mail server settings
-        const transporter = nodemailer.createTransport({
-            host: process.env.EMAIL_SERVER_HOST,
-            port: process.env.EMAIL_SERVER_PORT,
-            secure: false, // true for 465, false for other ports
-            auth: {
-                user: process.env.EMAIL_SERVER_USER,
-                pass: process.env.EMAIL_SERVER_PASSWORD,
-            },
-        });
+        const link = `http://${req.headers.host}/reset-password/${token}`;
 
-        // send mail with defined transport object
-        await transporter.sendMail({
-            from: '"Your App Name" <postmaster@mg.discovry.xyz>', // sender address
-            to: email, // list of receivers
-            subject: "Password Reset Request", // Subject line
-            text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n
-                   Please click on the following link, or paste this into your browser to complete the process within one hour of receiving it:\n\n
-                   http://${req.headers.host}/reset-password/${token}\n\n
-                   If you did not request this, please ignore this email and your password will remain unchanged.\n`,
+        await client.sendEmail({
+            From: "ben@discovry.xyz", 
+            To: email,
+            Subject: "Password Reset Request",
+            TextBody: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\nPlease click on the following link, or paste this into your browser to complete the process within one hour of receiving it:\n\n${link}\n\nIf you did not request this, please ignore this email and your password will remain unchanged.`,
+            MessageStream: "outbound"
         });
 
         res.status(200).json({ message: "A reset email has been sent to " + email + "." });
