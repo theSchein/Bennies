@@ -25,7 +25,8 @@ export default async (req, res) => {
             { expiresIn: '1h' } 
         );
 
-        const link = `http://${req.headers.host}/reset-password/${token}`;
+        const baseUrl = process.env.BASE_URL; // Ensure this is set in your environment
+        const link = `${baseUrl}/auth/reset-password/${encodeURIComponent(token)}`;
 
         await client.sendEmail({
             From: "ben@discovry.xyz", 
