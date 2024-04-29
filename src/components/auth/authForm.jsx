@@ -64,14 +64,14 @@ function AuthForm() {
                         )}
                     </div>
                     <div className="flex flex-col space-y-4">
-                        <button className="p-3 btn">
+                        <button className="p-3 p-3 font-bold text-light-quaternary dark:text-dark-secondary flex space-y-4 flex-col bg-light-tertiary dark:bg-dark-tertiary rounded-lg hover:bg-light-quaternary hover:text-light-primary dark:hover:bg-dark-primary dark:hover:text-dark-quaternary transition duration-300">
                             {formMode === 'login' ? "Log In" : formMode === 'signup' ? "Sign Up" : "Reset Password"}
                         </button>
                         {formMode !== 'reset' && (
                             <button
                                 type="button"
                                 onClick={() => switchFormMode(formMode === 'login' ? 'signup' : 'login')}
-                                className="text-sm p-3 bg-light-secondary dark:bg-dark-secondary rounded-lg hover:bg-light-tertiary dark:hover:bg-dark-tertiary transition duration-300 hover:underline"
+                                className="text-sm p-3 bg-light-secondary dark:bg-dark-secondary rounded-lg hover:bg-light-tertiary dark:hover:bg-dark-tertiary dark:hover:text-dark-primary transition duration-300 hover:underline"
                             >
                                 {formMode === 'login'
                                     ? "New around here? Sign up"

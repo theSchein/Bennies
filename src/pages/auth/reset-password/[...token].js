@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 
 function ResetPassword() {
     const router = useRouter();
-    const { token } = router.query; // token will be an array if using [...token].js
+    const { token } = router.query; // Assuming token is correctly formed in [...token].js
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [message, setMessage] = useState('');
@@ -36,7 +36,7 @@ function ResetPassword() {
             return;
         }
 
-        const fullToken = token.join('/'); // Join all parts to form the full token
+        const fullToken = token.join('/'); // Ensure the token is properly formatted
         const response = await fetch('/api/auth/resetPassword', {
             method: 'POST',
             headers: {
@@ -50,29 +50,36 @@ function ResetPassword() {
     };
 
     return (
-        <div>
-            <h1>Set New Password</h1>
-            {message ? (
-                <p>{message}</p>
-            ) : (
-                <form onSubmit={handleSubmit}>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="New password"
-                        required
-                    />
-                    <input
-                        type="password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        placeholder="Confirm new password"
-                        required
-                    />
-                    <button type="submit">Reset Password</button>
+        <div className="flex items-center justify-center min-h-screen bg-light-primary dark:bg-dark-primary">
+            <div className="p-9 max-w-lg w-full bg-light-secondary dark:bg-dark-secondary rounded-lg shadow-md">
+                <h1 className="text-2xl font-bold text-center text-light-quaternary dark:text-dark-quaternary mb-4">Set New Password</h1>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div>
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="New password"
+                            className="w-full p-3 border border-light-quaternary dark:border-dark-quaternary rounded-lg focus:outline-none focus:ring-2 focus:ring-light-primary"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <input
+                            type="password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            placeholder="Confirm new password"
+                            className="w-full p-3 border border-light-quaternary dark:border-dark-quaternary rounded-lg focus:outline-none focus:ring-2 focus:ring-light-primary"
+                            required
+                        />
+                    </div>
+                    <button type="submit" className="w-full btn">
+                        Reset Password
+                    </button>
                 </form>
-            )}
+                {message && <p className="mt-4 text-center text-light-primary dark:text-dark-primary">{message}</p>}
+            </div>
         </div>
     );
 }
