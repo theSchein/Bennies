@@ -46,7 +46,12 @@ function ResetPassword() {
         });
 
         const data = await response.json();
-        setMessage(data.message || data.error);
+        if (data.message === "Password successfully reset") {
+            setMessage("Your password has been successfully reset. Redirecting to homepage...");
+            setTimeout(() => router.push('/'), 5000); // Redirect after 5 seconds
+        } else {
+            setMessage(data.message || "Failed to reset password.");
+        }
     };
 
     return (
@@ -78,7 +83,7 @@ function ResetPassword() {
                         Reset Password
                     </button>
                 </form>
-                {message && <p className="mt-4 text-center text-light-primary dark:text-dark-primary">{message}</p>}
+                {message && <p className="mt-4 bold italic text-center text-light-quaternary dark:text-dark-primary">{message}</p>}
             </div>
         </div>
     );
