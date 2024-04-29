@@ -9,127 +9,93 @@ function useAuthForm() {
     const emailInputRef = useRef();
     const usernameInputRef = useRef();
     const passwordInputRef = useRef();
-    const [isLogin, setIsLogin] = useState(false);
+    const [formMode, setFormMode] = useState('login'); // login, signup, or reset
     const router = useRouter();
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [modalMessage, setModalMessage] = useState("");
 
     const closeModal = () => setModalIsOpen(false);
 
-    const switchAuthModeHandler = () => {
-        setIsLogin((prevState) => !prevState);
-    };
-
-    async function createUser(email_address, username, password) {
-        const response = await fetch("/api/auth/register", {
-            method: "POST",
-            body: JSON.stringify({ email_address, username, password }),
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            return data;
-        }
-
-        return data;
-    }
-
-    function validatePassword(password) {
-        if (password.length < 5) {
-            return "Password should be at least 5 characters.";
-        }
-        // if (!/[A-Z]/.test(password)) {
-        //     return "Password should contain at least one uppercase letter.";
-        // }
-        // if (!/[a-z]/.test(password)) {
-        //     return "Password should contain at least one lowercase letter.";
-        // }
-        // if (!/[0-9]/.test(password)) {
-        //     return "Password should contain at least one number.";
-        // }
-        return null;
-    }
+    const switchFormMode = (mode) => setFormMode(mode);
 
     const submitHandler = async (event) => {
         event.preventDefault();
-        const enteredIdentifier = emailInputRef.current.value;
-        const enteredPassword = passwordInputRef.current.value;
-        const passwordError = validatePassword(enteredPassword);
-    
-        if (passwordError) {
-            setModalMessage(passwordError);
+        const email = emailInputRef.current.value;
+        let password = "";
+        if (formMode !== 'reset') {
+            password = passwordInputRef.current.value; // Only access password when it's available
+        }
+        
+        if (formMode === 'reset') {
+            // Handle reset password submission
+            const response = await fetch('/api/auth/requestReset', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ email }),
+            });
+            const data = await response.json();
+            setModalMessage(data.message || data.error);
             setModalIsOpen(true);
             return;
         }
-    
-        if (isLogin) {
-            // Attempt to sign in
-            const result = await signIn("credentials", {
+
+        if (formMode === 'login') {
+            // Handle login submission
+            const result = await signIn('credentials', {
                 redirect: false,
-                identifier: enteredIdentifier,
-                password: enteredPassword,
-                callbackUrl: window.location.href, // Stay on the same page
+                identifier: email,
+                password,
+                callbackUrl: window.location.href,
             });
-    
+
             if (result.error) {
                 setModalMessage(result.error);
                 setModalIsOpen(true);
-            } else if (result.url) {
-                // If there's a specific URL to redirect to, use it, otherwise reload
-                window.location.href = result.url;
             } else {
-                // Reload the page to reflect the new session state
                 router.reload();
             }
-        } else {
-            // Attempt to create a new user
-            try {
-                const enteredUsername = usernameInputRef.current.value;
-                const result = await createUser(
-                    enteredIdentifier,
-                    enteredUsername,
-                    enteredPassword,
-                );
-    
-                if (result.error) {
-                    setModalMessage(result.error);
-                    setModalIsOpen(true);
-                } else {
-                    // Automatically sign in the user after successful account creation
-                    const signInResult = await signIn("credentials", {
-                        redirect: false,
-                        identifier: enteredIdentifier,
-                        password: enteredPassword,
-                        callbackUrl: window.location.href, // Stay on the same page
-                    });
-    
-                    if (!signInResult.error && signInResult.url) {
-                        // If there's a specific URL to redirect to, use it, otherwise reload
-                        window.location.href = signInResult.url;
-                    } else {
-                        // Reload the page to reflect the new session state
-                        router.reload();
-                    }
-                }
-            } catch (error) {
-                console.error(error);
-                setModalMessage("An unexpected error occurred.");
+        } else if (formMode === 'signup') {
+            // Handle signup submission
+            const username = usernameInputRef.current.value;
+            const result = await createUser(email, username, password);
+
+            if (result.error) {
+                setModalMessage(result.error);
                 setModalIsOpen(true);
+            } else {
+                const signInResult = await signIn('credentials', {
+                    redirect: false,
+                    identifier: email,
+                    password,
+                    callbackUrl: window.location.href,
+                });
+
+                if (!signInResult.error) {
+                    router.reload();
+                } else {
+                    setModalMessage(signInResult.error);
+                    setModalIsOpen(true);
+                }
             }
         }
     };
-    
+
+    async function createUser(email, username, password) {
+        const response = await fetch("/api/auth/register", {
+            method: "POST",
+            body: JSON.stringify({ email, username, password }),
+            headers: { "Content-Type": "application/json" },
+        });
+
+        return await response.json();
+    }
 
     return {
         emailInputRef,
         usernameInputRef,
         passwordInputRef,
-        isLogin,
-        switchAuthModeHandler,
+        formMode,
+        switchFormMode,
         submitHandler,
         modalIsOpen,
         modalMessage,
