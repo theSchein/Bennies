@@ -1,94 +1,92 @@
 import useAuthForm from "../hooks/useAuthForm";
 import AuthInputField from "./authInputField";
 import AlertModal from "../alert";
-import { useRouter } from "next/router";
-
 
 function AuthForm() {
-    const router = useRouter();
     const {
         emailInputRef,
         usernameInputRef,
         passwordInputRef,
-        isLogin,
-        switchAuthModeHandler,
+        formMode,
+        switchFormMode,
         submitHandler,
-        handlePasswordReset,
         modalIsOpen,
         modalMessage,
         closeModal,
     } = useAuthForm();
 
-
     return (
         <section className="flex items-center justify-center py-6 px-4 sm:px-6 lg:px-8">
             <div className="max-w-md w-full space-y-6 bg-light-primary dark:bg-dark-primary p-6 rounded-lg shadow-xl">
                 <h1 className="text-center text-4xl font-bold text-light-quaternary dark:text-dark-quaternary mb-6">
-                    {isLogin ? "Welcome Back!" : "Get Started"}
+                    {formMode === 'login' ? "Welcome Back!" : formMode === 'signup' ? "Get Started" : "Reset Password"}
                 </h1>
-                <p className="text-center text-light-quaternary dark:text-dark-quaternary mb-6">
-                    {isLogin ? "Please login to continue." : "Create your account"}
-                </p>
-                <form
-                    onSubmit={submitHandler}
-                    className="space-y-6 text-light-quaternary dark:text-dark-quaternary"
-                >
+                <form onSubmit={submitHandler} className="space-y-6 text-light-quaternary dark:text-dark-quaternary">
                     <AuthInputField
                         type="text"
                         id="email"
                         required
                         ref={emailInputRef}
-                        placeholder={
-                            isLogin
-                                ? "Enter your Username or Email"
-                                : "Enter your Email"
-                        }
-                        label={
-                            isLogin ? "Username / Email" : "Email" // Adjusted spacing for consistency
-                        }
+                        placeholder="Enter your email"
+                        label="Email"
                     />
-                    {!isLogin && (
-                        <AuthInputField
-                            type="text"
-                            id="username"
-                            required
-                            ref={usernameInputRef}
-                            placeholder="Choose a Username"
-                            label="Username"
-                        />
+                    {formMode !== 'reset' && (
+                        <>
+                            {formMode === 'signup' && (
+                                <AuthInputField
+                                    type="text"
+                                    id="username"
+                                    required
+                                    ref={usernameInputRef}
+                                    placeholder="Choose a Username"
+                                    label="Username"
+                                />
+                            )}
+                            <AuthInputField
+                                type="password"
+                                id="password"
+                                required
+                                ref={passwordInputRef}
+                                placeholder={formMode === 'login' ? "Enter your password" : "Create a password"}
+                                label="Password"
+                            />
+                        </>
                     )}
-                    <AuthInputField
-                        type="password"
-                        id="password"
-                        required
-                        ref={passwordInputRef}
-                        placeholder={
-                            isLogin ? "Enter your password" : "Create a password"
-                        }
-                        label="Password"
-                    />
                     <div className="flex justify-between items-center">
-                        <button
-                            type="button"
-                            onClick={() => router.push("/auth/reset-request")}
-                            className="text-sm p-3 italic text-blue-500 hover:underline"
-                        >
-                            Forgot password?
-                        </button>
+                        {formMode === 'login' && (
+                            <button
+                                type="button"
+                                onClick={() => switchFormMode('reset')}
+                                className="text-sm p-3 italic text-blue-500 hover:underline"
+                            >
+                                Forgot password?
+                            </button>
+                        )}
                     </div>
                     <div className="flex flex-col space-y-4">
                         <button className="p-3 btn">
-                            {isLogin ? "Log In" : "Sign Up"}
+                            {formMode === 'login' ? "Log In" : formMode === 'signup' ? "Sign Up" : "Reset Password"}
                         </button>
-                        <button
-                            type="button"
-                            onClick={switchAuthModeHandler}
-                            className="text-sm p-3 bg-light-secondary dark:bg-dark-secondary rounded-lg hover:bg-light-tertiary dark:hover:bg-dark-tertiary transition duration-300 hover:underline"
-                        >
-                            {isLogin
-                                ? "New around here? Sign up"
-                                : "Already have an account? Log in"}
-                        </button>
+                        {formMode !== 'reset' && (
+                            <button
+                                type="button"
+                                onClick={() => switchFormMode(formMode === 'login' ? 'signup' : 'login')}
+                                className="text-sm p-3 bg-light-secondary dark:bg-dark-secondary rounded-lg hover:bg-light-tertiary dark:hover:bg-dark-tertiary transition duration-300 hover:underline"
+                            >
+                                {formMode === 'login'
+                                    ? "New around here? Sign up"
+                                    : "Already have an account? Log in"}
+                            </button>
+                        )}
+                        {formMode === 'reset' && (
+                            <button
+                                type="button"
+                                onClick={() => switchFormMode('login')}
+                                className="text-sm p-3 bg-light-secondary dark:bg-dark-secondary rounded-lg hover:bg-light-tertiary dark:hover:bg-dark-tertiary transition duration-300 hover:underline"
+                            >
+                                Return to Log In
+                            </button>
+                        )}
                     </div>
                 </form>
             </div>
