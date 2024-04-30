@@ -3,6 +3,9 @@ CREATE TABLE users (
 	username varchar(255) NOT NULL,
 	email_address varchar(255) NOT NULL,
 	"password" varchar(255) NOT NULL,
+	verification_token VARCHAR(255),
+    token_expires_at TIMESTAMP;
+	email_verified BOOLEAN DEFAULT FALSE;
 	CONSTRAINT users_email_address_key UNIQUE (email_address),
 	CONSTRAINT users_username_key UNIQUE (username)
 );
