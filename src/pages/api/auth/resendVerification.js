@@ -13,6 +13,11 @@ export default async (req, res) => {
         return res.status(400).json({ error: "Email address is required" });
     }
 
+    // Optional: Validate email format here if needed
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return res.status(400).json({ error: "Invalid email format" });
+    }
+
     try {
         const user = await db.oneOrNone("SELECT user_id, is_verified FROM users WHERE email_address = $1", [email]);
         if (!user) {
@@ -44,7 +49,7 @@ export default async (req, res) => {
 
         res.status(200).json({ message: "Verification email has been resent to " + email + "." });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Internal server error" });
+        console.error("Error resending verification email:", error);
+        res.status(500).json({ error: "Internal server error: " + error.message });
     }
 };

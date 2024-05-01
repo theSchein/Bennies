@@ -34,19 +34,22 @@ function ProfilePage() {
         <div className="min-h-screen bg-gradient-light dark:bg-gradient-dark flex flex-col items-center justify-center p-2 ">
             <WagmiWallet>
                 <div className="max-w-6xl w-full bg-light-secondary dark:bg-dark-secondary rounded-lg shadow-xl p-8">
-                    <div className="border-b pb-4 mb-6  text-light-quaternary dark:text-dark-quaternary">
+                    <div className="border-b pb-4 mb-6 text-light-quaternary dark:text-dark-quaternary">
                         <div className="flex justify-between items-center w-full">
-                            <h1 className="font-heading text-5xl ">
+                            <h1 className="font-heading text-5xl">
                                 Welcome, {session.username}
                             </h1>
-                            <SignOutButton />
+                            <div>
+                                <SignOutButton />
+                                <div className="btn">
+                                {!session.verified && (
+                                    <ResendVerificationButton email={session.email_address} />
+                                )}
+                                </div>
+                            </div>
                         </div>
-                        {!session.verified ? (
-                            <ResendVerificationButton
-                                email={session.email_address}
-                            />
-                        ) : (
-                            <div className="text-green-500">
+                        {session.verified && (
+                            <div className="text-green-500 flex items-center gap-2 mt-4">
                                 <svg
                                     className="w-6 h-6"
                                     fill="none"
@@ -64,10 +67,9 @@ function ProfilePage() {
                                 Email verified
                             </div>
                         )}
-
                         <p className="text-xl leading-relaxed pt-4 ">
                             You can connect your wallet and find out what people are
-                            saying about your NFTs Thier may also be some news,
+                            saying about your NFTs. There may also be some news,
                             events, and utilities for your NFTs that you did not know
                             about.
                         </p>
@@ -90,12 +92,13 @@ function ProfilePage() {
                         </div>
                         <WalletNFTs />
                     </div>
-
+    
                     <Profile />
                 </div>
             </WagmiWallet>
         </div>
     );
+    
 }
 
 export async function getServerSideProps(context) {
