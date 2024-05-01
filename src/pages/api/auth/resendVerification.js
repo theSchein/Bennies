@@ -19,7 +19,7 @@ export default async (req, res) => {
     }
 
     try {
-        const user = await db.oneOrNone("SELECT user_id, is_verified FROM users WHERE email_address = $1", [email]);
+        const user = await db.oneOrNone("SELECT user_id, email_verified FROM users WHERE email_address = $1", [email]);
         if (!user) {
             return res.status(404).json({ error: "No account with that email exists." });
         }
