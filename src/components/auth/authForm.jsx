@@ -19,20 +19,31 @@ function AuthForm() {
         <section className="flex items-center justify-center py-6 px-4 sm:px-6 lg:px-8">
             <div className="max-w-md w-full space-y-6 bg-light-primary dark:bg-dark-primary p-6 rounded-lg shadow-xl">
                 <h1 className="text-center text-4xl font-bold text-light-quaternary dark:text-dark-quaternary mb-6">
-                    {formMode === 'login' ? "Welcome Back!" : formMode === 'signup' ? "Get Started" : "Reset Password"}
+                    {formMode === "login"
+                        ? "Welcome Back!"
+                        : formMode === "signup"
+                          ? "Get Started"
+                          : "Reset Password"}
                 </h1>
-                <form onSubmit={submitHandler} className="space-y-6 text-light-quaternary dark:text-dark-quaternary">
+                <form
+                    onSubmit={submitHandler}
+                    className="space-y-6 text-light-quaternary dark:text-dark-quaternary"
+                >
                     <AuthInputField
                         type="text"
                         id="email"
                         required
                         ref={emailInputRef}
-                        placeholder="Enter your email"
-                        label="Email"
+                        placeholder={
+                            formMode === "login"
+                                ? "Enter your username or email"
+                                : "Enter your email"
+                        }
+                        label={formMode === "login" ? "Username or Email" : "Email"}
                     />
-                    {formMode !== 'reset' && (
+                    {formMode !== "reset" && (
                         <>
-                            {formMode === 'signup' && (
+                            {formMode === "signup" && (
                                 <AuthInputField
                                     type="text"
                                     id="username"
@@ -47,16 +58,20 @@ function AuthForm() {
                                 id="password"
                                 required
                                 ref={passwordInputRef}
-                                placeholder={formMode === 'login' ? "Enter your password" : "Create a password"}
+                                placeholder={
+                                    formMode === "login"
+                                        ? "Enter your password"
+                                        : "Create a password"
+                                }
                                 label="Password"
                             />
                         </>
                     )}
                     <div className="flex justify-between items-center">
-                        {formMode === 'login' && (
+                        {formMode === "login" && (
                             <button
                                 type="button"
-                                onClick={() => switchFormMode('reset')}
+                                onClick={() => switchFormMode("reset")}
                                 className="text-sm p-3 italic text-blue-500 hover:underline"
                             >
                                 Forgot password?
@@ -65,23 +80,31 @@ function AuthForm() {
                     </div>
                     <div className="flex flex-col space-y-4">
                         <button className="p-3 p-3 font-bold text-light-quaternary dark:text-dark-secondary flex space-y-4 flex-col bg-light-tertiary dark:bg-dark-tertiary rounded-lg hover:bg-light-quaternary hover:text-light-primary dark:hover:bg-dark-primary dark:hover:text-dark-quaternary transition duration-300">
-                            {formMode === 'login' ? "Log In" : formMode === 'signup' ? "Sign Up" : "Reset Password"}
+                            {formMode === "login"
+                                ? "Log In"
+                                : formMode === "signup"
+                                  ? "Sign Up"
+                                  : "Reset Password"}
                         </button>
-                        {formMode !== 'reset' && (
+                        {formMode !== "reset" && (
                             <button
                                 type="button"
-                                onClick={() => switchFormMode(formMode === 'login' ? 'signup' : 'login')}
+                                onClick={() =>
+                                    switchFormMode(
+                                        formMode === "login" ? "signup" : "login",
+                                    )
+                                }
                                 className="text-sm p-3 bg-light-secondary dark:bg-dark-secondary rounded-lg hover:bg-light-tertiary dark:hover:bg-dark-tertiary dark:hover:text-dark-primary transition duration-300 hover:underline"
                             >
-                                {formMode === 'login'
+                                {formMode === "login"
                                     ? "New around here? Sign up"
                                     : "Already have an account? Log in"}
                             </button>
                         )}
-                        {formMode === 'reset' && (
+                        {formMode === "reset" && (
                             <button
                                 type="button"
-                                onClick={() => switchFormMode('login')}
+                                onClick={() => switchFormMode("login")}
                                 className="text-sm p-3 bg-light-secondary dark:bg-dark-secondary rounded-lg hover:bg-light-tertiary dark:hover:bg-dark-tertiary transition duration-300 hover:underline"
                             >
                                 Return to Log In
