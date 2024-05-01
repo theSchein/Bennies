@@ -40,20 +40,50 @@ function ProfilePage() {
                             </h1>
                             <SignOutButton />
                         </div>
+                        {!session.verified ? (
+                            <ResendVerificationButton
+                                email={session.email_address}
+                            />
+                        ) : (
+                            <div className="text-green-500">
+                                <svg
+                                    className="w-6 h-6"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M5 13l4 4L19 7"
+                                    ></path>
+                                </svg>
+                                Email verified
+                            </div>
+                        )}
+
                         <p className="text-xl leading-relaxed pt-4 ">
-                            You can connect your wallet and find out what people are saying about your NFTs
-                            Thier may also be some news, events, and utilities for your NFTs that you did not know about. 
+                            You can connect your wallet and find out what people are
+                            saying about your NFTs Thier may also be some news,
+                            events, and utilities for your NFTs that you did not know
+                            about.
                         </p>
                         <div className="mb-10 mt-5 pt-4">
                             <h2 className="font-bold text-3xl mb-4 ">
                                 Upcoming Features
                             </h2>
                             <ul className="list-disc pl-8 text-xl">
-                                <li>Notifications & Emails when there is news in a collection you own</li>
-                                <li>Permissioned news based on the # of items in a collection that you own</li>
                                 <li>
-                                    Improved site navigation and search
+                                    Notifications & Emails when there is news in a
+                                    collection you own
                                 </li>
+                                <li>
+                                    Permissioned news based on the # of items in a
+                                    collection that you own
+                                </li>
+                                <li>Improved site navigation and search</li>
                             </ul>
                             <CreatorButton />
                         </div>
@@ -69,7 +99,6 @@ function ProfilePage() {
 
 export async function getServerSideProps(context) {
     const session = await getSession({ req: context.req });
-
     if (!session) {
         return {
             redirect: {
