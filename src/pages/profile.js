@@ -10,6 +10,7 @@ import WagmiWallet from "../components/WagmiWallet";
 import WalletNFTs from "@/components/user_profile/walletNfts";
 import CreatorButton from "@/components/edit/creatorButton";
 import SignOutButton from "@/components/auth/signOutButton";
+import ResendVerificationButton from "@/components/user_profile/resendVerificationButton";
 
 function ProfilePage() {
     const { data: session, status } = useSession();
