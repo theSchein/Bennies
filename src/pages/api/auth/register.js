@@ -1,55 +1,39 @@
 // pages/api/auth/register.js
-// Registration API route
-
 import bcrypt from "bcryptjs";
 import db from "../../../lib/db";
+import jwt from "jsonwebtoken";
+import { sendVerificationEmail } from "@/lib/emailUtils";
 
 export default async (req, res) => {
     if (req.method === "POST") {
         const { username, email_address, password } = req.body;
 
-        // Check username, email_address, and password
         if (!username || !email_address || !password) {
-            res.status(400).json({
-                error: "One or more required fields are missing",
-            });
-            return;
-        }
-        // Check username, email_address, and password types
-        if (
-            typeof username !== "string" ||
-            typeof email_address !== "string" ||
-            typeof password !== "string"
-        ) {
-            res.status(400).json({
-                error: "All input fields must be of type string",
-            });
-            return;
+            return res.status(400).json({ error: "One or more required fields are missing" });
         }
 
-        // Hash the password
         const salt = bcrypt.genSaltSync(10);
         const hashedPassword = bcrypt.hashSync(password, salt);
 
         try {
-            const result = await db.none(
-                "INSERT INTO Users(username, email_address, password) VALUES($1, $2, $3)",
-                [username, email_address, hashedPassword],
+            const user = await db.one(
+                "INSERT INTO users (username, email_address, password) VALUES ($1, $2, $3) RETURNING user_id",
+                [username, email_address, hashedPassword]
             );
-            res.status(200).json({
-                success: true,
-                message: "User registered successfully",
-            });
+
+            const token = jwt.sign({ user_id: user.user_id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+            const baseUrl = process.env.BASE_URL;
+            const link = `${baseUrl}/auth/verify-email/${encodeURIComponent(token)}`;
+
+            await sendVerificationEmail(email_address, link);
+
+            res.status(201).json({ message: "User registered successfully. Please check your email to verify your account." });
         } catch (error) {
+            console.log(error);
             if (error.code === "23505") {
-                // This is the error code for a unique violation in PostgreSQL
-                if (error.detail.includes("username")) {
-                    res.status(409).json({ error: "Username already exists" }); // 409 Conflict
-                } else if (error.detail.includes("email_address")) {
-                    res.status(409).json({ error: "Email already exists" });
-                }
+                res.status(409).json({ error: "Username or email already exists" });
             } else {
-                res.status(500).json({ error: "An error occurred." });
+                res.status(500).json({ error: "An error occurred: " + error.message });
             }
         }
     } else {

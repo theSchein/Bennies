@@ -3,20 +3,9 @@
 
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
-import EmailProvider from "next-auth/providers/email";
-import nodemailer from "nodemailer";
 import db from "../../../lib/db";
 import bcryptjs from "bcryptjs";
 
-const smtpTransport = nodemailer.createTransport({
-    host: process.env.EMAIL_SERVER_HOST,
-    port: process.env.EMAIL_SERVER_PORT,
-    auth: {
-        user: process.env.EMAIL_SERVER_USER,
-        pass: process.env.EMAIL_SERVER_PASSWORD,
-    },
-    secure: true,
-});
 
 export default NextAuth({
     session: {
@@ -69,6 +58,7 @@ export default NextAuth({
                 token.username = user.username;
                 token.email_address = user.email_address;
                 token.wallets = user.wallets;
+                token.verified = user.email_verified;
             }
             return token;
             //return {...token, ...user};
@@ -80,6 +70,7 @@ export default NextAuth({
                 session.email_address = token.email_address; // Use token here
                 session.user_id = token.user_id;
                 session.wallets = token.wallets;
+                session.verified = token.verified;
             }
             return session;
             // return {...session, ...token};
@@ -87,6 +78,6 @@ export default NextAuth({
     },
     pages: {
         signIn: "/signin",
-        signOut: "/pitchdeck",
+        signOut: "/",
     },
 });

@@ -10,6 +10,7 @@ import WagmiWallet from "../components/WagmiWallet";
 import WalletNFTs from "@/components/user_profile/walletNfts";
 import CreatorButton from "@/components/edit/creatorButton";
 import SignOutButton from "@/components/auth/signOutButton";
+import ResendVerificationButton from "@/components/user_profile/resendVerificationButton";
 
 function ProfilePage() {
     const { data: session, status } = useSession();
@@ -33,43 +34,75 @@ function ProfilePage() {
         <div className="min-h-screen bg-gradient-light dark:bg-gradient-dark flex flex-col items-center justify-center p-2 ">
             <WagmiWallet>
                 <div className="max-w-6xl w-full bg-light-secondary dark:bg-dark-secondary rounded-lg shadow-xl p-8">
-                    <div className="border-b pb-4 mb-6  text-light-quaternary dark:text-dark-quaternary">
+                    <div className="border-b pb-4 mb-6 text-light-quaternary dark:text-dark-quaternary">
                         <div className="flex justify-between items-center w-full">
-                            <h1 className="font-heading text-5xl ">
+                            <h1 className="font-heading text-5xl">
                                 Welcome, {session.username}
                             </h1>
-                            <SignOutButton />
+                            <div>
+                                <SignOutButton />
+                                <div className="btn">
+                                {!session.verified && (
+                                    <ResendVerificationButton email={session.email_address} />
+                                )}
+                                </div>
+                            </div>
                         </div>
+                        {session.verified && (
+                            <div className="text-green-500 flex items-center gap-2 mt-4">
+                                <svg
+                                    className="w-6 h-6"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M5 13l4 4L19 7"
+                                    ></path>
+                                </svg>
+                                Email verified
+                            </div>
+                        )}
                         <p className="text-xl leading-relaxed pt-4 ">
-                            You can connect your wallet and find out what people are saying about your NFTs
-                            Thier may also be some news, events, and utilities for your NFTs that you did not know about. 
+                            You can connect your wallet and find out what people are
+                            saying about your NFTs. There may also be some news,
+                            events, and utilities for your NFTs that you did not know
+                            about.
                         </p>
                         <div className="mb-10 mt-5 pt-4">
                             <h2 className="font-bold text-3xl mb-4 ">
                                 Upcoming Features
                             </h2>
                             <ul className="list-disc pl-8 text-xl">
-                                <li>Notifications & Emails when there is news in a collection you own</li>
-                                <li>Permissioned news based on the # of items in a collection that you own</li>
                                 <li>
-                                    Improved site navigation and search
+                                    Notifications & Emails when there is news in a
+                                    collection you own
                                 </li>
+                                <li>
+                                    Permissioned news based on the # of items in a
+                                    collection that you own
+                                </li>
+                                <li>Improved site navigation and search</li>
                             </ul>
                             <CreatorButton />
                         </div>
                         <WalletNFTs />
                     </div>
-
+    
                     <Profile />
                 </div>
             </WagmiWallet>
         </div>
     );
+    
 }
 
 export async function getServerSideProps(context) {
     const session = await getSession({ req: context.req });
-
     if (!session) {
         return {
             redirect: {
