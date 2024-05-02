@@ -7,6 +7,7 @@ function AuthForm() {
         emailInputRef,
         usernameInputRef,
         passwordInputRef,
+        confirmPasswordRef,
         formMode,
         switchFormMode,
         submitHandler,
@@ -65,6 +66,16 @@ function AuthForm() {
                                 }
                                 label="Password"
                             />
+                            {formMode === "signup" && (
+                                <AuthInputField
+                                    type="password"
+                                    id="confirmPassword"
+                                    required
+                                    ref={confirmPasswordRef}
+                                    placeholder="Confirm your password"
+                                    label="Confirm Password"
+                                />
+                            )}
                         </>
                     )}
                     <div className="flex justify-between items-center">
@@ -79,7 +90,7 @@ function AuthForm() {
                         )}
                     </div>
                     <div className="flex flex-col space-y-4">
-                        <button className="p-3 p-3 font-bold text-light-quaternary dark:text-dark-secondary flex space-y-4 flex-col bg-light-tertiary dark:bg-dark-tertiary rounded-lg hover:bg-light-quaternary hover:text-light-primary dark:hover:bg-dark-primary dark:hover:text-dark-quaternary transition duration-300">
+                        <button className="p-3 font-bold text-light-quaternary dark:text-dark-secondary flex space-y-4 flex-col bg-light-tertiary dark:bg-dark-tertiary rounded-lg hover:bg-light-quaternary hover:text-light-primary dark:hover:bg-dark-primary dark:hover:text-dark-quaternary transition duration-300">
                             {formMode === "login"
                                 ? "Log In"
                                 : formMode === "signup"

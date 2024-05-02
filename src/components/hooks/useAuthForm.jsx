@@ -1,4 +1,3 @@
-// components/hooks/useAuthForm.js
 import { useState, useRef } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -7,6 +6,7 @@ function useAuthForm() {
     const emailInputRef = useRef();
     const usernameInputRef = useRef();
     const passwordInputRef = useRef();
+    const confirmPasswordRef = useRef();
     const [formMode, setFormMode] = useState('login'); // login, signup, or reset
     const router = useRouter();
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -17,19 +17,16 @@ function useAuthForm() {
 
     const submitHandler = async (event) => {
         event.preventDefault();
-        const email_address = emailInputRef.current.value; // Using email_address to match API
-        let password = "";
-        if (formMode !== 'reset') {
-            password = passwordInputRef.current.value; // Only access password when it's available
-        }
-        
+        const email_address = emailInputRef.current.value;
+        const password = passwordInputRef.current.value;
+
         if (formMode === 'reset') {
             // Handle reset password submission
         } else if (formMode === 'login') {
             // Handle login submission
             const result = await signIn('credentials', {
                 redirect: false,
-                identifier: email_address, // Pass identifier as email_address for consistency
+                identifier: email_address,
                 password,
                 callbackUrl: window.location.href,
             });
@@ -43,6 +40,14 @@ function useAuthForm() {
         } else if (formMode === 'signup') {
             // Handle signup submission
             const username = usernameInputRef.current.value;
+            const confirmPassword = confirmPasswordRef.current.value;
+
+            if (password !== confirmPassword) {
+                setModalMessage("Passwords do not match.");
+                setModalIsOpen(true);
+                return;
+            }
+
             const result = await createUser(email_address, username, password);
 
             if (result.error) {
@@ -80,6 +85,7 @@ function useAuthForm() {
         emailInputRef,
         usernameInputRef,
         passwordInputRef,
+        confirmPasswordRef,
         formMode,
         switchFormMode,
         submitHandler,
