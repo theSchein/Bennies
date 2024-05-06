@@ -31,7 +31,7 @@ def update_entry(entry_id, new_data):
         print("Failed to update entry.")
 
 
-def main():
+def manage_flagged_entries():
     parser = argparse.ArgumentParser(description="Manage Flagged Entries")
     subparsers = parser.add_subparsers(dest="command")
 
@@ -57,4 +57,4 @@ def main():
         update_entry(args.id, args.new_data)
 
 if __name__ == '__main__':
-    main()
+    manage_flagged_entries()
