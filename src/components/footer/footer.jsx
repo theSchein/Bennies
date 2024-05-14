@@ -25,19 +25,19 @@ function Footer() {
                 message={modalMessage}
                 onClose={() => setShowModal(false)}
             />
-            <footer className="bg-light-tertiary dark:bg-dark-secondary text-light-quaternary dark:text-dark-quaternary">
+            <footer className="bg-light-tertiary dark:bg-dark-secondary text-light-font dark:text-dark-font">
                 <div className="container mx-auto">
                     <div className="flex flex-col lg:flex-row justify-between items-center">
                         <div className="text-xl font-body lg:block hidden">
                             <h1 className="font-subheading font-bold">
                                 {"Let's get in touch"}
                             </h1>
-                            <p>Benjamin Scheinberg</p>
-                            <p>ben@discovry.xyz</p>
+                            <p>Ben Scheinberg</p>
+                            <p>ben@bennies.fun</p>
                             <p>(814)-215-3331</p>
                         </div>
 
-                        <div className="mt-10 bg-light-primary dark:bg-dark-primary p-4 sm:p-6 lg:p-8 rounded-2xl bg-opacity-50 shadow-xl max-w-md mb-5 w-full">
+                        <div className="mt-10 bg-light-primary dark:bg-dark-primary dark:text-dark-quaternary p-4 sm:p-6 lg:p-8 rounded-2xl bg-opacity-50 shadow-xl max-w-md mb-5 w-full">
                             <h3 className="text-xl sm:text-2xl lg:text-2xl mb-4 text-secondary font-subheading font-bold text-center">
                                 {"Tell me what you think!"}
                             </h3>

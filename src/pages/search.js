@@ -42,7 +42,7 @@ const Search = () => {
 
     return (
         <div className="p-10 bg-gradient-light dark:bg-gradient-dark flex flex-col min-h-screen">
-            <h1 className="text-light-quaternary dark:text-dark-primary font-subheading text-3xl mb-4">
+            <h1 className="text-light-font dark:text-dark-primary font-subheading text-3xl mb-4">
                 {query && `Search Results for: ${query}`}
                 {!query && "Search for NFTs by name"}
             </h1>

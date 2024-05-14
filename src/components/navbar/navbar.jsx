@@ -38,7 +38,7 @@ function Navbar() {
     const allPages = [...pages, authPage];
 
     return (
-        <div className="font-heading bg-light-quaternary dark:bg-dark-quaternary text-light-tertiary dark:text-dark-primary bg-opacity-80">
+        <div className="font-heading bg-light-quaternary dark:bg-dark-quaternary text-light-font dark:text-dark-font bg-opacity-80">
             <AppBar
                 position="static"
                 sx={{

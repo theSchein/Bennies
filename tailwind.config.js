@@ -21,6 +21,7 @@ module.exports = {
           'quaternary': '#99BC85',
           'background': '#99BC85',
           'font': '#294B29',
+	  'ennies': '#ECF2E8'
         },
         dark: {
           'primary': '#DBE7C9',
