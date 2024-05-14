@@ -1,12 +1,8 @@
 // components/navbar/navbar.jsx
-// This component handles the logic and presentation for the navbar.
-// Most of this was ripped form mui docs and modified to fit our needs.
-
 import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
-import DiamondIcon from "@mui/icons-material/Diamond";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -18,6 +14,8 @@ import { useSession } from "next-auth/react";
 import ThemeToggle from "./themeToggle";
 import Link from "next/link";
 import Notifications from "../notifications/notifications";
+import Image from "next/image";
+import logo from "../../public/logo.png"; 
 
 const pages = [
     { label: "About", path: "about" },
@@ -53,9 +51,14 @@ function Navbar() {
                     <Toolbar disableGutters>
                         <Link href="/" passHref legacyBehavior>
                             <a>
-                                <DiamondIcon
-                                    sx={{ display: { xs: "flex", md: "flex" }, mr: 1 }}
-                                />
+                                <Box sx={{ display: { xs: "flex", md: "flex" }, mr: 1 }}>
+                                    <Image
+                                        src={logo}
+                                        alt="Bennies Logo"
+                                        width={40}
+                                        height={40}
+                                    />
+                                </Box>
                             </a>
                         </Link>
 
