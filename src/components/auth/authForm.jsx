@@ -19,7 +19,7 @@ function AuthForm() {
     return (
         <section className="flex items-center justify-center py-6 px-4 sm:px-6 lg:px-8">
             <div className="max-w-md w-full space-y-6 bg-light-primary dark:bg-dark-primary p-6 rounded-lg shadow-xl">
-                <h1 className="text-center text-4xl font-bold text-light-quaternary dark:text-dark-quaternary mb-6">
+                <h1 className="text-center text-4xl font-bold text-light-font dark:text-dark-quaternary mb-6">
                     {formMode === "login"
                         ? "Welcome Back!"
                         : formMode === "signup"
@@ -28,7 +28,7 @@ function AuthForm() {
                 </h1>
                 <form
                     onSubmit={submitHandler}
-                    className="space-y-6 text-light-quaternary dark:text-dark-quaternary"
+                    className="space-y-6 text-light-font dark:text-dark-quaternary"
                 >
                     <AuthInputField
                         type="text"
@@ -90,7 +90,7 @@ function AuthForm() {
                         )}
                     </div>
                     <div className="flex flex-col space-y-4">
-                        <button className="p-3 font-bold text-light-quaternary dark:text-dark-secondary flex space-y-4 flex-col bg-light-tertiary dark:bg-dark-tertiary rounded-lg hover:bg-light-quaternary hover:text-light-primary dark:hover:bg-dark-primary dark:hover:text-dark-quaternary transition duration-300">
+                        <button className="p-3 font-bold text-light-font dark:text-dark-primary flex space-y-4 flex-col bg-light-tertiary dark:bg-dark-tertiary rounded-lg hover:bg-light-quaternary hover:text-light-primary dark:hover:bg-dark-primary dark:hover:text-dark-quaternary transition duration-300">
                             {formMode === "login"
                                 ? "Log In"
                                 : formMode === "signup"

@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Gasoek+One&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=lilita+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -53,7 +53,7 @@ h6 {
 }
 
 .btn {
-  @apply p-3 font-bold text-light-quaternary dark:text-dark-quaternary flex space-y-4 flex-col bg-light-primary dark:bg-dark-primary rounded-lg hover:bg-light-quaternary hover:text-light-primary dark:hover:bg-dark-tertiary dark:hover:text-dark-primary transition duration-300;
+  @apply p-3 font-bold text-light-font dark:text-dark-quaternary flex space-y-4 flex-col bg-light-primary dark:bg-dark-primary rounded-lg hover:bg-light-quaternary hover:text-light-primary dark:hover:bg-dark-tertiary dark:hover:text-dark-primary transition duration-300;
 }
 
 .leaderboard-container {
