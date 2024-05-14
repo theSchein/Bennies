@@ -19,14 +19,16 @@ module.exports = {
           'secondary': '#D4E7C5',
           'tertiary': '#BFD8AF',
           'quaternary': '#99BC85',
-          'background': '#99BC85'
+          'background': '#99BC85',
+          'font': '#294B29',
         },
         dark: {
           'primary': '#DBE7C9',
           'secondary': '#789461',
           'tertiary': '#50623A',
           'quaternary': '#294B29',
-          'background': '#294B29'
+          'background': '#294B29',
+          'font': '#F0E5CF',
         },
     },
     backgroundImage: {

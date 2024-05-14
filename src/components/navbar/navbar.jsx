@@ -15,7 +15,7 @@ import ThemeToggle from "./themeToggle";
 import Link from "next/link";
 import Notifications from "../notifications/notifications";
 import Image from "next/image";
-import logo from "../../public/logo.png"; 
+import logo from "../../../public/logo.png"; 
 
 const pages = [
     { label: "About", path: "about" },
