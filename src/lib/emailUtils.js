@@ -21,7 +21,7 @@ export const sendWelcomeEmail = async (email, username) => {
         From: "ben@bennies.fun",
         To: email,
         TemplateAlias: "welcome",
-        "TemplateModel": {
+        TemplateModel: {
             name: username,
             action_url: welcomeLink,
             support_email: "ben@bennies.fun"
