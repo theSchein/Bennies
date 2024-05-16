@@ -28,3 +28,15 @@ export const sendWelcomeEmail = async (email, username) => {
           }
     });
 };
+
+export const sendPasswordResetEmail = async (email, link) => {
+    await client.sendEmailWithTemplate({
+        From: "ben@bennies.fun",
+        To: email,
+        TemplateAlias: "password-reset",
+        TemplateModel: {
+            action_url: link,
+            support_email: "ben@bennies.fun"
+        }
+    });
+};
