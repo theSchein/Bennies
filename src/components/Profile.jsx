@@ -36,7 +36,7 @@ export function Profile() {
             const message = "Please sign this message to verify your wallet ownership.";
             const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
             const account = accounts[0];
-            const signature = await web3.eth.personal.sign(message, account);
+            const signature = await web3.eth.personal.sign(message, account, '');
 
             const response = await fetch("/api/wallet/claimWallet", {
                 method: "POST",
