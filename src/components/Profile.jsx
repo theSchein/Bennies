@@ -1,6 +1,4 @@
 // components/Profile.jsx
-// This component handles much of the logic for the profile page.
-
 import {
     useAccount,
     useConnect,
@@ -28,12 +26,17 @@ export function Profile() {
             return;
         }
         try {
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const signer = provider.getSigner();
+            const message = "Please sign this message to verify your wallet ownership.";
+            const signature = await signer.signMessage(message);
+
             const response = await fetch("/api/wallet/claimWallet", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ address }),
+                body: JSON.stringify({ address, signature }),
                 credentials: "include",
             });
 
@@ -53,8 +56,6 @@ export function Profile() {
             console.error("Failed to claim wallet:", error);
         }
     }, [session, address]);
-
-
 
     useEffect(() => {
         if (isConnected && address) {
@@ -77,16 +78,14 @@ export function Profile() {
                                     : "Not connected"}
                             </div>
 
-                            <div className="space-y-2">
+                            <div className="space-y-2 flex justify-center mt-4">
                                 <button
                                     onClick={disconnect}
-                                    className="w-full bg-red-500 py-2 px-4 rounded hover:bg-red-600 transition duration-300"
+                                    className="bg-red-500 py-2 px-4 rounded hover:bg-red-600 transition duration-300"
                                 >
                                     {`Disconnect`}
                                 </button>
-
                             </div>
-
                         </div>
                     </WalletAddressContext.Provider>
                 </div>
@@ -95,13 +94,13 @@ export function Profile() {
     }
 
     return (
-        <div>
+        <div className="flex justify-center mt-4">
             {connectors.map((connector) => (
                 <button
                     disabled={!connector.ready}
                     key={connector.id}
                     onClick={() => connect({ connector })}
-                    className={`btn m-5  rounded-full shadow-md transform transition hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed {
+                    className={`btn m-2 rounded-full shadow-md transform transition hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed ${
                         !connector.ready && "cursor-not-allowed"
                     }`}
                 >

@@ -34,7 +34,7 @@ function ProfilePage() {
         <div className="min-h-screen bg-gradient-light dark:bg-gradient-dark flex flex-col items-center justify-center p-2 ">
             <WagmiWallet>
                 <div className="max-w-6xl w-full bg-light-secondary dark:bg-dark-secondary rounded-lg shadow-xl p-8">
-                    <div className="border-b pb-4 mb-6 text-light-quaternary dark:text-dark-quaternary">
+                    <div className="border-b pb-4 mb-6 text-light-font dark:text-dark-quaternary">
                         <div className="flex justify-between items-center w-full">
                             <h1 className="font-heading text-5xl">
                                 Welcome, {session.username}
@@ -88,12 +88,16 @@ function ProfilePage() {
                                 </li>
                                 <li>Improved site navigation and search</li>
                             </ul>
-                            <CreatorButton />
                         </div>
                         <WalletNFTs />
-                    </div>
-    
-                    <Profile />
+                    </div>   
+                    {session.verified ? (
+                                <Profile />
+                            ) : (
+                                <div className="text-red-500 bg-red-100 border border-red-400 rounded p-4 mt-4">
+                                    Please verify your email address before registering your assets.
+                                </div>
+                            )}                    
                 </div>
             </WagmiWallet>
         </div>
