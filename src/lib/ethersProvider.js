@@ -4,6 +4,7 @@
 import Web3 from 'web3';
 
 const infuraApiKey = process.env.INFURA_API_KEY;
+console.log(infuraApiKey)
 
 if (!infuraApiKey) {
     throw new Error("INFURA_API_KEY is not set in environment variables.");
