@@ -5,6 +5,7 @@ import {
     useDisconnect,
     useEnsName,
 } from "wagmi";
+import { ethers } from "ethers"
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { createContext, useContext } from "react";
