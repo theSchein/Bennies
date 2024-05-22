@@ -53,7 +53,7 @@ h6 {
 }
 
 .btn {
-  @apply p-3 font-bold text-light-font dark:text-dark-quaternary flex space-y-4 flex-col bg-light-primary dark:bg-dark-primary rounded-lg hover:bg-light-quaternary hover:text-light-primary dark:hover:bg-dark-tertiary dark:hover:text-dark-primary transition duration-300;
+  @apply p-3 items-center font-bold text-light-font dark:text-dark-quaternary flex space-y-4 flex-col bg-light-primary dark:bg-dark-primary rounded-lg hover:bg-light-quaternary hover:text-light-primary dark:hover:bg-dark-tertiary dark:hover:text-dark-primary transition duration-300;
 }
 
 .leaderboard-container {

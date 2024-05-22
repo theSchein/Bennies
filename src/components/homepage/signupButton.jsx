@@ -25,7 +25,7 @@ export default function SignupButton() {
     };
 
     return (
-        <div className="mt-4 w-full text-center">
+        <div className="mt-4 w-full items-center">
             <button
                 onClick={handleButtonClick}
                 className="px-8 py-4 btn w-full text-2xl font-bold"

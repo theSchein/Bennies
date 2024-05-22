@@ -14,7 +14,7 @@ export default function HowItWorks() {
                     className="btn"
                     onClick={() => router.push('/search')}
                 >
-                    <h3 className="font-bold text-xl text-center ">Find Bennies</h3>
+                    <h3 className="font-bold text-xl items-center ">Find Bennies</h3>
                     <p className="text-lg">
                         See what each NFT offers in terms of art license, utility, community, events, and more.
                     </p>
@@ -23,7 +23,7 @@ export default function HowItWorks() {
                     className="btn"
                     onClick={() => router.push('/profile')}
                 >
-                    <h3 className="font-bold text-xl text-center">Onboard</h3>
+                    <h3 className="font-bold text-xl items-center">Onboard</h3>
                     <p className="text-lg">
                         Register your NFT to your profile to receive a welcome email and access community features.
                     </p>
