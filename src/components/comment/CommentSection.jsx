@@ -120,7 +120,7 @@ function CommentSection({ nft }) {
         <div className="py-8 w-full max-w-2xl mx-auto">
             {session ? (
                 <div className="bg-gradient-light-comment dark:bg-gradient-dark-comment p-6 rounded-lg shadow space-y-4">
-                    <h2 className="text-lg font-semibold">
+                    <h2 className="text-lg font-semibold dark:text-dark-font">
                         Commenting as {session.username}
                     </h2>
                     <CommentForm

@@ -45,7 +45,7 @@ export default function NftPage({ nft }) {
         <div
             className=" 
     bg-gradient-light dark:bg-gradient-dark
-    text-light-quaternary dark:text-dark-quaternary"
+    text-light-font dark:text-dark-quaternary"
         >
             <NftDetails nft={nft} />
         </div>

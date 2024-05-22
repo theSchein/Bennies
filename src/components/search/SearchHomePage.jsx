@@ -1,27 +1,19 @@
+// components/search/SearchHomePage.jsx
 import * as React from "react";
 import { useState } from "react";
-import { useSession } from "next-auth/react";
-import Modal from "../ui/Modal";
-import AuthForm from "../auth/authForm";
 import { useTheme, LinearProgress } from "@mui/material";
 import NftTile from "../nft/nftTile";
 
 function SearchHomepage() {
-    const { data: session } = useSession();
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const theme = useTheme(); // Access the current theme
 
     const handleSearchSubmit = async (e) => {
         e.preventDefault();
-        if (!session) {
-            setIsModalOpen(true); // Open the modal if the user is not signed in
-            return;
-        }
         setIsLoading(true);
-        // Proceed with the search if the user is signed in
+        // Proceed with the search
         try {
             const response = await fetch("/api/search/addressSearch", {
                 method: "POST",
@@ -46,6 +38,7 @@ function SearchHomepage() {
 
     return (
         <div className="flex flex-col items-center w-full">
+                        <h2 className="font-heading text-2xl sm:text-3xl lg:text-4xl text-light-font dark:text-light-ennies mb-6">Try it</h2>
             <div className="max-w-2xl w-full mt-5 px-4 sm:px-0">
                 <form
                     onSubmit={handleSearchSubmit}
@@ -60,9 +53,9 @@ function SearchHomepage() {
                     />
                     <button
                         type="submit"
-                        className="px-6 py-2 w-full btn rounded-full text-center  items-center transition ease-in duration-200 text-lg sm:text-base mb-3"
+                        className="px-6 py-2 w-full btn rounded-full text-center items-center transition ease-in duration-200 text-lg sm:text-base mb-3"
                     >
-                        {session ? "Search Address" : "Sign in to Search"}
+                        Search Address
                     </button>
                 </form>
                 {isLoading && (
@@ -87,16 +80,12 @@ function SearchHomepage() {
                     </div>
                 )}
             </div>
-            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-                <AuthForm />
-            </Modal>
             {searchResults === null && !isLoading && (
                 <div className="w-full px-2 mt-4 text-center flex justify-center">
                     <div className="max-w-xl">
                         <p className="text-lg md:text-xl text-primary dark:text-dark-primary">
-                            Enter an Ethereum wallet address or ENS name to see all
-                            NFTs owned by the address their benefits like art
-                            license, utility, perks of ownership, and events.
+                            Enter a wallet address to see the owned NFTs and their benefits.
+                            Try searching <span className="font-bold italic">discovry.eth</span> to see how it works.
                         </p>
                     </div>
                 </div>
@@ -106,8 +95,8 @@ function SearchHomepage() {
                     <div className="max-w-xl">
                         <p className="text-lg md:text-xl text-primary dark:text-dark-primary">
                             No NFTs found in this wallet, but our database of
-                            supported NFTs is growing rapidly. To have your items
-                            supported sooner, please reach out to ben@discovry.xyz
+                            supported NFTs is growing rapidly. To have your assets
+                            supported sooner, please reach out to ben@bennies.fun
                         </p>
                     </div>
                 </div>

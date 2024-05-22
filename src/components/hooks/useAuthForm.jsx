@@ -7,7 +7,7 @@ function useAuthForm() {
     const usernameInputRef = useRef();
     const passwordInputRef = useRef();
     const confirmPasswordRef = useRef();
-    const [formMode, setFormMode] = useState('login'); // login, signup, or reset
+    const [formMode, setFormMode] = useState('signup'); // login, signup, or reset
     const router = useRouter();
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [modalMessage, setModalMessage] = useState("");
