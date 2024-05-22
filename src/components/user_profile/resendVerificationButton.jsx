@@ -27,7 +27,7 @@ function ResendVerificationButton({ email }) {
 
     return (
         <div>
-            <button onClick={resendVerificationEmail} disabled={isLoading}>
+            <button onClick={resendVerificationEmail} disabled={isLoading} className='btn'>
                 {isLoading ? 'Sending...' : 'Resend Verification Email'}
             </button>
             {message && <p>{message}</p>}

@@ -45,7 +45,7 @@ function ProfilePage() {
                             </h1>
                             <div>
                                 <SignOutButton />
-                                <div className="btn">
+                                <div>
                                     {!session.verified && (
                                         <ResendVerificationButton
                                             email={session.email_address}
@@ -55,7 +55,7 @@ function ProfilePage() {
                             </div>
                         </div>
                         {session.verified && (
-                            <div className="text-green-500 flex items-center gap-2 mt-4">
+                            <div className="text-light-font dark:text-dark-quaternary flex items-center gap-2 mt-4">
                                 <svg
                                     className="w-6 h-6"
                                     fill="none"

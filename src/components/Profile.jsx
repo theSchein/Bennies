@@ -8,7 +8,6 @@ import {
 import { useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { createContext, useContext } from "react";
-import web3 from '../lib/ethersProvider';
 
 const WalletAddressContext = createContext();
 
@@ -36,18 +35,30 @@ export function Profile() {
             const message = "Please sign this message to verify your wallet ownership.";
             const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
             const account = accounts[0];
-            const signature = await web3.eth.personal.sign(message, account, '');
+            const signature = await window.ethereum.request({
+                method: 'personal_sign',
+                params: [message, account]
+            });
+
+            console.log("Accounts: ", accounts);
+            console.log("Account: ", account);
+            console.log("Signature: ", signature);
+
+            const bodyData = { address: account, signature: signature };
+            console.log("Body Data: ", bodyData);
 
             const response = await fetch("/api/wallet/claimWallet", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ address, signature }),
+                body: JSON.stringify(bodyData),
                 credentials: "include",
             });
 
             const data = await response.json();
+            console.log("Response Data: ", data);
+
             if (response.status === 205) {
                 window.location.reload();
             } else {

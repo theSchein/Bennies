@@ -35,7 +35,7 @@ function useAuthForm() {
                 setModalMessage(result.error);
                 setModalIsOpen(true);
             } else {
-                router.reload();
+                router.push('/profile');
             }
         } else if (formMode === 'signup') {
             // Handle signup submission
@@ -63,7 +63,7 @@ function useAuthForm() {
                 });
 
                 if (!signInResult.error) {
-                    router.reload();
+                    router.push('/profile');
                 } else {
                     setModalMessage(signInResult.error);
                     setModalIsOpen(true);
