@@ -3,6 +3,7 @@ import SearchHomepage from "@/components/search/SearchHomePage";
 import Image from "next/image";
 import logo from "../../public/logo.png";
 import HowItWorks from "@/components/homepage/howItWorks";
+import SignupButton from "@/components/homepage/signupButton";
 
 export default function Home() {
     return (
@@ -25,19 +26,20 @@ export default function Home() {
                         <h3 className="italic bold text-light-font dark:text-dark-font mt-4 text-center sm:text-left lg:text-xl sm:text-lg">
                             Find the Benefits in your Community
                         </h3>
+                        <SignupButton />
                     </div>
-                    <div className="text-center sm:text-left dark:bg-dark-tertiary p-5 rounded-xl shadow-xl">
+                    <div className="text-center sm:text-left bg-light-tertiary dark:bg-dark-tertiary p-5 rounded-xl shadow-xl">
                         <p className="text-lg text-light-font dark:text-light-ennies">
                             Bennies aggregates NFT and token holder benefits,
                             allowing users to verify and earn rewards for attesting
                             to the benefits' accuracy. Discover your community and
-                            get welcomed as a new member.
+                            get welcomed as a true member.
                         </p>
                     </div>
                 </div>
             </div>
 
-            <div className="bg-light-secondary dark:bg-dark-secondary bg-opacity-90 py-10 px-6 sm:px-10 lg:px-14 rounded-xl shadow-xl max-w-4xl w-full mb-10">
+            <div className="bg-light-secondary dark:bg-dark-secondary bg-opacity-90 py-8 px-4 sm:px-10 lg:px-14 rounded-xl shadow-xl max-w-4xl w-full mb-8">
                 <HowItWorks />
             </div>
 

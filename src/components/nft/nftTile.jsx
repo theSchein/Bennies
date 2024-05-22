@@ -19,8 +19,8 @@ function NftTile({ nft }) {
 
     return (
         <div
-            className={`bg-light-secondary dark:bg-dark-secondary bg-opacity-90 text-light-quaternary dark:text-dark-quaternary rounded-lg shadow-lg overflow-hidden transition-shadow duration-300 ease-in-out m-4`}
-            style={{ width: "100%" }} // Set a minimum width and maximum width
+            className={`bg-light-secondary dark:bg-dark-secondary bg-opacity-90 text-light-font dark:text-dark-primary rounded-lg shadow-lg overflow-hidden transition-shadow duration-300 ease-in-out m-4`}
+            style={{ width: "100%" }} 
         >
             <div className="p-4 font-heading text-lg">
                 <Link
@@ -53,7 +53,7 @@ function NftTile({ nft }) {
             <div className="p-4 space-y-2">
                 <h2 className="text-xl font-bold break-words">{nft.nft_name}</h2>
                 <div className="flex justify-between items-center p-4">
-                    <div className="flex items-center bg-light-tertiary dark:bg-dark-tertiary text-light-quaternary dark:text-dark-primary rounded-lg shadow px-3 py-1 mr-1">
+                    <div className="flex items-center bg-light-tertiary dark:bg-dark-tertiary text-light-font dark:text-dark-primary rounded-lg shadow px-3 py-1 mr-1">
                         <p className="text-sm sm:text-md">
                             Category:{" "}
                             <span className="font-bold text-sm sm:text-md ">
@@ -61,7 +61,7 @@ function NftTile({ nft }) {
                             </span>
                         </p>
                     </div>
-                    <div className="flex items-center bg-light-tertiary dark:bg-dark-tertiary text-light-quaternary dark:text-dark-primary rounded-lg shadow px-3 py-1 ml-1">
+                    <div className="flex items-center bg-light-tertiary dark:bg-dark-tertiary text-light-font dark:text-dark-primary rounded-lg shadow px-3 py-1 ml-1">
                         <p className="text-sm sm:text-md">
                             License:{" "}
                             <span className="font-bold text-sm sm:text-md ">
@@ -73,17 +73,17 @@ function NftTile({ nft }) {
 
                 {utility && (
                     <div className="bg-light-tertiary dark:bg-dark-tertieary shadow-xl p-3 rounded-xl">
-                        <p className="font-bold text-light-quaternary dark:text-dark-quaternary m-3">
+                        <p className="font-bold text-light-font dark:text-dark-quaternary m-3">
                             Ownership Perks
                         </p>
-                        <p className="font-body text-light-quaternary dark:text-dark-quaternary break-words m-3">
+                        <p className="font-body text-light-font dark:text-dark-quaternary break-words m-3">
                             {utility}
                         </p>
                     </div>
                 )}
                 {isOwner || isDeployer ? <EditPageButton pageData={nft} /> : null}
             </div>
-            <div className="px-4 pb-4">
+            <div className="px-4 pb-4 dark:text-dark-quaternary text-light-font">
                 <NewsFeed
                     collectionIds={[nft.collection_id]}
                     viewingGroup="holders"
