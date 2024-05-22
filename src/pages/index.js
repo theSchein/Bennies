@@ -24,16 +24,14 @@ export default function Home() {
                             </h1>
                         </div>
                         <h3 className="italic bold text-light-font dark:text-dark-font mt-4 text-center sm:text-left lg:text-xl sm:text-lg">
-                            Find the Benefits, not Price, of NFTs
+                            Find the Benefits, not Price
                         </h3>
                         <SignupButton />
                     </div>
                     <div className="text-center sm:text-left bg-light-tertiary dark:bg-dark-tertiary p-5 rounded-xl shadow-xl">
                         <p className="text-lg text-light-font dark:text-light-ennies">
-                            Bennies aggregates NFT and token holder benefits,
-                            allowing users to verify and earn rewards for attesting
-                            to the accuracy. Discover your community and
-                            get welcomed as a true member.
+                            Bennies collects NFT holder benefits showing you the actual value of these assets.
+                            Register your NFTs to get welcomed by your specific community as a member and find out how to get involved.
                         </p>
                     </div>
                 </div>

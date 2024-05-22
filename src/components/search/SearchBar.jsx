@@ -18,7 +18,7 @@ function SearchBar() {
             />
             <button
                 onClick={handleSubmit}
-                className="w-1/4 p-2 sm:p-3 text-light-quaternary dark:text-dark-quaternary bg-light-secondary dark:bg-dark-primary rounded-full transition ease-in duration-200 hover:bg-light-quaternary dark:hover:bg-dark-tertiary hover:text-light-secondary dark:hover:text-dark-secondary text-base sm:text-lg" // Adjusted button styling for a bigger appearance
+                className="w-1/4 p-2 sm:p-3 text-light-font dark:text-dark-quaternary bg-light-secondary dark:bg-dark-primary rounded-full transition ease-in duration-200 hover:bg-light-quaternary dark:hover:bg-dark-tertiary hover:text-light-secondary dark:hover:text-dark-secondary text-base sm:text-lg" // Adjusted button styling for a bigger appearance
             >
                 Submit
             </button>

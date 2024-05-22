@@ -73,7 +73,7 @@ const Search = () => {
                                             />
                                         </div>
                                         <div className="p-4">
-                                            <h3 className="text-light-quaternary dark:text-dark-quaternary text-lg font-bold truncate">
+                                            <h3 className="text-light-font dark:text-dark-quaternary text-lg font-bold truncate">
                                                 {collection.collection_name}
                                             </h3>
                                         </div>
@@ -98,7 +98,7 @@ const Search = () => {
                                 legacyBehavior
                             >
                                 <a className="block transform transition duration-300 ease-in-out hover:-translate-y-2">
-                                    <div className="bg-light-secondary dark:bg-dark-secondary rounded-lg overflow-hidden shadow-lg hover:shadow-2xl flex flex-col">
+                                    <div className="bg-light-secondary dark:bg-dark-primary rounded-lg overflow-hidden shadow-lg hover:shadow-2xl flex flex-col">
                                         <div className="w-full h-80 relative">
                                             <Image
                                                 src={imageSource}
@@ -109,10 +109,10 @@ const Search = () => {
                                         </div>
                                         <div className="p-4 flex-grow flex justify-between">
                                             <div>
-                                                <h3 className="text-light-quaternary dark:text-dark-quaternary text-lg font-bold truncate">
+                                                <h3 className="text-light-font dark:text-dark-quaternary text-lg font-bold truncate">
                                                     {nft.nft_name}
                                                 </h3>
-                                                <p className="text-light-quaternary dark:text-dark-quaternary text-sm mt-1 italic">
+                                                <p className="text-light-font dark:text-dark-quaternary text-sm mt-1 italic">
                                                     {nft.collection_name}
                                                 </p>
                                             </div>

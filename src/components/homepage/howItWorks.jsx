@@ -25,7 +25,7 @@ export default function HowItWorks() {
                 >
                     <h3 className="font-bold text-xl items-center">Onboard</h3>
                     <p className="text-lg">
-                        Register your NFT to your profile to receive a welcome email and access community features.
+                        Register your NFTs to your profile to receive a welcome email and access community features.
                     </p>
                 </button>
                 <div className="bg-gradient-to-r from-light-quaternary to-light-tertiary dark:from-dark-tertiary dark:to-dark-secondary p-4 rounded-lg shadow-lg relative transform transition duration-300 hover:scale-105 hover:shadow-xl  group">

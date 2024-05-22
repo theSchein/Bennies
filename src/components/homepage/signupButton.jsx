@@ -30,7 +30,7 @@ export default function SignupButton() {
                 onClick={handleButtonClick}
                 className="px-8 py-4 btn w-full text-2xl font-bold"
             >
-                {session ? `Welcome, ${session.user.name}` : "Sign Up!"}
+                {session ? `Welcome, ${session.username}` : "Sign Up!"}
             </button>
             {!session && (
                 <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
