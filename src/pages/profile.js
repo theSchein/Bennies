@@ -37,7 +37,7 @@ function ProfilePage() {
     return (
         <div className="min-h-screen bg-gradient-light dark:bg-gradient-dark flex flex-col items-center justify-center p-2">
             <WagmiWallet>
-                <div className="max-w-6xl w-full bg-light-secondary dark:bg-dark-secondary rounded-lg shadow-xl p-8">
+                <div className="max-w-6xl w-full bg-light-secondary dark:bg-dark-primary rounded-lg shadow-xl p-8">
                     <div className="border-b pb-4 mb-6 text-light-font dark:text-dark-quaternary">
                         <div className="flex justify-between items-center w-full">
                             <h1 className="font-heading text-5xl">
@@ -74,10 +74,8 @@ function ProfilePage() {
                             </div>
                         )}
                         <p className="text-xl leading-relaxed pt-4">
-                            You can connect your wallet and find out what people are
-                            saying about your NFTs. There may also be some news,
-                            events, and utilities for your NFTs that you did not know
-                            about.
+                            You can connect your wallet and register your NFTs. You can expect a welcome email
+                            from your owned projects detailing how to get more involved. 
                         </p>
                         <div className="mb-10 mt-5 pt-4">
                             <h2 className="font-bold text-3xl mb-4">
@@ -85,20 +83,19 @@ function ProfilePage() {
                             </h2>
                             <ul className="list-disc pl-8 text-xl">
                                 <li>
-                                    Notifications & Emails when there is news in a
-                                    collection you own
+                                    Earn rewards for adding content, earn more rewards for adding content on the projects that you own.
                                 </li>
                                 <li>
-                                    Permissioned news based on the # of items in a
-                                    collection that you own
+                                    Community management tools for your projects as a holder or creator. 
                                 </li>
-                                <li>Improved site navigation and search</li>
+                                <li>Memecoin and multichain support</li>
                             </ul>
                         </div>
                         <WalletNFTs />
                     </div>
                     {session.verified ? (
-                        <Profile />
+                        // <Profile />
+                        <h1>Registering assets still under construction. Should be done by 5/24 email ben@bennies.fun for complaints</h1>
                     ) : (
                         <div className="text-red-500 bg-red-100 border border-red-400 rounded p-4 mt-4">
                             Please verify your email address before registering your
@@ -106,7 +103,7 @@ function ProfilePage() {
                         </div>
                     )}
                 </div>
-            </WagmiWallet>
+             </WagmiWallet>
         </div>
     );
 }

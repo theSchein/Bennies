@@ -18,8 +18,8 @@ import Image from "next/image";
 import logo from "../../../public/logo.png"; 
 
 const pages = [
-    { label: "About", path: "about" },
-    { label: "Search NFTs", path: "search" }, // Updated label
+    // { label: "About", path: "about" },
+    { label: "Search NFTs", path: "search" },
 ];
 
 function Navbar() {
