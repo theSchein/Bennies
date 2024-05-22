@@ -24,7 +24,7 @@ export default function Home() {
                             </h1>
                         </div>
                         <h3 className="italic bold text-light-font dark:text-dark-font mt-4 text-center sm:text-left lg:text-xl sm:text-lg">
-                            Find the Benefits in your Community
+                            Find the Benefits, not Price, of NFTs
                         </h3>
                         <SignupButton />
                     </div>
