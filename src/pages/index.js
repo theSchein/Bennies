@@ -9,7 +9,7 @@ export default function Home() {
     return (
         <div className="min-h-screen bg-gradient-light dark:bg-gradient-dark flex flex-col items-center justify-center p-2 gap-10">
             <div className="bg-light-secondary dark:bg-dark-secondary bg-opacity-90 py-10 px-6 sm:px-10 lg:px-14 rounded-xl shadow-xl max-w-4xl mb-10 w-full">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 items-center">
                     <div className="flex flex-col items-center sm:items-start">
                         <div className="flex items-center">
                             <Image
@@ -32,7 +32,7 @@ export default function Home() {
                         <p className="text-lg text-light-font dark:text-light-ennies">
                             Bennies aggregates NFT and token holder benefits,
                             allowing users to verify and earn rewards for attesting
-                            to the benefits' accuracy. Discover your community and
+                            to the accuracy. Discover your community and
                             get welcomed as a true member.
                         </p>
                     </div>
