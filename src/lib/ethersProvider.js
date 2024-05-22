@@ -3,15 +3,17 @@
 
 import Web3 from 'web3';
 
-const infuraApiKey = process.env.INFURA_API_KEY;
+const drpcApiKey = process.env.DRPC_ETHEREUM_API_KEY;
+console.log("DRPC_ETHEREUM_API_KEY: ", drpcApiKey);
 
-if (!infuraApiKey) {
-    throw new Error("INFURA_API_KEY is not set in environment variables.");
+if (!drpcApiKey) {
+    throw new Error("DRPC_ETHEREUM_API_KEY is not set in environment variables.");
 }
 
-// https://rpc.dexosphere.xyz/
-const web3 = new Web3(new Web3.providers.HttpProvider(`https://mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`)); //https://rough-spring-frog.quiknode.pro/${process.env.QUIKNODE_API_KEY}`));
-// const web3 = new Web3(new Web3.providers.HttpProvider(`https://rough-spring-frog.quiknode.pro/${process.env.QUIKNODE_API_KEY}`));
+const provider = `https://lb.drpc.org/ogrpc?network=ethereum&dkey=${drpcApiKey}`;
+
+const web3Provider = new Web3.providers.HttpProvider(provider);
+const web3 = new Web3(web3Provider);
 
 
 export default web3;
