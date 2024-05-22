@@ -2,7 +2,7 @@
 // This page displays the profile of the user, it is password protected and pulls their specific session data
 // Features to be added in components and rendered here
 
-import { getSession, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { Profile } from "../components/Profile";
@@ -20,10 +20,14 @@ function ProfilePage() {
         if (status === "unauthenticated") {
             router.push("/signin");
         }
-    }, [status, router]);
+    }, [status, session, router]);
 
     if (status === "loading") {
         return <div>Loading...</div>;
+    }
+
+    if (status === "unauthenticated") {
+        return null;
     }
 
     if (!session) {
@@ -31,7 +35,7 @@ function ProfilePage() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-light dark:bg-gradient-dark flex flex-col items-center justify-center p-2 ">
+        <div className="min-h-screen bg-gradient-light dark:bg-gradient-dark flex flex-col items-center justify-center p-2">
             <WagmiWallet>
                 <div className="max-w-6xl w-full bg-light-secondary dark:bg-dark-secondary rounded-lg shadow-xl p-8">
                     <div className="border-b pb-4 mb-6 text-light-font dark:text-dark-quaternary">
@@ -42,9 +46,11 @@ function ProfilePage() {
                             <div>
                                 <SignOutButton />
                                 <div className="btn">
-                                {!session.verified && (
-                                    <ResendVerificationButton email={session.email_address} />
-                                )}
+                                    {!session.verified && (
+                                        <ResendVerificationButton
+                                            email={session.email_address}
+                                        />
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -67,14 +73,14 @@ function ProfilePage() {
                                 Email verified
                             </div>
                         )}
-                        <p className="text-xl leading-relaxed pt-4 ">
+                        <p className="text-xl leading-relaxed pt-4">
                             You can connect your wallet and find out what people are
                             saying about your NFTs. There may also be some news,
                             events, and utilities for your NFTs that you did not know
                             about.
                         </p>
                         <div className="mb-10 mt-5 pt-4">
-                            <h2 className="font-bold text-3xl mb-4 ">
+                            <h2 className="font-bold text-3xl mb-4">
                                 Upcoming Features
                             </h2>
                             <ul className="list-disc pl-8 text-xl">
@@ -90,35 +96,19 @@ function ProfilePage() {
                             </ul>
                         </div>
                         <WalletNFTs />
-                    </div>   
+                    </div>
                     {session.verified ? (
-                                <Profile />
-                            ) : (
-                                <div className="text-red-500 bg-red-100 border border-red-400 rounded p-4 mt-4">
-                                    Please verify your email address before registering your assets.
-                                </div>
-                            )}                    
+                        <Profile />
+                    ) : (
+                        <div className="text-red-500 bg-red-100 border border-red-400 rounded p-4 mt-4">
+                            Please verify your email address before registering your
+                            assets.
+                        </div>
+                    )}
                 </div>
             </WagmiWallet>
         </div>
     );
-    
-}
-
-export async function getServerSideProps(context) {
-    const session = await getSession({ req: context.req });
-    if (!session) {
-        return {
-            redirect: {
-                destination: "/signin",
-                permanent: false,
-            },
-        };
-    }
-
-    return {
-        props: { session },
-    };
 }
 
 export default ProfilePage;
