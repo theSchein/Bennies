@@ -91,11 +91,10 @@ function ProfilePage() {
                                 <li>Memecoin and multichain support</li>
                             </ul>
                         </div>
-                        <WalletNFTs />
+                        {/* <WalletNFTs /> */}
                     </div>
                     {session.verified ? (
-                        // <Profile />
-                        <h1>Registering assets still under construction. Should be done by 5/24 email ben@bennies.fun for complaints</h1>
+                        <Profile />
                     ) : (
                         <div className="text-red-500 bg-red-100 border border-red-400 rounded p-4 mt-4">
                             Please verify your email address before registering your

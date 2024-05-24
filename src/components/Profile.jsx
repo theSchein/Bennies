@@ -1,79 +1,83 @@
-// components/Profile.jsx
 import {
     useAccount,
     useConnect,
     useDisconnect,
     useEnsName,
+    useSignMessage,
 } from "wagmi";
-import { useEffect, useCallback } from "react";
-import { useSession } from "next-auth/react";
-import { createContext, useContext } from "react";
+import { useEffect, useState, useCallback, createContext, useContext } from "react";
+import { SiweMessage } from 'siwe';
 
 const WalletAddressContext = createContext();
 
-export const useWalletAddress = () => {
-    return useContext(WalletAddressContext);
-};
+export const useWalletAddress = () => useContext(WalletAddressContext);
 
 export function Profile() {
     const { address, connector, isConnected } = useAccount();
     const { data: ensName } = useEnsName({ address });
     const { connect, connectors, error, isLoading, pendingConnector } = useConnect();
     const { disconnect } = useDisconnect();
-    const { data: session } = useSession();
+    const { signMessageAsync } = useSignMessage();
+    const [nonce, setNonce] = useState('');
+    const [signedIn, setSignedIn] = useState(false);
 
-    const claimWallet = useCallback(async () => {
-        if (!session) {
+    const fetchNonce = async () => {
+        const response = await fetch('/api/auth/nonce');
+        if (response.ok) {
+            const data = await response.json();
+            setNonce(data.nonce);
+        } else {
+            console.error('Failed to fetch nonce');
+        }
+    };
+
+    const signInWithEthereum = useCallback(async () => {
+        if (!address || !nonce) {
             return;
         }
+
+        const message = new SiweMessage({
+            domain: window.location.host,
+            address,
+            statement: 'Please sign this message to verify your wallet ownership.',
+            uri: window.location.origin,
+            version: '1',
+            chainId: 1,
+            nonce,
+        });
+
         try {
-            if (!window.ethereum) {
-                console.error("MetaMask is not installed!");
-                return;
-            }
+            const signature = await signMessageAsync({ message: message.prepareMessage() });
 
-            const message = "Please sign this message to verify your wallet ownership.";
-            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-            const account = accounts[0];
-            const signature = await window.ethereum.request({
-                method: 'personal_sign',
-                params: [message, account]
-            });
-
-            console.log("Accounts: ", accounts);
-            console.log("Account: ", account);
-            console.log("Signature: ", signature);
-
-            const bodyData = { address: account, signature: signature };
-            console.log("Body Data: ", bodyData);
-
-            const response = await fetch("/api/wallet/claimWallet", {
-                method: "POST",
+            const verifyResponse = await fetch('/api/auth/verifySignature', {
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(bodyData),
-                credentials: "include",
+                body: JSON.stringify({ message: message.prepareMessage(), signature })
             });
 
-            const data = await response.json();
-            console.log("Response Data: ", data);
-
-            if (response.status === 205) {
-                window.location.reload();
+            if (verifyResponse.ok) {
+                // Perform any further actions like claiming the wallet
             } else {
-                console.error("Failed to claim wallet: ", data.message);
+                throw new Error('Verification failed');
             }
         } catch (error) {
-            console.error("Failed to claim wallet:", error);
+            console.error("Failed to sign or verify message:", error);
         }
-    }, [session, address]);
+    }, [address, nonce, signMessageAsync]);
 
     useEffect(() => {
-        if (isConnected && address) {
-            claimWallet(address);
+        if (isConnected && address && !nonce) {
+            fetchNonce();
         }
-    }, [isConnected, address, claimWallet]);
+    }, [isConnected, address]);
+
+    useEffect(() => {
+        if (address && nonce && !signedIn) {
+            signInWithEthereum();
+        }
+    }, [address, nonce, signInWithEthereum, signedIn]);
 
     if (isConnected) {
         return (
