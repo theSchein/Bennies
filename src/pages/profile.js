@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { Profile } from "../components/Profile";
 import WagmiWallet from "../components/WagmiWallet";
 import WalletNFTs from "@/components/user_profile/walletNfts";
-import CreatorButton from "@/components/edit/creatorButton";
+import RegisterNFTButton from "@/components/user_profile/registerNftButton";
 import SignOutButton from "@/components/auth/signOutButton";
 import ResendVerificationButton from "@/components/user_profile/resendVerificationButton";
 
@@ -33,6 +33,11 @@ function ProfilePage() {
     if (!session) {
         return null;
     }
+
+    const handleNftsFetched = (nfts) => {
+        console.log('Fetched NFTs:', nfts);
+        // Handle the fetched NFTs here, e.g., trigger an onboarding email
+    };
 
     return (
         <div className="min-h-screen bg-gradient-light dark:bg-gradient-dark flex flex-col items-center justify-center p-2">
@@ -74,8 +79,9 @@ function ProfilePage() {
                             </div>
                         )}
                         <p className="text-xl leading-relaxed pt-4">
-                            You can connect your wallet and register your NFTs. You can expect a welcome email
-                            from your owned projects detailing how to get more involved. 
+                            You can connect your wallet and register your NFTs. You
+                            can expect a welcome email from your owned projects
+                            detailing how to get more involved.
                         </p>
                         <div className="mb-10 mt-5 pt-4">
                             <h2 className="font-bold text-3xl mb-4">
@@ -83,14 +89,18 @@ function ProfilePage() {
                             </h2>
                             <ul className="list-disc pl-8 text-xl">
                                 <li>
-                                    Earn rewards for adding content, earn more rewards for adding content on the projects that you own.
+                                    Earn rewards for adding content, earn more
+                                    rewards for adding content on the projects that
+                                    you own.
                                 </li>
                                 <li>
-                                    Community management tools for your projects as a holder or creator. 
+                                    Community management tools for your projects as a
+                                    holder or creator.
                                 </li>
                                 <li>Memecoin and multichain support</li>
                             </ul>
                         </div>
+                        <RegisterNFTButton onNftsFetched={handleNftsFetched} />
                         {/* <WalletNFTs /> */}
                     </div>
                     {session.verified ? (
@@ -102,7 +112,7 @@ function ProfilePage() {
                         </div>
                     )}
                 </div>
-             </WagmiWallet>
+            </WagmiWallet>
         </div>
     );
 }

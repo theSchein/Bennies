@@ -7,6 +7,7 @@ import {
 } from "wagmi";
 import { useEffect, useState, useCallback, createContext, useContext } from "react";
 import { SiweMessage } from 'siwe';
+import { useSession } from 'next-auth/react';
 
 const WalletAddressContext = createContext();
 
@@ -17,6 +18,7 @@ export function Profile() {
     const { data: ensName } = useEnsName({ address });
     const { connect, connectors, error, isLoading, pendingConnector } = useConnect();
     const { disconnect } = useDisconnect();
+    const { data: session, status } = useSession();
     const { signMessageAsync } = useSignMessage();
     const [nonce, setNonce] = useState('');
     const [signedIn, setSignedIn] = useState(false);
@@ -28,6 +30,28 @@ export function Profile() {
             setNonce(data.nonce);
         } else {
             console.error('Failed to fetch nonce');
+        }
+    };
+
+    const claimWallet = async (address) => {
+        try {
+            const response = await fetch('/api/wallet/claimWallet', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ address, session }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                // Perform any further actions needed after claiming the wallet
+            } else {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Claiming wallet failed');
+            }
+        } catch (error) {
+            console.error("Failed to claim wallet:", error);
         }
     };
 
@@ -58,7 +82,8 @@ export function Profile() {
             });
 
             if (verifyResponse.ok) {
-                // Perform any further actions like claiming the wallet
+                setSignedIn(true);
+                claimWallet(address);
             } else {
                 throw new Error('Verification failed');
             }
