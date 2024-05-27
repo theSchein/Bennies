@@ -5,7 +5,7 @@ CREATE TABLE users (
 	"password" varchar(255) NOT NULL,
 	verification_token VARCHAR(255),
     token_expires_at TIMESTAMP;
-	email_verified BOOLEAN DEFAULT FALSE;
+	email_verified BOOLEAN DEFAULT FALSE; 
 	CONSTRAINT users_email_address_key UNIQUE (email_address),
 	CONSTRAINT users_username_key UNIQUE (username)
 );
@@ -147,6 +147,18 @@ CREATE TABLE ownership_counts (
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (collection_id) REFERENCES collections(collection_id)
 );
+
+CREATE TABLE user_nft_communities (
+    user_id UUID NOT NULL,
+    collection_id UUID NOT NULL,
+    PRIMARY KEY (user_id, collection_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (collection_id) REFERENCES collections(collection_id) ON DELETE CASCADE
+);
+
+-- Optional: Create indexes to optimize queries
+CREATE INDEX idx_user_nft_communities_user_id ON user_nft_communities(user_id);
+CREATE INDEX idx_user_nft_communities_collection_id ON user_nft_communities(collection_id);
 
 CREATE INDEX idx_nfts_collection_id ON nfts(collection_id);
 CREATE INDEX idx_likes_nft_id ON likes(nft_id);
