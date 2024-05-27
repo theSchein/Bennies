@@ -38,7 +38,11 @@ export default async (req, res) => {
                 const contractAddressTokenId = nft.contract.address + nft.tokenId;
 
                 const load = await db.oneOrNone(
-                    "SELECT nfts.contract_address_token_id, nfts.nft_id, nfts.nft_name,  nfts.media_url, collections.collection_name FROM nfts LEFT JOIN collections ON nfts.collection_id = collections.collection_id WHERE LOWER(contract_address_token_id) = $1",
+                    `SELECT nfts.contract_address_token_id, nfts.nft_id, nfts.nft_name, 
+                            nfts.media_url, collections.collection_name, nfts.collection_id 
+                     FROM nfts 
+                     LEFT JOIN collections ON nfts.collection_id = collections.collection_id 
+                     WHERE LOWER(contract_address_token_id) = $1`,
                     [nft.contract.address + nft.tokenId],
                 );
                 if (load) {
