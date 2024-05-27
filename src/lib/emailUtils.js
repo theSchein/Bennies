@@ -40,3 +40,18 @@ export const sendPasswordResetEmail = async (email, link) => {
         }
     });
 };
+
+export const sendOnboardingEmail = async (email, name, collectionName, collectionUtility, collectionLink, actionUrl) => {
+    await client.sendEmailWithTemplate({
+        From: "ben@bennies.fun",
+        To: email,
+        TemplateAlias: "nft-onboarding",
+        TemplateModel: {
+            name,
+            collection_name: collectionName,
+            collection_utility: collectionUtility,
+            collection_link: collectionLink,
+            support_email: "ben@bennies.fun"
+        }
+    });
+};

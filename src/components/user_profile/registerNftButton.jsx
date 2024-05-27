@@ -1,12 +1,16 @@
+// components/user_profile/RegisterNftButton.jsx
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import retry from "async-retry";
+import AlertModal from "../alert";
 
 const RegisterNftButton = ({ onNftsFetched }) => {
     const [ownedNfts, setOwnedNfts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const { data: session } = useSession();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalMessage, setModalMessage] = useState("");
 
     const fetchWalletAddresses = async () => {
         try {
@@ -67,10 +71,14 @@ const RegisterNftButton = ({ onNftsFetched }) => {
                 ),
             );
             setOwnedNfts(allOwnedNFTs.flat());
-            onNftsFetched(allOwnedNFTs.flat());  // Call the callback function with the fetched NFTs
-            registerUserNFTs(allOwnedNFTs.flat());  // Register user NFTs
+            onNftsFetched(allOwnedNFTs.flat()); 
+            registerUserNFTs(allOwnedNFTs.flat());
+
+            setIsModalOpen(true);
         } catch (err) {
             setError(err.message);
+            setModalMessage("Failed to register NFTs.");
+            setIsModalOpen(true);
         } finally {
             setLoading(false);
         }
@@ -87,14 +95,13 @@ const RegisterNftButton = ({ onNftsFetched }) => {
             });
 
             if (response.ok) {
-                alert('NFTs registered successfully!');
+                setModalMessage("NFTs registered successfully!");
             } else {
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'Registering NFTs failed');
             }
         } catch (error) {
             console.error("Failed to register NFTs:", error);
-            setError('Failed to register NFTs');
         }
     };
 
@@ -108,12 +115,17 @@ const RegisterNftButton = ({ onNftsFetched }) => {
         <div>
             <button
                 onClick={handleButtonClick}
-                className="bg-blue-500 py-2 px-4 rounded hover:bg-blue-600 transition duration-300"
+                className="btn"
             >
                 Register NFTs
             </button>
             {loading && <p>Loading...</p>}
             {error && <p>Error: {error}</p>}
+            <AlertModal
+                isOpen={isModalOpen}
+                message={modalMessage}
+                onClose={() => setIsModalOpen(false)}
+            />
         </div>
     );
 };
