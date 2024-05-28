@@ -20,7 +20,7 @@ def process_nft_images():
         print(f"Found {len(nfts_to_process)} NFTs with missing media URLs.")
 
         processed_count = 0
-        max_process_count = 10000  # Limit to avoid timeouts
+        max_process_count = 100000  
 
         for nft in nfts_to_process:
             if processed_count >= max_process_count:
