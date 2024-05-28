@@ -1,13 +1,13 @@
 from web3 import Web3  
 from db.connection import connect_db
-from utils.config import load_config 
+from utils.config import load_db 
 from .twitter_verify import get_verifier 
 import requests
 import json
 import time
 
 def fetch_collection_data(contract_address):
-    config = load_config()
+    config = load_db()
     api_key = config['alchemy_api_key']
     base_url = "https://eth-mainnet.g.alchemy.com/nft/v3/"
     url = f"{base_url}{api_key}/getContractMetadata"

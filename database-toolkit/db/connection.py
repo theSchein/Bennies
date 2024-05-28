@@ -1,11 +1,11 @@
 # connection.py
 import psycopg2
 from psycopg2.extras import DictCursor
-from utils.config import load_config
+from utils.config import load_db
 
 def connect_db():
     """Creates a connection to the PostgreSQL database using configuration loaded from the environment."""
-    config = load_config()
+    config = load_db()
     try:
         # Connect using the connection parameters
         conn = psycopg2.connect(
