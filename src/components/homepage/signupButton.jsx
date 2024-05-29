@@ -28,7 +28,7 @@ export default function SignupButton() {
         <div className="mt-4 w-full items-center">
             <button
                 onClick={handleButtonClick}
-                className="px-8 py-4 btn w-full text-2xl font-bold"
+                className="px-8 py-6 btn w-full text-3xl flex-auto p-7 sm:p-8 lg:p-8 sm:text-2xl lg:text-3xl "
             >
                 {session ? `Welcome, ${session.username}` : "Sign Up!"}
             </button>

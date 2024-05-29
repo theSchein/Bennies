@@ -41,3 +41,4 @@ next-env.d.ts
 venv/
 pychache/
 __pycache__/
+datbase-toolkit/notebooks/
