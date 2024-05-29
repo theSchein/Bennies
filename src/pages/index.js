@@ -19,7 +19,7 @@ export default function Home() {
                                 height={100}
                                 className="inline-block"
                             />
-                            <h1 className="font-heading text-4xl sm:text-6xl lg:text-7xl text-light-font dark:text-light-ennies leading-tight ml-4">
+                            <h1 className="font-heading text-5xl lg:text-7xl text-light-font dark:text-light-ennies leading-tight ml-4">
                                 ENNIES
                             </h1>
                         </div>
