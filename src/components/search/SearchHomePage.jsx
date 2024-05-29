@@ -4,15 +4,17 @@ import { useState } from "react";
 import { useTheme, LinearProgress } from "@mui/material";
 import NftTile from "../nft/nftTile";
 import Modal from "../ui/Modal";
+import AlertModal from "../alert";
 
 function SearchHomepage() {
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [showEmailModal, setShowEmailModal] = useState(false);
+    const [showAlertModal, setShowAlertModal] = useState(false);
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
-    const [modalMessage, setModalMessage] = useState("");
+    const [alertMessage, setAlertMessage] = useState("");
     const theme = useTheme();
 
     const handleSearchSubmit = async (e) => {
@@ -51,15 +53,15 @@ function SearchHomepage() {
         });
 
         if (response.ok) {
-            setModalMessage("Thank you for subscribing!");
+            setAlertMessage("Thank you for subscribing!");
         } else {
-            setModalMessage("Something went wrong. Please try again.");
+            setAlertMessage("Something went wrong. Please try again.");
         }
 
         setName("");
         setEmail("");
         setShowEmailModal(false);
-        alert(modalMessage); // Display the message in an alert for now
+        setShowAlertModal(true);
     };
 
     return (
@@ -68,6 +70,11 @@ function SearchHomepage() {
                 Try it
             </h2>
             <div className="max-w-2xl w-full mt-5 px-4 sm:px-0">
+                <AlertModal
+                    isOpen={showAlertModal}
+                    message={alertMessage}
+                    onClose={() => setShowAlertModal(false)}
+                />
                 <form
                     onSubmit={handleSearchSubmit}
                     className="w-full flex flex-col items-center"
@@ -86,14 +93,14 @@ function SearchHomepage() {
                         Search Address
                     </button>
                 </form>
-                <div className="w-full ">
-                <button
-                    className="px-6 py-2 w-full btn rounded-full flex text-center items-center transition ease-in duration-200 text-lg sm:text-base mb-3"
-                    onClick={() => setShowEmailModal(true)}
-                >
-                    Subscribe to Mailing List
-                </button>
-            </div>
+                <div className="w-full flex justify-center mt-4">
+                    <button
+                        className="px-6 py-2 w-full sm:w-auto btn rounded-full text-center items-center transition ease-in duration-200 text-lg sm:text-base"
+                        onClick={() => setShowEmailModal(true)}
+                    >
+                        Subscribe to Mailing List
+                    </button>
+                </div>
                 {isLoading && (
                     <div className="w-full mt-4">
                         <LinearProgress
@@ -154,7 +161,9 @@ function SearchHomepage() {
                     onSubmit={handleEmailSubmit}
                     className="flex flex-col items-center mt-10 bg-light-tertiary dark:bg-dark-primary dark:text-dark-quaternary p-4 sm:p-6 lg:p-8 rounded-2xl bg-opacity-80 shadow-xl max-w-md mb-5 w-full"
                 >
-                    <h2 className="text-xl sm:text-2xl lg:text-2xl mb-4 text-secondary font-subheading font-bold text-center"> Sign up for our mailing list </h2>
+                    <h2 className="text-xl sm:text-2xl lg:text-2xl mb-4 text-secondary font-subheading font-bold text-center">
+                        Sign up for our mailing list
+                    </h2>
                     <input
                         type="text"
                         value={name}
