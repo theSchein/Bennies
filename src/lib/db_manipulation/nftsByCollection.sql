@@ -1,0 +1,2 @@
+SELECT * FROM nfts
+WHERE LOWER(contract_address) = LOWER('ENTER CONTRACT ADDRESS');
