@@ -23,18 +23,13 @@ export default function Home() {
                                 ENNIES
                             </h1>
                         </div>
-                        <h3 className="italic bold text-light-font dark:text-dark-font mt-5 text-center sm:text-left text-3xl ">
-                            Find the Benefits, not Price
-                        </h3>
-                        <div className="mt-6 w-full flex justify-center sm:justify-start">
-                            <SignupButton className="p-4 sm:p-6 lg:p-8 text-xl sm:text-2xl lg:text-3xl transform scale-200" />
-                        </div>
                     </div>
-                    <div className="text-center sm:text-left bg-light-tertiary dark:bg-dark-tertiary p-7 rounded-xl shadow-xl">
-                        <p className="text-xl text-light-font dark:text-light-ennies">
-                            Bennies has all the information on what you can do with your onchain stuff.
-                        </p>
-                    </div>
+                    <SignupButton />
+                </div>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full mt-5">
+                    <h3 className="italic bold text-light-font dark:text-dark-font text-center sm:text-left text-3xl">
+                        Find the Benefits, not Price
+                    </h3>
                 </div>
             </div>
 
