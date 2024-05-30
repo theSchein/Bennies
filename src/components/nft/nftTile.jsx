@@ -1,6 +1,6 @@
-// components/nft/nftTile.jsx
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import { getImageSource } from "@/components/utils/getImageSource";
 import fallbackImageUrl from "../../../public/placeholder.png";
 import EditPageButton from "../edit/editPageButton";
@@ -17,6 +17,52 @@ function NftTile({ nft }) {
 
     const isOwner = IsOwner(nft.owners);
     const isDeployer = IsDeployer(nft.deployer_address);
+    const [message, setMessage] = useState("");
+
+    const handleFindBenefitsClick = async () => {
+        try {
+            const response = await fetch("/api/nft/addToStaging", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ contractAddress: nft.contractAddress }),
+            });
+
+            if (response.ok) {
+                setMessage("Contract address added to staging");
+            } else {
+                setMessage("Failed to add contract address to staging");
+            }
+        } catch (error) {
+            console.error("Error adding to staging:", error);
+            setMessage("Error adding contract address to staging");
+        }
+    };
+
+    const handleSpamClick = async () => {
+        try {
+            const response = await fetch("/api/nft/markSpam", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    contractAddress: nft.contractAddress,
+                    collectionName: nft.collectionName || "Unknown Collection",
+                }),
+            });
+
+            if (response.ok) {
+                setMessage("Contract address marked as spam");
+            } else {
+                setMessage("Failed to mark contract address as spam");
+            }
+        } catch (error) {
+            console.error("Error marking as spam:", error);
+            setMessage("Error marking contract address as spam");
+        }
+    };
 
     return (
         <div
@@ -93,7 +139,22 @@ function NftTile({ nft }) {
                         {isOwner || isDeployer ? <EditPageButton pageData={nft} /> : null}
                     </>
                 ) : (
-                    <p className="text-sm text-gray-500">This NFT is not in our database yet.</p>
+                    <>
+                        <p className="text-sm text-gray-500">This NFT is not in our database yet.</p>
+                        <button
+                            className="px-4 py-2 mt-2 bg-blue-500 text-white rounded-lg"
+                            onClick={handleFindBenefitsClick}
+                        >
+                            Find the Benefits of Owning this NFT
+                        </button>
+                        <button
+                            className="px-4 py-2 mt-2 bg-red-500 text-white rounded-lg ml-2"
+                            onClick={handleSpamClick}
+                        >
+                            This NFT is spam, remove it
+                        </button>
+                        {message && <p className="mt-2 text-sm text-gray-500">{message}</p>}
+                    </>
                 )}
             </div>
             {nft.inDatabase && (

@@ -22,3 +22,11 @@ CREATE TABLE ingestion_logs.ingestion_data(
     log_details TEXT,
     logged_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE staging.spam (
+    spam_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    contract_address VARCHAR(255) UNIQUE NOT NULL,
+    collection_name VARCHAR(255),
+    flagged_count INTEGER DEFAULT 1,
+    last_flagged TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
