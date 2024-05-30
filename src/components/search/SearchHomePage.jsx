@@ -150,7 +150,7 @@ function SearchHomepage() {
                 <div className="w-full px-2">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 gap-4 justify-items-center">
                         {searchResults.map((nft) => (
-                            <NftTile key={nft.nft_id} nft={nft} />
+                            <NftTile key={nft.nft_id || `${nft.contractAddress}-${nft.tokenId}`} nft={nft} />
                         ))}
                     </div>
                 </div>
