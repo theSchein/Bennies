@@ -33,7 +33,7 @@ export default async function handler(req, res) {
             );
         }
 
-        res.status(200).json({ message: "Contract address marked as spam" });
+        res.status(200).json({ message: "Marked as spam!" });
     } catch (error) {
         console.error("Error marking as spam:", error);
         res.status(500).json({ error: "Internal Server Error" });

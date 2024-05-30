@@ -28,7 +28,7 @@ export default async function handler(req, res) {
             [uuidv4(), sourceId, contractAddress]
         );
 
-        res.status(200).json({ message: "Contract address added to staging" });
+        res.status(200).json({ message: "Finding benfits shortly, check back later!" });
     } catch (error) {
         console.error("Error adding to staging:", error);
         res.status(500).json({ error: "Internal Server Error" });

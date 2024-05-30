@@ -94,7 +94,10 @@ function NftTile({ nft }) {
                 >
                     <a className="block">
                         <Image
-                            src={getImageSource(nft.media_url || nft.mediaUrl, fallbackImageUrl)}
+                            src={getImageSource(
+                                nft.media_url || nft.mediaUrl,
+                                fallbackImageUrl,
+                            )}
                             alt={nft.nft_name || nft.nftName || "NFT Image"}
                             layout="fill"
                             objectFit="cover"
@@ -104,7 +107,9 @@ function NftTile({ nft }) {
                 </Link>
             </div>
             <div className="p-4 space-y-2">
-                <h2 className="text-xl font-bold break-words">{nft.nft_name || nft.nftName || "Unknown NFT"}</h2>
+                <h2 className="text-xl font-bold break-words">
+                    {nft.nft_name || nft.nftName || "Unknown NFT"}
+                </h2>
                 {nft.inDatabase ? (
                     <>
                         <div className="flex justify-between items-center p-4">
@@ -136,24 +141,36 @@ function NftTile({ nft }) {
                                 </p>
                             </div>
                         )}
-                        {isOwner || isDeployer ? <EditPageButton pageData={nft} /> : null}
+                        {isOwner || isDeployer ? (
+                            <EditPageButton pageData={nft} />
+                        ) : null}
                     </>
                 ) : (
                     <>
-                        <p className="text-sm text-gray-500">This NFT is not in our database yet.</p>
-                        <button
-                            className="px-4 py-2 mt-2 bg-blue-500 text-white rounded-lg"
-                            onClick={handleFindBenefitsClick}
-                        >
-                            Find the Benefits of Owning this NFT
-                        </button>
-                        <button
-                            className="px-4 py-2 mt-2 bg-red-500 text-white rounded-lg ml-2"
-                            onClick={handleSpamClick}
-                        >
-                            This NFT is spam, remove it
-                        </button>
-                        {message && <p className="mt-2 text-sm text-gray-500">{message}</p>}
+                        <p className="text-lg text-gray-600 mb-4 text-center">
+                            We are not yet tracking this NFT yet. You can help by
+                            flagging it as spam or letting us know you want more info
+                            on it.
+                        </p>
+                        <div className="flex justify-center space-x-4">
+                            <button
+                                className="px-6 py-3 mt-2 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition duration-200 ease-in-out transform hover:scale-105"
+                                onClick={handleFindBenefitsClick}
+                            >
+                                Find the Benefits of this NFT
+                            </button>
+                            <button
+                                className="px-6 py-3 mt-2 bg-red-600 text-white rounded-full shadow-lg hover:bg-red-700 transition duration-200 ease-in-out transform hover:scale-105"
+                                onClick={handleSpamClick}
+                            >
+                                This NFT is spam, remove it
+                            </button>
+                        </div>
+                        {message && (
+                            <p className="mt-4 text-lg text-gray-600 mb-4 text-center">
+                                {message}
+                            </p>
+                        )}
                     </>
                 )}
             </div>
