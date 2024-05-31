@@ -1,14 +1,15 @@
-// components/search/SearchHomePage.jsx
 import * as React from "react";
 import { useState } from "react";
 import { useTheme, LinearProgress } from "@mui/material";
 import NftTile from "../nft/nftTile";
+import TokenTile from "../token/tokenTile";
 import Modal from "../ui/Modal";
 import AlertModal from "../alert";
 
 function SearchHomepage() {
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState(null);
+    const [tokenResults, setTokenResults] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [showEmailModal, setShowEmailModal] = useState(false);
     const [showAlertModal, setShowAlertModal] = useState(false);
@@ -21,7 +22,7 @@ function SearchHomepage() {
         e.preventDefault();
         setIsLoading(true);
         try {
-            const response = await fetch("/api/search/addressSearch", {
+            const nftResponse = await fetch("/api/search/addressSearch", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -29,12 +30,23 @@ function SearchHomepage() {
                 body: JSON.stringify({ address: searchTerm }),
             });
 
-            if (!response.ok) {
+            const tokenResponse = await fetch("/api/search/tokenSearch", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ address: searchTerm }),
+            });
+
+            if (!nftResponse.ok || !tokenResponse.ok) {
                 throw new Error("Search failed");
             }
 
-            const data = await response.json();
-            setSearchResults(data.nfts);
+            const nftData = await nftResponse.json();
+            const tokenData = await tokenResponse.json();
+
+            setSearchResults(nftData.nfts);
+            setTokenResults(tokenData.tokens);
         } catch (error) {
             console.error("Search error:", error);
         } finally {
@@ -123,7 +135,7 @@ function SearchHomepage() {
                     </div>
                 )}
             </div>
-            {searchResults === null && !isLoading && (
+            {searchResults === null && tokenResults === null && !isLoading && (
                 <div className="w-full px-2 mt-4 text-center flex justify-center">
                     <div className="max-w-xl">
                         <p className="text-lg md:text-xl text-primary dark:text-dark-primary">
@@ -150,12 +162,23 @@ function SearchHomepage() {
                 <div className="w-full px-2">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 gap-4 justify-items-center">
                         {searchResults.map((nft) => (
-                            <NftTile key={nft.nft_id || `${nft.contractAddress}-${nft.tokenId}`} nft={nft} />
+                            <NftTile key={nft.nft_id} nft={nft} />
                         ))}
                     </div>
                 </div>
             )}
-
+            {!isLoading && tokenResults && tokenResults.length > 0 && (
+                <div className="w-full px-2 mt-8">
+                    <h3 className="font-heading text-xl sm:text-2xl lg:text-3xl text-light-font dark:text-light-ennies mb-6">
+                        Owned Tokens
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-4 justify-items-center">
+                        {tokenResults.map((token, index) => (
+                            <TokenTile key={index} token={token} />
+                        ))}
+                    </div>
+                </div>
+            )}
             <Modal isOpen={showEmailModal} onClose={() => setShowEmailModal(false)}>
                 <form
                     onSubmit={handleEmailSubmit}

@@ -22,6 +22,7 @@ const nextConfig = {
             "metadata.degods.com",
             "nft-cdn.alchemy.com",
             "metadata.ens.domains",
+            "static.alchemyapi.io",
 
                     
         ],
