@@ -21,26 +21,44 @@ export default async function handler(req, res) {
         }
 
         const balances = await alchemy.core.getTokenBalances(address);
-
-        const nonZeroBalances = balances.tokenBalances.filter(token => {
-            return token.tokenBalance !== "0";
+        const nonZeroBalances = balances.tokenBalances.filter((token) => {
+            const tokenBalance = BigInt(token.tokenBalance);
+            return tokenBalance > 0;
         });
 
-        const tokensData = [];
+        // Function to fetch metadata with a timeout
+        const fetchMetadataWithTimeout = async (contractAddress, timeout = 2000) => {
+            return Promise.race([
+                alchemy.core.getTokenMetadata(contractAddress),
+                new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), timeout)),
+            ]);
+        };
 
-        for (let token of nonZeroBalances) {
-            const metadata = await alchemy.core.getTokenMetadata(token.contractAddress);
-            const tokenBalance = parseFloat(token.tokenBalance) / Math.pow(10, metadata.decimals);
-            tokensData.push({
-                contractAddress: token.contractAddress,
-                balance: tokenBalance.toFixed(2),
-                ...metadata
-            });
-        }
+        // Process tokens in parallel with timeout handling
+        const tokensData = await Promise.all(
+            nonZeroBalances.map(async (token) => {
+                try {
+                    const metadata = await fetchMetadataWithTimeout(token.contractAddress);
+                    const tokenBalance = parseFloat(BigInt(token.tokenBalance).toString()) / Math.pow(10, metadata.decimals);
+                    return {
+                        contractAddress: token.contractAddress,
+                        balance: tokenBalance.toFixed(2),
+                        ...metadata
+                    };
+                } catch (error) {
+                    console.error(`Error fetching metadata for token: ${token.contractAddress}`, error);
+                    return null;
+                }
+            })
+        );
 
-        return res.status(200).json({ tokens: tokensData });
+        const filteredTokens = tokensData.filter(token => token !== null);
+
+        return res.status(200).json({ tokens: filteredTokens });
     } catch (error) {
         console.error("Token search API error:", error);
-        return res.status(500).json({ message: "Internal Server Error", error: error.message });
+        return res
+            .status(500)
+            .json({ message: "Internal Server Error", error: error.message });
     }
 }
