@@ -147,7 +147,7 @@ function NftTile({ nft }) {
                     </>
                 ) : (
                     <>
-                        <p className="text-lg text-gray-600 mb-4 text-center">
+                        <p className="text-lg  mb-4 text-center">
                             We are not yet tracking this NFT yet. You can help by
                             flagging it as spam or letting us know you want more info
                             on it.
@@ -167,7 +167,7 @@ function NftTile({ nft }) {
                             </button>
                         </div>
                         {message && (
-                            <p className="mt-4 text-lg text-gray-600 mb-4 text-center">
+                            <p className="mt-4 text-lg italic mb-4 text-center">
                                 {message}
                             </p>
                         )}

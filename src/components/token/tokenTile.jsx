@@ -34,7 +34,10 @@ const TokenTile = ({ token }) => {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ contractAddress: token.contractAddress, collectionName: token.name }),
+                body: JSON.stringify({
+                    contractAddress: token.contractAddress,
+                    collectionName: token.name,
+                }),
             });
 
             if (response.ok) {
@@ -49,36 +52,44 @@ const TokenTile = ({ token }) => {
     };
 
     return (
-        <div className="bg-light-secondary dark:bg-dark-secondary bg-opacity-90 text-light-font dark:text-dark-primary rounded-lg shadow-lg overflow-hidden transition-shadow duration-300 ease-in-out m-4 w-full sm:w-1/2 lg:w-1/3 xl:w-1/4">
-            <div className="p-4 space-y-2">
-                <div className="flex justify-center items-center">
-                    <Image
-                        src={token.logo || fallbackImageUrl}
-                        alt={token.name}
-                        width={50}
-                        height={50}
-                        className="rounded-full"
-                    />
+        <div className="bg-light-tertiary dark:bg-dark-tertiary text-light-font dark:text-dark-primary rounded-lg shadow-lg p-4 flex flex-col">
+            <div className="flex items-center mb-4">
+                <Image
+                    src={token.logo || fallbackImageUrl}
+                    alt={token.name}
+                    width={50}
+                    height={50}
+                    className="rounded-full"
+                />
+                <div className="ml-4">
+                    <h2 className="text-xl font-bold">
+                        {token.name || "Unknown Token"}
+                    </h2>
+                    <p className="text-lg font-heading text-primary">{token.symbol || "N/A"}</p>
+                    <p className="text-sm ">Balance: <span className="font-bold">{token.balance}</span></p>
                 </div>
-                <h2 className="text-xl font-bold text-center">{token.name || "Unknown Token"}</h2>
-                <p className="text-lg text-primary text-center">{token.symbol || "N/A"}</p>
-                <p className="text-sm text-gray-500 text-center">Balance: {token.balance}</p>
-                <div className="flex justify-center mt-4 space-x-2">
-                    <button
-                        className="px-4 py-2 mt-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
-                        onClick={handleFindBenefitsClick}
-                    >
-                        Find Benefits
-                    </button>
-                    <button
-                        className="px-4 py-2 mt-2 bg-red-500 text-white rounded-lg hover:bg-red-700"
-                        onClick={handleSpamClick}
-                    >
-                        Mark as Spam
-                    </button>
-                </div>
-                {message && <p className="mt-2 text-sm text-gray-500 text-center">{message}</p>}
             </div>
+            <div className="mb-4">
+                <p className="">
+                    We are not yet tracking this token yet. You can help by flagging
+                    it as spam or letting us know you want more info on it.
+                </p>
+            </div>
+            <div className="flex space-x-2 w-full">
+                <button
+                    className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
+                    onClick={handleFindBenefitsClick}
+                >
+                    Find Benefits
+                </button>
+                <button
+                    className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700"
+                    onClick={handleSpamClick}
+                >
+                    Mark as Spam
+                </button>
+            </div>
+            {message && <p className="mt-2 text-sm italic">{message}</p>}
         </div>
     );
 };

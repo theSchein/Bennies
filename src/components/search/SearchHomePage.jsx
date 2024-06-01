@@ -147,34 +147,28 @@ function SearchHomepage() {
                     </div>
                 </div>
             )}
-            {!isLoading && searchResults && searchResults.length === 0 && (
-                <div className="w-full px-2 mt-4 text-center flex justify-center">
-                    <div className="max-w-xl">
-                        <p className="text-lg md:text-xl text-primary dark:text-dark-primary">
-                            No NFTs found in this wallet, but our database of
-                            supported NFTs is growing rapidly. To have your assets
-                            supported sooner, please reach out to ben@bennies.fun
-                        </p>
-                    </div>
-                </div>
-            )}
-            {!isLoading && searchResults && searchResults.length > 0 && (
-                <div className="w-full px-2">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 gap-4 justify-items-center">
-                        {searchResults.map((nft) => (
-                            <NftTile key={nft.nft_id} nft={nft} />
-                        ))}
-                    </div>
-                </div>
-            )}
             {!isLoading && tokenResults && tokenResults.length > 0 && (
                 <div className="w-full px-2 mt-8">
                     <h3 className="font-heading text-xl sm:text-2xl lg:text-3xl text-light-font dark:text-light-ennies mb-6">
                         Owned Tokens
                     </h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-4 justify-items-center">
-                        {tokenResults.map((token, index) => (
-                            <TokenTile key={index} token={token} />
+                    <div className="bg-light-secondary dark:bg-dark-secondary bg-opacity-90 text-light-font dark:text-dark-primary rounded-lg shadow-lg p-6 mb-8 w-full">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
+                            {tokenResults.map((token, index) => (
+                                <TokenTile key={index} token={token} />
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
+            {!isLoading && searchResults && searchResults.length > 0 && (
+                <div className="w-full px-2">
+                    <h3 className="font-heading text-xl sm:text-2xl lg:text-3xl text-light-font dark:text-light-ennies mb-6">
+                        Owned NFTs
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 gap-4 justify-items-center">
+                        {searchResults.map((nft) => (
+                            <NftTile key={nft.nft_id} nft={nft} />
                         ))}
                     </div>
                 </div>

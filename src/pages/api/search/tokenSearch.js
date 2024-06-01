@@ -1,6 +1,5 @@
 // pages/api/search/tokensSearch.js
 import { Alchemy, Network } from "alchemy-sdk";
-import db from "../../../lib/db";
 
 const config = {
     apiKey: process.env.ALCHEMY_API_KEY,
@@ -22,19 +21,16 @@ export default async function handler(req, res) {
         }
 
         const balances = await alchemy.core.getTokenBalances(address);
-        console.log("Token balances:", balances);
 
         const nonZeroBalances = balances.tokenBalances.filter((token) => {
             const tokenBalance = BigInt(token.tokenBalance);
             return tokenBalance > 0;
         });
 
-        console.log("Non-zero token balances:", nonZeroBalances);
-
         const tokensData = await Promise.all(
             nonZeroBalances.map(async (token) => {
                 const metadata = await alchemy.core.getTokenMetadata(token.contractAddress);
-                const tokenBalance = parseFloat(token.tokenBalance) / Math.pow(10, metadata.decimals);
+                const tokenBalance = parseFloat(BigInt(token.tokenBalance).toString()) / Math.pow(10, metadata.decimals);
                 return {
                     contractAddress: token.contractAddress,
                     balance: tokenBalance.toFixed(2),
