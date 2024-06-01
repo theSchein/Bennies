@@ -1,4 +1,4 @@
-// pages/api/search/tokensSearch.js
+// pages/api/search/tokenSearch.js
 import { Alchemy, Network } from "alchemy-sdk";
 
 const config = {
@@ -22,28 +22,25 @@ export default async function handler(req, res) {
 
         const balances = await alchemy.core.getTokenBalances(address);
 
-        const nonZeroBalances = balances.tokenBalances.filter((token) => {
-            const tokenBalance = BigInt(token.tokenBalance);
-            return tokenBalance > 0;
+        const nonZeroBalances = balances.tokenBalances.filter(token => {
+            return token.tokenBalance !== "0";
         });
 
-        const tokensData = await Promise.all(
-            nonZeroBalances.map(async (token) => {
-                const metadata = await alchemy.core.getTokenMetadata(token.contractAddress);
-                const tokenBalance = parseFloat(BigInt(token.tokenBalance).toString()) / Math.pow(10, metadata.decimals);
-                return {
-                    contractAddress: token.contractAddress,
-                    balance: tokenBalance.toFixed(2),
-                    ...metadata
-                };
-            })
-        );
+        const tokensData = [];
+
+        for (let token of nonZeroBalances) {
+            const metadata = await alchemy.core.getTokenMetadata(token.contractAddress);
+            const tokenBalance = parseFloat(token.tokenBalance) / Math.pow(10, metadata.decimals);
+            tokensData.push({
+                contractAddress: token.contractAddress,
+                balance: tokenBalance.toFixed(2),
+                ...metadata
+            });
+        }
 
         return res.status(200).json({ tokens: tokensData });
     } catch (error) {
         console.error("Token search API error:", error);
-        return res
-            .status(500)
-            .json({ message: "Internal Server Error", error: error.message });
+        return res.status(500).json({ message: "Internal Server Error", error: error.message });
     }
 }
