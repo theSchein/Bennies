@@ -1,4 +1,6 @@
+// pages/api/search/tokensSearch.js
 import { Alchemy, Network } from "alchemy-sdk";
+import web3 from "../../../lib/ethersProvider";
 
 const config = {
     apiKey: process.env.ALCHEMY_API_KEY,
@@ -13,14 +15,25 @@ export default async function handler(req, res) {
     }
 
     try {
-        console.log("Request body:", req.body);
-        const { address } = req.body;
+        let { address } = req.body;
         if (!address) {
             return res.status(400).json({
-                error: "Missing owner address in request body",
+                error: "Missing owner address or ENS name in request body",
             });
         }
 
+        // Check if the input is an ENS name (ends with .eth)
+        if (address.endsWith(".eth")) {
+            // Resolve the ENS name to an address
+            address = await web3.eth.ens.getAddress(address);
+            if (!address) {
+                return res
+                    .status(404)
+                    .json({ error: "ENS name could not be resolved" });
+            }
+        }
+
+        address = address.toLowerCase();
         console.log(`Fetching token balances for address: ${address}`);
 
         const balances = await alchemy.core.getTokenBalances(address);
