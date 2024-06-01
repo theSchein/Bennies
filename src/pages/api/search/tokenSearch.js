@@ -1,4 +1,3 @@
-// pages/api/search/tokenSearch.js
 import { Alchemy, Network } from "alchemy-sdk";
 
 const config = {
@@ -8,11 +7,13 @@ const config = {
 const alchemy = new Alchemy(config);
 
 export default async function handler(req, res) {
+    console.log("Token search API request received");
     if (req.method !== "POST") {
         return res.status(405).json({ error: "Method Not Allowed" });
     }
 
     try {
+        console.log("Request body:", req.body);
         const { address } = req.body;
         if (!address) {
             return res.status(400).json({
@@ -20,41 +21,35 @@ export default async function handler(req, res) {
             });
         }
 
+        console.log(`Fetching token balances for address: ${address}`);
+
         const balances = await alchemy.core.getTokenBalances(address);
+        console.log("Token balances:", balances);
+
         const nonZeroBalances = balances.tokenBalances.filter((token) => {
             const tokenBalance = BigInt(token.tokenBalance);
+            console.log(`Token ${token.contractAddress} balance: ${tokenBalance}`);
             return tokenBalance > 0;
         });
 
-        // Function to fetch metadata with a timeout
-        const fetchMetadataWithTimeout = async (contractAddress, timeout = 2000) => {
-            return Promise.race([
-                alchemy.core.getTokenMetadata(contractAddress),
-                new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), timeout)),
-            ]);
-        };
+        console.log("Non-zero token balances:", nonZeroBalances);
 
-        // Process tokens in parallel with timeout handling
         const tokensData = await Promise.all(
             nonZeroBalances.map(async (token) => {
-                try {
-                    const metadata = await fetchMetadataWithTimeout(token.contractAddress);
-                    const tokenBalance = parseFloat(BigInt(token.tokenBalance).toString()) / Math.pow(10, metadata.decimals);
-                    return {
-                        contractAddress: token.contractAddress,
-                        balance: tokenBalance.toFixed(2),
-                        ...metadata
-                    };
-                } catch (error) {
-                    console.error(`Error fetching metadata for token: ${token.contractAddress}`, error);
-                    return null;
-                }
+                const metadata = await alchemy.core.getTokenMetadata(token.contractAddress);
+                const tokenBalance = parseFloat(BigInt(token.tokenBalance).toString()) / Math.pow(10, metadata.decimals);
+                console.log(`Metadata for ${token.contractAddress}:`, metadata);
+                return {
+                    contractAddress: token.contractAddress,
+                    balance: tokenBalance.toFixed(2),
+                    ...metadata
+                };
             })
         );
 
-        const filteredTokens = tokensData.filter(token => token !== null);
+        console.log("Tokens data:", tokensData);
 
-        return res.status(200).json({ tokens: filteredTokens });
+        return res.status(200).json({ tokens: tokensData });
     } catch (error) {
         console.error("Token search API error:", error);
         return res
