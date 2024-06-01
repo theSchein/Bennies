@@ -39,6 +39,7 @@ export default async function handler(req, res) {
         }
 
         let nftResults = [];
+        let nonDbNfts = [];
 
         for (let nft of nfts.ownedNfts) {
             const contractAddressTokenId = `${nft.contract.address.toLowerCase()}${nft.tokenId}`; // Ensure contract address is lowercase
@@ -57,24 +58,34 @@ export default async function handler(req, res) {
                 [contractAddressTokenId],
             );
 
-            for (const existingEntry of existingEntries) {
-                // Check if the address (in its original case) is already an owner, case-insensitive check
-                if (
-                    !existingEntry.owners.some(
-                        (owner) => owner.toLowerCase() === address.toLowerCase(),
-                    )
-                ) {
-                    await db.none(
-                        `UPDATE nfts SET owners = array_append(owners, $1) WHERE contract_address_token_id = $2`, // Case-sensitive update
-                        [address, existingEntry.contract_address_token_id], // Use the original case for address and contract_address_token_id
-                    );
+            if (existingEntries.length > 0) {
+                for (const existingEntry of existingEntries) {
+                    // Check if the address (in its original case) is already an owner, case-insensitive check
+                    if (
+                        !existingEntry.owners.some(
+                            (owner) => owner.toLowerCase() === address.toLowerCase(),
+                        )
+                    ) {
+                        await db.none(
+                            `UPDATE nfts SET owners = array_append(owners, $1) WHERE contract_address_token_id = $2`, // Case-sensitive update
+                            [address, existingEntry.contract_address_token_id], // Use the original case for address and contract_address_token_id
+                        );
+                    }
+                    nftResults.push({ ...existingEntry, inDatabase: true });
                 }
-
-                nftResults.push(existingEntry);
+            } else {
+                nonDbNfts.push({
+                    contractAddress: nft.contract.address,
+                    tokenId: nft.tokenId,
+                    mediaUrl: nft.media[0]?.gateway || '',
+                    nftName: nft.title,
+                    collectionName: nft.contract.name,
+                    inDatabase: false
+                });
             }
         }
 
-        return res.status(200).json({ nfts: nftResults });
+        return res.status(200).json({ nfts: [...nftResults, ...nonDbNfts] });
     } catch (error) {
         console.error("Search API error:", error);
         return res

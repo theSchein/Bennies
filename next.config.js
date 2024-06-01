@@ -20,6 +20,10 @@ const nextConfig = {
             "miladymaker.net",
             "raw.githubusercontent.com",
             "metadata.degods.com",
+            "nft-cdn.alchemy.com",
+            "metadata.ens.domains",
+            "static.alchemyapi.io",
+
                     
         ],
     },
