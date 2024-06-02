@@ -13,14 +13,9 @@ export default async function handler(req, res) {
     }
 
     try {
-        const universeId = await db.one(
-            'INSERT INTO universes (name, description, deployer_address) VALUES ($1, $2, $3) RETURNING universe_id',
-            [projectName, `Affiliation: ${affiliation}`, contractAddresses[0]]
-        );
-
         await db.none(
-            'UPDATE users SET universe_id = $1 WHERE user_id = $2',
-            [universeId.universe_id, userId]
+            'INSERT INTO project_admin_applications (user_id, project_name, contract_addresses, affiliation) VALUES ($1, $2, $3, $4)',
+            [userId, projectName, contractAddresses, affiliation]
         );
 
         return res.status(200).json({ message: 'Application submitted successfully' });
