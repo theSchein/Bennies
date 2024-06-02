@@ -175,6 +175,17 @@ CREATE TABLE user_nft_communities (
     FOREIGN KEY (collection_id) REFERENCES collections(collection_id) ON DELETE CASCADE
 );
 
+CREATE TABLE project_admin_applications (
+    application_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES users(user_id),
+    project_name VARCHAR(255) NOT NULL,
+    contract_addresses TEXT[] NOT NULL,
+    affiliation TEXT NOT NULL,
+    status VARCHAR(50) DEFAULT 'pending',
+    submitted_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+
 -- Optional: Create indexes to optimize queries
 CREATE INDEX idx_user_nft_communities_user_id ON user_nft_communities(user_id);
 CREATE INDEX idx_user_nft_communities_collection_id ON user_nft_communities(collection_id);
