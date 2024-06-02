@@ -6,6 +6,7 @@ CREATE TABLE users (
 	verification_token VARCHAR(255),
     token_expires_at TIMESTAMP;
 	email_verified BOOLEAN DEFAULT FALSE; 
+	universe_id UUID REFERENCES universes(universe_id);
 	CONSTRAINT users_email_address_key UNIQUE (email_address),
 	CONSTRAINT users_username_key UNIQUE (username)
 );

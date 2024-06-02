@@ -9,6 +9,7 @@ import { Profile } from "../components/Profile";
 import WagmiWallet from "../components/WagmiWallet";
 import WalletNFTs from "@/components/user_profile/walletNfts";
 import RegisterNFTButton from "@/components/user_profile/registerNftButton";
+import ProjectManagerButton from "@/components/user_profile/projectManagerButton";
 import SignOutButton from "@/components/auth/signOutButton";
 import ResendVerificationButton from "@/components/user_profile/resendVerificationButton";
 
@@ -101,6 +102,7 @@ function ProfilePage() {
                             </ul>
                         </div>
                         <RegisterNFTButton onNftsFetched={handleNftsFetched} />
+                        <ProjectManagerButton userId={session.user_id} />
                         {/* <WalletNFTs /> */}
                     </div>
                     {session.verified ? (
