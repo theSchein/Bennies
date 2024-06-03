@@ -21,6 +21,8 @@ function SearchHomepage() {
     const handleSearchSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
+        setSearchResults(null); 
+        setTokenResults(null); 
         try {
             const nftResponse = await fetch("/api/search/addressSearch", {
                 method: "POST",

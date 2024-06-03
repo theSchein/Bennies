@@ -1,11 +1,13 @@
-// pages/api/search/tokenSearch.js
-import { Alchemy, Network } from "alchemy-sdk";
+import Moralis from 'moralis';
+import web3 from "../../../lib/ethersProvider";
 
-const config = {
-    apiKey: process.env.ALCHEMY_API_KEY,
-    network: Network.ETH_MAINNET,
-};
-const alchemy = new Alchemy(config);
+const moralisApiKey = process.env.MORALIS_API_KEY;
+
+if (!Moralis.Core.isStarted) {
+    Moralis.start({
+        apiKey: moralisApiKey,
+    });
+}
 
 export default async function handler(req, res) {
     if (req.method !== "POST") {
@@ -13,52 +15,55 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { address } = req.body;
+        let { address } = req.body;
         if (!address) {
             return res.status(400).json({
-                error: "Missing owner address in request body",
+                error: "Missing owner address or ENS name in request body",
             });
         }
 
-        const balances = await alchemy.core.getTokenBalances(address);
-        const nonZeroBalances = balances.tokenBalances.filter((token) => {
-            const tokenBalance = BigInt(token.tokenBalance);
+        // Check if the input is an ENS name (ends with .eth)
+        if (address.endsWith(".eth")) {
+            // Resolve the ENS name to an address
+            address = await web3.eth.ens.getAddress(address);
+            if (!address) {
+                return res
+                    .status(404)
+                    .json({ error: "ENS name could not be resolved" });
+            }
+        }
+
+        address = address.toLowerCase();
+
+        // Fetch token balances using Moralis
+        const response = await Moralis.EvmApi.token.getWalletTokenBalances({
+            chain: "0x1",
+            address: address,
+        });
+
+        const balances = response.raw;
+
+        // Filter out tokens with zero balance
+        const nonZeroBalances = balances.filter((token) => {
+            const tokenBalance = parseFloat(token.balance) / Math.pow(10, token.decimals);
             return tokenBalance > 0;
         });
 
-        // Function to fetch metadata with a timeout
-        const fetchMetadataWithTimeout = async (contractAddress, timeout = 2000) => {
-            return Promise.race([
-                alchemy.core.getTokenMetadata(contractAddress),
-                new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), timeout)),
-            ]);
-        };
+        const tokensData = nonZeroBalances.map((token) => {
+            const tokenBalance = parseFloat(token.balance) / Math.pow(10, token.decimals);
+            return {
+                contractAddress: token.token_address,
+                balance: tokenBalance.toFixed(2),
+                name: token.name,
+                symbol: token.symbol,
+                logo: token.logo || '',
+                decimals: token.decimals,
+            };
+        });
 
-        // Process tokens in parallel with timeout handling
-        const tokensData = await Promise.all(
-            nonZeroBalances.map(async (token) => {
-                try {
-                    const metadata = await fetchMetadataWithTimeout(token.contractAddress);
-                    const tokenBalance = parseFloat(BigInt(token.tokenBalance).toString()) / Math.pow(10, metadata.decimals);
-                    return {
-                        contractAddress: token.contractAddress,
-                        balance: tokenBalance.toFixed(2),
-                        ...metadata
-                    };
-                } catch (error) {
-                    console.error(`Error fetching metadata for token: ${token.contractAddress}`, error);
-                    return null;
-                }
-            })
-        );
-
-        const filteredTokens = tokensData.filter(token => token !== null);
-
-        return res.status(200).json({ tokens: filteredTokens });
+        return res.status(200).json({ tokens: tokensData });
     } catch (error) {
         console.error("Token search API error:", error);
-        return res
-            .status(500)
-            .json({ message: "Internal Server Error", error: error.message });
+        return res.status(500).json({ message: "Internal Server Error", error: error.message });
     }
 }

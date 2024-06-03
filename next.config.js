@@ -23,6 +23,8 @@ const nextConfig = {
             "nft-cdn.alchemy.com",
             "metadata.ens.domains",
             "static.alchemyapi.io",
+            "logo.moralis.io",
+            "lh3.googleusercontent.com",
 
                     
         ],
