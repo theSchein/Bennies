@@ -188,6 +188,21 @@ CREATE TABLE project_admin_applications (
     submitted_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE onboarding_emails (
+    universe_id UUID PRIMARY KEY,
+    email_body TEXT NOT NULL,
+    twitter_link VARCHAR(255),
+    discord_link VARCHAR(255),
+    telegram_link VARCHAR(255),
+    goal TEXT,
+    contact_name VARCHAR(255),
+    contact_info VARCHAR(255),
+    ip_rights TEXT,
+    project_website VARCHAR(255),
+    marketplace_link VARCHAR(255),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
 
 -- Optional: Create indexes to optimize queries
 CREATE INDEX idx_user_nft_communities_user_id ON user_nft_communities(user_id);

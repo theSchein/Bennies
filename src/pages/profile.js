@@ -36,7 +36,7 @@ function ProfilePage() {
     }
 
     const handleNftsFetched = (nfts) => {
-        console.log('Fetched NFTs:', nfts);
+        console.log("Fetched NFTs:", nfts);
         // Handle the fetched NFTs here, e.g., trigger an onboarding email
     };
 
@@ -102,11 +102,13 @@ function ProfilePage() {
                             </ul>
                         </div>
                         <RegisterNFTButton onNftsFetched={handleNftsFetched} />
-                        <ProjectManagerButton userId={session.user_id} />
                         {/* <WalletNFTs /> */}
                     </div>
                     {session.verified ? (
-                        <Profile />
+                        <>
+                            <ProjectManagerButton userId={session.user_id} />
+                            <Profile />
+                        </>
                     ) : (
                         <div className="text-red-500 bg-red-100 border border-red-400 rounded p-4 mt-4">
                             Please verify your email address before registering your
