@@ -1,9 +1,15 @@
-// pages/api/search/tokensSearch.js
 import Moralis from 'moralis';
 import web3 from "../../../lib/ethersProvider";
 
+const moralisApiKey = process.env.MORALIS_API_KEY;
+
+if (!Moralis.Core.isStarted) {
+    Moralis.start({
+        apiKey: moralisApiKey,
+    });
+}
+
 export default async function handler(req, res) {
-    console.log("Token search API request received");
     if (req.method !== "POST") {
         return res.status(405).json({ error: "Method Not Allowed" });
     }
@@ -28,11 +34,6 @@ export default async function handler(req, res) {
         }
 
         address = address.toLowerCase();
-
-        // Initialize Moralis
-        await Moralis.start({
-            apiKey: process.env.MORALIS_API_KEY,
-        });
 
         // Fetch token balances using Moralis
         const response = await Moralis.EvmApi.token.getWalletTokenBalances({

@@ -24,6 +24,7 @@ const nextConfig = {
             "metadata.ens.domains",
             "static.alchemyapi.io",
             "logo.moralis.io",
+            "lh3.googleusercontent.com",
 
                     
         ],
