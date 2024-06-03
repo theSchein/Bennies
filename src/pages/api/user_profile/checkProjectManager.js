@@ -13,9 +13,9 @@ export default async function handler(req, res) {
     }
 
     try {
-        const result = await db.oneOrNone('SELECT universe_id FROM users WHERE user_id = $1', [userId]);
+        const result = await db.oneOrNone('SELECT universe_id FROM universes WHERE manager_id = $1', [userId]);
 
-        return res.status(200).json({ isProjectManager: result && result.universe_id !== null });
+        return res.status(200).json({ isProjectManager: result && result.universe_id !== null, universeId: result?.universe_id });
     } catch (error) {
         console.error('Error checking project manager status:', error);
         return res.status(500).json({ error: 'Internal Server Error' });

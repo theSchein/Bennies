@@ -2,20 +2,22 @@
 import { useState, useEffect } from 'react';
 import Modal from '../ui/Modal';
 import AdminForm from './adminForm';
-import { useSession } from 'next-auth/react';
+import OnboardingEmailForm from './onboardingEmailForm';
 
 export default function ProjectManagerButton({ userId }) {
-    const { data: session } = useSession();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isProjectManager, setIsProjectManager] = useState(false);
+    const [universeId, setUniverseId] = useState(null);
 
     useEffect(() => {
-        // Check if the user is a project manager
         const checkProjectManagerStatus = async () => {
             try {
-                const response = await fetch(`/api/user_profile/checkProjectManagerStatus?userId=${userId}`);
+                const response = await fetch(`/api/user_profile/checkProjectManager?userId=${userId}`);
                 const data = await response.json();
                 setIsProjectManager(data.isProjectManager);
+                if (data.isProjectManager) {
+                    setUniverseId(data.universeId);
+                }
             } catch (error) {
                 console.error('Error checking project manager status:', error);
             }
@@ -27,13 +29,7 @@ export default function ProjectManagerButton({ userId }) {
     }, [userId]);
 
     const handleButtonClick = () => {
-        if (isProjectManager) {
-            // Redirect to the onboarding template
-            // You can replace this with the actual navigation logic
-            alert('Redirecting to onboarding template...');
-        } else {
-            setIsModalOpen(true);
-        }
+        setIsModalOpen(true);
     };
 
     return (
@@ -45,7 +41,11 @@ export default function ProjectManagerButton({ userId }) {
                 {isProjectManager ? 'Manage Project' : 'Become Project Manager'}
             </button>
             <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-                <AdminForm userId={userId} />
+                {isProjectManager ? (
+                    <OnboardingEmailForm universeId={universeId} />
+                ) : (
+                    <AdminForm userId={userId} />
+                )}
             </Modal>
         </div>
     );
