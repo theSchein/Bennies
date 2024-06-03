@@ -9,7 +9,7 @@ export default function AdminPage() {
         <div>
             <h1>Admin Dashboard</h1>
 
-            <div>
+            <div className="flex width-full">
                 <h2>Manage Project Admin Applications</h2>
                 <ProjectAdminApplications />
             </div>

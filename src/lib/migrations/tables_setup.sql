@@ -86,7 +86,7 @@ CREATE TABLE universes (
 CREATE TABLE universe_entities (
     universe_entity_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     universe_id UUID REFERENCES universes(universe_id) ON DELETE CASCADE,
-    entity_id UUID NOT NULL,
+    entity_id UUID NOT NULL uuid_generate_v4(),
     entity_type VARCHAR(50) NOT NULL CHECK (entity_type IN ('publisher', 'collection', 'nft', 'token')),
 	contract_address VARCHAR(255) NULL,
     token_id VARCHAR(255) NULL,
