@@ -1,8 +1,11 @@
 // components/admin/projectAdminApplications.jsx
 import { useState, useEffect } from 'react';
+import AlertModal from '../alert';
 
 export default function ProjectAdminApplications() {
     const [applications, setApplications] = useState([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
 
     useEffect(() => {
         const fetchApplications = async () => {
@@ -33,10 +36,14 @@ export default function ProjectAdminApplications() {
                     prev.filter((app) => app.application_id !== applicationId)
                 );
             } else {
-                console.error('Failed to approve application');
+                const data = await response.json();
+                setModalMessage(data.error || 'Failed to approve application');
+                setIsModalOpen(true);
             }
         } catch (error) {
             console.error('Error approving application:', error);
+            setModalMessage('Error approving application. Please try again.');
+            setIsModalOpen(true);
         }
     };
 
@@ -55,15 +62,19 @@ export default function ProjectAdminApplications() {
                     prev.filter((app) => app.application_id !== applicationId)
                 );
             } else {
-                console.error('Failed to deny application');
+                const data = await response.json();
+                setModalMessage(data.error || 'Failed to deny application');
+                setIsModalOpen(true);
             }
         } catch (error) {
             console.error('Error denying application:', error);
+            setModalMessage('Error denying application. Please try again.');
+            setIsModalOpen(true);
         }
     };
 
     return (
-        <div>
+        <div className='flex width-full'>
             <h2>Pending Project Admin Applications</h2>
             {applications.length === 0 ? (
                 <p>No pending applications</p>
@@ -92,6 +103,11 @@ export default function ProjectAdminApplications() {
                     ))}
                 </ul>
             )}
+            <AlertModal
+                isOpen={isModalOpen}
+                message={modalMessage}
+                onClose={() => setIsModalOpen(false)}
+            />
         </div>
     );
 }

@@ -23,18 +23,28 @@ export default async function handler(req, res) {
             return res.status(404).json({ error: 'Application not found' });
         }
 
+        // Check if a universe with the same name or manager_id already exists
+        const existingUniverse = await db.oneOrNone(
+            'SELECT * FROM universes WHERE name = $1 OR manager_id = $2',
+            [application.project_name, application.user_id]
+        );
+
+        if (existingUniverse) {
+            return res.status(400).json({ error: 'A universe with this name or manager already exists' });
+        }
+
         // Create a new universe
         const universe = await db.one(
-            'INSERT INTO universes (name, description, deployer_address, manager_id) VALUES ($1, $2, $3, $4) RETURNING universe_id',
-            [application.project_name, `Affiliation: ${application.affiliation}`, application.contract_addresses[0], application.user_id]
+            'INSERT INTO universes (name, manager_id, deployer_address) VALUES ($1, $2, $3) RETURNING universe_id',
+            [application.project_name, application.user_id, application.contract_addresses[0]]
         );
 
         // Insert contract addresses into universe_entities
         const contractAddresses = application.contract_addresses;
         for (const address of contractAddresses) {
             await db.none(
-                'INSERT INTO universe_entities (universe_id, entity_id, entity_type, contract_address) VALUES ($1, $2, $3, $4)',
-                [universe.universe_id, universe.universe_id, 'collection', address]
+                'INSERT INTO universe_entities (universe_id, entity_id, entity_type, contract_address) VALUES ($1, uuid_generate_v4(), $2, $3)',
+                [universe.universe_id, 'collection', address]
             );
         }
 
