@@ -28,7 +28,6 @@ export default async function handler(req, res) {
         }
 
         address = address.toLowerCase();
-        console.log(`Fetching token balances for address: ${address}`);
 
         // Initialize Moralis
         await Moralis.start({
@@ -60,8 +59,6 @@ export default async function handler(req, res) {
                 decimals: token.decimals,
             };
         });
-
-        console.log("Tokens data:", tokensData);
 
         return res.status(200).json({ tokens: tokensData });
     } catch (error) {
