@@ -1,5 +1,5 @@
 // pages/api/search/tokensSearch.js
-import { Alchemy, Network } from "alchemy-sdk";
+const { Alchemy, Network } = require("alchemy-sdk");
 import web3 from "../../../lib/ethersProvider";
 
 const config = {
