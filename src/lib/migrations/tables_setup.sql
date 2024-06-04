@@ -38,6 +38,22 @@ CREATE TABLE collections (
 	category varchar(255)
 );
 
+CREATE TABLE tokens(
+	token_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+	token_name varchar(255) NULL,
+	token_symbol varchar(255) NULL,
+	logo_media varchar(255) NULL,
+	creation_date TIMESTAMP WITH TIME ZONE DEFAULT NULL,
+	contract_address varchar(255) NOT NULL,
+	deployer_address varchar(255) NOT NULL,
+	supply bigint NULL,
+	decimals int4 NULL,
+	token_utility text NULL,
+	description text NULL,
+	universe_id UUID REFERENCES universes(universe_id),
+	category varchar(255)
+);
+
 CREATE TABLE universes (
     universe_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(255) NOT NULL,
@@ -69,6 +85,18 @@ CREATE TABLE nfts (
 	category varchar(255),
 	owners _text NULL,
 	CONSTRAINT nfts_contract_address_token_id_key UNIQUE (contract_address_token_id)
+);
+
+CREATE TABLE publishers (
+	publisher_id uuid NOT NULL DEFAULT uuid_generate_v4(),
+	"name" varchar(255) NOT NULL,
+	description text NULL,
+	media_url varchar(255) NULL,
+	created_at timestamptz NULL DEFAULT CURRENT_TIMESTAMP,
+	updated_at timestamptz NULL DEFAULT CURRENT_TIMESTAMP,
+	contract_address varchar(255) NOT NULL,
+	CONSTRAINT universes_contract_address_key UNIQUE (contract_address),
+	CONSTRAINT universes_pkey PRIMARY KEY (universe_id)
 );
 
 CREATE TABLE transactions (
