@@ -6,14 +6,51 @@ import requests
 import json
 import time
 
+
+def fetch_token_data(contract_address):
+    """
+    Fetches token data from Alchemy for a given contract address.
+
+    Args:
+        contract_address (str): The contract address to query.
+
+    Returns:
+        dict: The token data as a dictionary, or None if an error occurs or it's an NFT contract.
+    """
+    config = load_db()
+    api_key = config['alchemy_api_key']
+    base_url = "https://eth-mainnet.g.alchemy.com/v2/"
+    url = f"{base_url}{api_key}/gettoken/contract"
+
+    params = {'contractAddress': contract_address}
+
+    try:
+        response = requests.get(url, params=params)
+        response.raise_for_status()  # Raises an HTTPError for bad responses
+        return response.json()  # Return the full token data as JSON
+    except requests.RequestException as e:
+        print(f"Error fetching token data: {e}")
+        return None
+
+
 def fetch_collection_data(contract_address):
+    """
+    Fetches collection data from Alchemy for a given contract address.
+    This is only called if the contract_address is not a token contract.
+
+    Args:
+        contract_address (str): The contract address to query.
+
+    Returns:
+        dict: The collection data as a dictionary, or None if an error occurs.
+    """
     config = load_db()
     api_key = config['alchemy_api_key']
     base_url = "https://eth-mainnet.g.alchemy.com/nft/v3/"
     url = f"{base_url}{api_key}/getContractMetadata"
 
     params = {'contractAddress': contract_address}
-    
+
     try:
         response = requests.get(url, params=params)
         response.raise_for_status()  # Raises an HTTPError for bad responses
@@ -22,23 +59,39 @@ def fetch_collection_data(contract_address):
         print(f"Error fetching collection data: {e}")
         return None
 
+
 def add_staging(retry_count=3, retry_delay=5):
     print("Starting the staging process...")
     contract_address_input = input("Enter the contract address: ")
     contract_address = Web3.to_checksum_address(contract_address_input)
-    twitter_account = input("Enter the Twitter account name: ")
+
+    # Get Twitter account (optional)
+    twitter_account = input("Enter the Twitter account name (optional): ")
+    if twitter_account.strip() == "":
+        twitter_account = None  # Set to None if empty string is entered
+
+    # First, try fetching token data
+    token_data = fetch_token_data(contract_address)
+
+    if token_data:
+        print(f"Contract {contract_address} is a token, not an NFT collection.")
+        # Handle token data (logic not shown here)
+        return
+
+    # If token data fetch fails, or contract_address is not a token, proceed with NFT logic
     collection_data = fetch_collection_data(contract_address)
 
     if collection_data:
         print("Collection Data:", collection_data)
     else:
         print("Failed to fetch collection data.")
-        return  # Exit if no collection data is found
+        return  
 
-    verifier = get_verifier()
-    if not verifier.account_is_active(twitter_account):
-        print(f"Account {twitter_account} is inactive, aborting staging.")
-        return
+    if twitter_account:
+        verifier = get_verifier()
+        if not verifier.account_is_active(twitter_account):
+            print(f"Account {twitter_account} is inactive, aborting staging.")
+            return
 
     conn = connect_db()
     if conn is not None:
