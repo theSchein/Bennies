@@ -6,7 +6,6 @@ import requests
 import json
 import time
 
-
 def fetch_token_data(contract_address):
     """
     Fetches token data from Alchemy for a given contract address.
@@ -31,7 +30,6 @@ def fetch_token_data(contract_address):
     except requests.RequestException as e:
         print(f"Error fetching token data: {e}")
         return None
-
 
 def fetch_collection_data(contract_address):
     """
@@ -59,7 +57,6 @@ def fetch_collection_data(contract_address):
         print(f"Error fetching collection data: {e}")
         return None
 
-
 def add_staging(retry_count=3, retry_delay=5):
     print("Starting the staging process...")
     contract_address_input = input("Enter the contract address: ")
@@ -85,13 +82,19 @@ def add_staging(retry_count=3, retry_delay=5):
         print("Collection Data:", collection_data)
     else:
         print("Failed to fetch collection data.")
-        return  
+        return
 
     if twitter_account:
         verifier = get_verifier()
         if not verifier.account_is_active(twitter_account):
             print(f"Account {twitter_account} is inactive, aborting staging.")
             return
+
+    # Prompt for publisher information
+    is_publisher = input("Is there a publisher for this contract? (Y/n): ").strip().lower()
+    publisher_name = None
+    if is_publisher == 'y':
+        publisher_name = input("Enter the publisher name: ")
 
     conn = connect_db()
     if conn is not None:
@@ -101,20 +104,21 @@ def add_staging(retry_count=3, retry_delay=5):
                 try:
                     # Display what would happen in a dry run
                     print("Dry Run: Would insert the following data into staging.staging_data:")
-                    print(f"Contract Address: {contract_address}, Twitter Account: {twitter_account}, Data: {collection_data}")
+                    print(f"Contract Address: {contract_address}, Twitter Account: {twitter_account}, Publisher Name: {publisher_name}, Data: {collection_data}")
 
                     confirm = input("Do you want to proceed with actual insertion? (yes/no) [Yes]: ").strip().lower()
                     if confirm != 'no':
                         json_data = json.dumps(collection_data)  # Prepare JSON data for insertion
                         sql = """
-                            INSERT INTO staging.staging_data (contract_address, twitter_account, data)
-                            VALUES (%s, %s, %s)
+                            INSERT INTO staging.staging_data (contract_address, twitter_account, publisher_name, data)
+                            VALUES (%s, %s, %s, %s)
                             ON CONFLICT (contract_address) DO UPDATE SET
                                 twitter_account = EXCLUDED.twitter_account,
+                                publisher_name = EXCLUDED.publisher_name,
                                 data = EXCLUDED.data
                             RETURNING contract_address;
                         """
-                        cursor.execute(sql, (contract_address, twitter_account, json_data))
+                        cursor.execute(sql, (contract_address, twitter_account, publisher_name, json_data))
                         if cursor.rowcount > 0:
                             conn.commit()
                             print("Data staged successfully for contract address:", contract_address)

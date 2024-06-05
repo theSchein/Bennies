@@ -1,5 +1,3 @@
-## utils/nodeCalls.py
-# this tile does some heavy lifting in reading a node.
 import os
 from dotenv import load_dotenv
 import requests
@@ -12,7 +10,6 @@ SUPPORTED_STANDARDS = {"ERC-721", "ERC-1155"}
 
 # ABI definitions for ERC-721 and ERC-1155
 erc721MetadataAbi = [
-    # Existing tokenURI function definition
     {
         "constant": True,
         "inputs": [{"name": "tokenId", "type": "uint256"}],
@@ -22,7 +19,6 @@ erc721MetadataAbi = [
         "stateMutability": "view",
         "type": "function",
     },
-    # Add the ownerOf function definition
     {
         "constant": True,
         "inputs": [{"name": "tokenId", "type": "uint256"}],
@@ -101,20 +97,18 @@ proxyAbi = [
     }
 ]
 
-## ERRORING OUT HERE, FIND SIMPLER WAY TO DO IT
 def fetch_events(contract_instance, from_block, to_block):
     MAX_RESULTS = 10000
     events = []
     range_ = to_block - from_block
-    mid_block = None
 
     while range_ > 0:
         try:
-            # Assuming the events attribute is named 'events'
-            fetched_events = contract_instance.events.Transfer().get_logs({
-                "fromBlock": from_block,
-                "toBlock": from_block + range_,
-            })
+            event_filter = contract_instance.events.Transfer.create_filter(
+                fromBlock=from_block,
+                toBlock=from_block + range_
+            )
+            fetched_events = event_filter.get_all_entries()
 
             if len(fetched_events) < MAX_RESULTS:
                 events.extend(fetched_events)
@@ -132,7 +126,6 @@ def fetch_events(contract_instance, from_block, to_block):
                 break  # Exit on unexpected errors
 
     return events
-
 
 
 def get_contract_creation_block(contract_address):
@@ -176,21 +169,16 @@ def token_id_finder(contract_address, contract_type):
     abi = erc721TransferEventAbi if contract_type == "ERC-721" else erc1155TransferSingleEventAbi
     contract_instance = web3.eth.contract(abi=abi, address=contract_address)
 
-
-    # Enable event monitoring
-    contract_instance.events.Transfer()
-
     # Ensure block numbers are handled as Numbers
     start_block_number = int(creation_details["blockNumber"])
     current_block_number = int(current_block)
 
     for start_block in range(start_block_number, current_block_number + 1, MAX_RANGE):
-        end_block =min(start_block + MAX_RANGE - 1, current_block_number) # Adjusted to use get_block_number() instead of getBlockNumber()in(start_block + MAX_RANGE - 1, current_block_number)
+        end_block = min(start_block + MAX_RANGE - 1, current_block_number)
         events = fetch_events(contract_instance, start_block, end_block)
-        print(f"Events fetched from block {start_block} to {end_block}: {events}")
 
         for event in events:
-            token_id = event["returnValues"]["tokenId"] if "tokenId" in event["returnValues"] else event["returnValues"]["id"]
+            token_id = event["args"]["tokenId"] if "tokenId" in event["args"] else event["args"]["id"]
             all_token_ids.add(token_id)
 
     if all_token_ids:
@@ -199,7 +187,6 @@ def token_id_finder(contract_address, contract_type):
     else:
         print("No token IDs found for the given contract address.")
         return None
-
 
 
 def fetch_token_metadata(contract_address, token_id, contract_type):
