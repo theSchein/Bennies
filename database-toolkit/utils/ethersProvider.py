@@ -14,7 +14,6 @@ if infura_api_key:
     try:
         web3_provider = Web3.HTTPProvider(infura_provider)
         web3 = Web3(web3_provider)
-        print("Connected to Infura provider.")
     except Exception as e:
         print(f"Error connecting to Infura provider: {e}")
         # If Infura connection fails, try connecting with DRPC
@@ -23,7 +22,6 @@ if infura_api_key:
             try:
                 web3_provider = Web3.HTTPProvider(provider)
                 web3 = Web3(web3_provider)
-                print("Connected to DRPC provider.")
             except Exception as e:
                 print(f"Error connecting to DRPC provider: {e}")
         else:

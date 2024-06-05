@@ -53,7 +53,8 @@ def insert_collection_to_db(collection_data, token_ids):
     insert_query = """
     INSERT INTO transform.collection (collection_name, num_collection_items, deployer_address, contract_address, token_type, nft_licence, collection_description, media_url, collection_utility, category, token_ids)
     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-    ON CONFLICT (contract_address, collection_name) DO NOTHING;
+    ON CONFLICT (contract_address, collection_name) DO NOTHING
+    RETURNING collection_id;
     """
     try:
         cursor.execute(insert_query, (
@@ -69,11 +70,14 @@ def insert_collection_to_db(collection_data, token_ids):
             collection_data.get('category', None),
             token_ids
         ))
+        collection_id = cursor.fetchone()[0]
         conn.commit()
         print("Collection inserted into transform table:", collection_data['name'])
+        return collection_id
     except (Exception, Error) as error:
         print(f"Error inserting collection data: {error}")
         conn.rollback()
+        return None
 
 def update_token_ids_in_collection(contract_address, collection_name, token_ids):
     update_query = """
@@ -191,6 +195,22 @@ def get_token_ids_from_collection(contract_address):
         print(f"Error fetching token IDs from collection: {error}")
         return None
 
+def get_collection_id(contract_address, collection_name):
+    query = """
+    SELECT collection_id FROM transform.collection
+    WHERE contract_address = %s AND collection_name = %s;
+    """
+    try:
+        cursor.execute(query, (contract_address, collection_name))
+        row = cursor.fetchone()
+        if row:
+            return row[0]
+        else:
+            return None
+    except (Exception, Error) as error:
+        print(f"Error fetching collection ID: {error}")
+        return None
+
 def execute():
     contract_address, publisher_name = get_contract_address_from_staging()
     if not contract_address:
@@ -213,19 +233,21 @@ def execute():
             token_ids = token_id_finder(contract_address, "ERC-721")
             if token_ids:
                 print(f"Token IDs found: {token_ids}")
-                update_token_ids_in_collection(contract_address, token_ids)
+                update_token_ids_in_collection(contract_address, coll_response['name'], token_ids)
 
-        insert_collection_to_db(coll_response, token_ids)
+        collection_id = get_collection_id(contract_address, coll_response['name'])
+        if not collection_id:
+            collection_id = insert_collection_to_db(coll_response, token_ids)
         
-        cursor = conn.cursor()  # Initialize cursor
-        cursor.execute("SELECT currval(pg_get_serial_sequence('transform.collection','collection_id'));")
-        collection_id = cursor.fetchone()[0]
+        print(f"Collection ID: {collection_id}")
 
         if token_ids:
             for token_id in token_ids:
                 try:
                     response = fetch_token_metadata(contract_address, token_id, "ERC-721")
                     if response:
+                        response['collection_id'] = collection_id
+                        response['contract_address'] = contract_address
                         insert_nft_to_db(response, collection_id)
                 except Exception as e:
                     print("Error fetching token metadata:", e)
