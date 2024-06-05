@@ -167,24 +167,27 @@ def insert_token_to_db(token_data):
     category = EXCLUDED.category;
     """
     try:
+        contract_metadata = token_data.get('contractMetadata', {})
+        
         cursor.execute(insert_query, (
-            token_data.get('name', ''),  # Handle potential missing field
-            token_data.get('symbol', ''),  # Handle potential missing field
-            token_data.get('logo_media', ''),  # Handle potential missing field
-            token_data.get('creation_date', None),  # Handle potential missing field
-            token_data.get('contract_address', ''),  # Handle potential missing field
-            token_data.get('deployer_address', ''),  # Handle potential missing field
-            token_data.get('supply', None),  # Handle potential missing field
-            token_data.get('decimals', None),  # Handle potential missing field
-            token_data.get('token_utility', ''),  # Handle potential missing field
-            token_data.get('description', ''),  # Handle potential missing field
-            token_data.get('category', '')  # Handle potential missing field
+            contract_metadata.get('name', ''),  # Token name
+            contract_metadata.get('symbol', ''),  # Token symbol
+            contract_metadata.get('openSea', {}).get('imageUrl', ''),  # Logo media
+            None,  # Creation date (if not available, keep as None)
+            token_data.get('address', ''),  # Contract address
+            contract_metadata.get('contractDeployer', ''),  # Deployer address
+            contract_metadata.get('totalSupply', None),  # Supply
+            None,  # Decimals (if not available, keep as None)
+            None,  # Token utility (if not available, keep as None)
+            contract_metadata.get('openSea', {}).get('description', ''),  # Description
+            None  # Category (if not available, keep as None)
         ))
         conn.commit()
-        print(f"Token {token_data.get('name', 'UNKNOWN')} inserted/updated in the transform table.")
+        print(f"Token {contract_metadata.get('name', 'UNKNOWN')} inserted/updated in the transform table.")
     except (Exception, Error) as error:
         print(f"Error inserting/updating token data: {error}")
         conn.rollback()  # Rollback the transaction
+
 
 def get_token_ids_from_collection(contract_address):
     query = """
