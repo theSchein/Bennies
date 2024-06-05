@@ -112,17 +112,20 @@ def fetch_events(contract_instance, from_block, to_block):
                 from_block += range_ + 1  # Move to the next range
                 range_ = to_block - from_block  # Calculate remaining range
             else:
-                # Halve the range if the result set is too large
                 range_ = range_ // 2
-        except Exception as error:
-            if "query returned more than 10000 results" in str(error):
-                # Halve the range if the result set is too large
-                range_ = range_ // 2
+        except ValueError as e:
+            if "Expected 3 log topics. Got 2" in str(e):
+                print(f"Error fetching events: {e}")
+                range_ = range_ // 2  # Halve the range and retry
             else:
-                print(f"Error fetching events: {error}")
-                break  # Exit on unexpected errors
+                print(f"Unexpected error fetching events: {e}")
+                break
+        except Exception as error:
+            print(f"Error fetching events: {error}")
+            break  # Exit on unexpected errors
 
     return events
+
 
 
 def get_contract_creation_block(contract_address):
@@ -179,7 +182,6 @@ def token_id_finder(contract_address, contract_type):
             all_token_ids.add(token_id)
 
     if all_token_ids:
-        print('token ids:', all_token_ids)  
         return list(all_token_ids)  # Convert the Set to a list
     else:
         print("No token IDs found for the given contract address.")

@@ -14,7 +14,6 @@ def connect_s3():
             aws_secret_access_key=config['digitalocean_spaces_secret_access_key'],
             config=Config(signature_version='s3v4')
         )
-        print("S3 connection established.")
         return s3_client
     except Exception as e:
         print(f"Failed to connect to S3: {e}")

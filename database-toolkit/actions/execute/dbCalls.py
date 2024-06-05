@@ -4,6 +4,9 @@ from psycopg2 import Error
 from dotenv import load_dotenv
 import os
 
+load_dotenv(dotenv_path='.env.local')
+
+
 DATABASE_URL = os.getenv("POSTGRES_URL")
 
 # Initialize database connection (with context manager for automatic closing)
@@ -15,18 +18,29 @@ except (Exception, Error) as error:
     exit(1)
 
 def get_contract_address_from_staging():
-    query = "SELECT contract_address, publisher_name FROM staging.staging_data LIMIT 1;"
+    query = "SELECT contract_address, publisher_name, metadata_added FROM staging.staging_data WHERE metadata_added IS NULL OR metadata_added = FALSE LIMIT 1;"
     try:
         cursor.execute(query)
         row = cursor.fetchone()
         if row:
-            return row[0], row[1]
+            return row[0], row[1], row[2]
         else:
-            print("No contract address found in staging_data table.")
-            return None, None
+            print("No eligible contract address found in staging_data table.")
+            return None, None, None
     except (Exception, Error) as error:
         print(f"Error fetching contract address: {error}")
-        return None, None
+        return None, None, None
+
+def get_contracts_from_staging():
+    query = "SELECT contract_address, publisher_name, metadata_added FROM staging.staging_data WHERE metadata_added IS NULL OR metadata_added = FALSE;"
+    try:
+        cursor.execute(query)
+        rows = cursor.fetchall()
+        return rows
+    except (Exception, Error) as error:
+        print(f"Error fetching contract addresses: {error}")
+        return []
+
 
 def collection_exists(contract_address, collection_name):
     query = """
@@ -215,3 +229,13 @@ def nft_exists(contract_address, token_id):
     except (Exception, Error) as error:
         print(f"Error checking if NFT exists: {error}")
         return False
+    
+def update_metadata_status(contract_address, status):
+    query = "UPDATE staging.staging_data SET metadata_added = %s WHERE contract_address = %s;"
+    try:
+        cursor.execute(query, (status, contract_address))
+        conn.commit()
+        print(f"Metadata status updated for contract address {contract_address} to {status}")
+    except (Exception, Error) as error:
+        print(f"Error updating metadata status: {error}")
+        conn.rollback()
