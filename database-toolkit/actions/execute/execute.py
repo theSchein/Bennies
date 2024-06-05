@@ -93,7 +93,7 @@ def update_token_ids_in_collection(contract_address, collection_name, token_ids)
         print(f"Error updating token IDs in collection: {error}")
         conn.rollback()
 
-def insert_nft_to_db(nft_data, collection_id):
+def insert_nft_to_db(nft_data, collection_id, deployer_address):
     insert_query = """
     INSERT INTO transform.nft (contract_address_token_id, collection_id, contract_address, deployer_address, token_type, token_uri_gateway, nft_description, token_id, creation_date, media_url, nft_sales_link, nft_licence, nft_context, nft_utility, category, owners)
     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
@@ -124,11 +124,11 @@ def insert_nft_to_db(nft_data, collection_id):
             contract_address_token_id,
             collection_id,
             nft_data.get('contract_address', None),
-            nft_data.get('deployer_address', None),
+            deployer_address,  
             nft_data.get('contractType', None),
             nft_data.get('tokenURI', None),
             nft_data.get('description', None),
-            nft_data.get('token_id', None),
+            str(nft_data.get('token_id', None)),  # Ensure token_id is treated as a string
             nft_data.get('creation_date', None),
             nft_data.get('image', None),
             nft_data.get('animation_url', None),
@@ -143,6 +143,7 @@ def insert_nft_to_db(nft_data, collection_id):
     except (Exception, Error) as error:
         print(f"Error inserting NFT data: {error}")
         conn.rollback()  # Rollback the transaction
+
 
 def insert_token_to_db(token_data):
     insert_query = """
@@ -210,6 +211,18 @@ def get_collection_id(contract_address, collection_name):
     except (Exception, Error) as error:
         print(f"Error fetching collection ID: {error}")
         return None
+    
+def nft_exists(contract_address, token_id):
+    query = """
+    SELECT 1 FROM transform.nft
+    WHERE contract_address = %s AND token_id = %s;
+    """
+    try:
+        cursor.execute(query, (contract_address, str(token_id)))  # Ensure token_id is treated as a string
+        return cursor.fetchone() is not None
+    except (Exception, Error) as error:
+        print(f"Error checking if NFT exists: {error}")
+        return False
 
 def execute():
     contract_address, publisher_name = get_contract_address_from_staging()
@@ -236,21 +249,27 @@ def execute():
                 update_token_ids_in_collection(contract_address, coll_response['name'], token_ids)
 
         collection_id = get_collection_id(contract_address, coll_response['name'])
+        deployer_address = coll_response.get('contractDeployer', None)  # Fetch deployer address from collection data
         if not collection_id:
             collection_id = insert_collection_to_db(coll_response, token_ids)
-        
+
         print(f"Collection ID: {collection_id}")
 
         if token_ids:
             for token_id in token_ids:
+                if nft_exists(contract_address, token_id):
+                    print(f"NFT with contract address {contract_address} and token ID {token_id} already exists. Skipping fetch.")
+                    continue
+
                 try:
                     response = fetch_token_metadata(contract_address, token_id, "ERC-721")
                     if response:
                         response['collection_id'] = collection_id
                         response['contract_address'] = contract_address
-                        insert_nft_to_db(response, collection_id)
+                        insert_nft_to_db(response, collection_id, deployer_address)  # Pass deployer address
                 except Exception as e:
                     print("Error fetching token metadata:", e)
+
 
 if __name__ == "__main__":
     execute()
