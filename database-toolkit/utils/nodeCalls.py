@@ -1,9 +1,7 @@
+from web3 import Web3
 import os
-from dotenv import load_dotenv
 import requests
 from utils.ethersProvider import web3
-
-load_dotenv()
 
 # Supported ERC standards
 SUPPORTED_STANDARDS = {"ERC-721", "ERC-1155"}
@@ -58,7 +56,6 @@ erc721TransferEventAbi = [
     }
 ]
 
-# ABI for ERC-1155 metadata function
 erc1155MetadataAbi = [
     {
         "constant": True,
@@ -196,21 +193,24 @@ def fetch_token_metadata(contract_address, token_id, contract_type):
         try:
             # Assuming web3 is properly initialized
             contract_721 = web3.eth.contract(abi=erc721MetadataAbi, address=contract_address)
+            print(f"Fetching metadata for ERC-721 token ID {token_id} on contract {contract_address}")
             token_uri = contract_721.functions.tokenURI(token_id).call()
             owner = contract_721.functions.ownerOf(token_id).call()
             if token_uri:
-                metadata = {"tokenURI": token_uri, "owner": owner, "contractType": "ERC-721"}
+                metadata = {"tokenURI": token_uri, "owner": owner, "contractType": "ERC-721", "token_id": token_id, "contract_address": contract_address}
         except Exception as error:
-            print("ERC-721 fetch failed:", error)
+            print(f"ERC-721 fetch failed for token ID {token_id}:", error)
+            return None
     elif contract_type == "ERC-1155":
         try:
             # Assuming web3 is properly initialized
             contract_1155 = web3.eth.contract(abi=erc1155MetadataAbi, address=contract_address)
             token_uri = contract_1155.functions.uri(token_id).call()
             if token_uri:
-                metadata = {"tokenURI": token_uri, "contractType": "ERC-1155"}
+                metadata = {"tokenURI": token_uri, "contractType": "ERC-1155", "token_id": token_id, "contract_address": contract_address}
         except Exception as error:
-            print("ERC-1155 uri fetch failed:", error)
+            print(f"ERC-1155 fetch failed for token ID {token_id}:", error)
+            return None
     else:
         print("Unsupported contract type:", contract_type)
         return None
@@ -218,6 +218,7 @@ def fetch_token_metadata(contract_address, token_id, contract_type):
     # Fetch additional metadata from the tokenURI if available
     if metadata.get("tokenURI"):
         try:
+            print(f"Fetching additional metadata from URI: {metadata['tokenURI']}")
             response = requests.get(
                 metadata["tokenURI"].replace("ipfs://", "https://ipfs.io/ipfs/")
                 if metadata["tokenURI"].startswith("ipfs://")
@@ -227,5 +228,6 @@ def fetch_token_metadata(contract_address, token_id, contract_type):
             metadata.update(token_metadata)
         except Exception as error:
             print("Failed to fetch token metadata from URI:", error)
+            return None
 
     return metadata

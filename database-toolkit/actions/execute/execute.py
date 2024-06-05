@@ -92,26 +92,47 @@ def update_token_ids_in_collection(contract_address, collection_name, token_ids)
 def insert_nft_to_db(nft_data, collection_id):
     insert_query = """
     INSERT INTO transform.nft (contract_address_token_id, collection_id, contract_address, deployer_address, token_type, token_uri_gateway, nft_description, token_id, creation_date, media_url, nft_sales_link, nft_licence, nft_context, nft_utility, category, owners)
-    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ON CONFLICT (contract_address_token_id) DO NOTHING;
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+    ON CONFLICT (contract_address_token_id) DO UPDATE SET
+        collection_id = EXCLUDED.collection_id,
+        contract_address = EXCLUDED.contract_address,
+        deployer_address = EXCLUDED.deployer_address,
+        token_type = EXCLUDED.token_type,
+        token_uri_gateway = EXCLUDED.token_uri_gateway,
+        nft_description = EXCLUDED.nft_description,
+        token_id = EXCLUDED.token_id,
+        creation_date = EXCLUDED.creation_date,
+        media_url = EXCLUDED.media_url,
+        nft_sales_link = EXCLUDED.nft_sales_link,
+        nft_licence = EXCLUDED.nft_licence,
+        nft_context = EXCLUDED.nft_context,
+        nft_utility = EXCLUDED.nft_utility,
+        category = EXCLUDED.category,
+        owners = EXCLUDED.owners;
     """
     try:
+        contract_address_token_id = f"{nft_data['contract_address']}_{nft_data['token_id']}"
+        owners = nft_data.get('owner', None)
+        if owners:
+            owners = [owners] if not isinstance(owners, list) else owners
+
         cursor.execute(insert_query, (
-            nft_data.get('contract_address_token_id', None),
+            contract_address_token_id,
             collection_id,
             nft_data.get('contract_address', None),
             nft_data.get('deployer_address', None),
-            nft_data.get('token_type', None),
-            nft_data.get('token_uri_gateway', None),
-            nft_data.get('nft_description', None),
+            nft_data.get('contractType', None),
+            nft_data.get('tokenURI', None),
+            nft_data.get('description', None),
             nft_data.get('token_id', None),
             nft_data.get('creation_date', None),
-            nft_data.get('media_url', None),
-            nft_data.get('nft_sales_link', None),
+            nft_data.get('image', None),
+            nft_data.get('animation_url', None),
             nft_data.get('nft_licence', None),
             nft_data.get('nft_context', None),
             nft_data.get('nft_utility', None),
             nft_data.get('category', None),
-            nft_data.get('owners', None)
+            owners
         ))
         conn.commit()
         print(f"NFT {nft_data.get('token_id', 'UNKNOWN')} inserted into transform table.")
@@ -184,19 +205,19 @@ def execute():
     print("Not an ERC-20 token. Proceeding to fetch collection data.")
     coll_response = fetch_collection_data(contract_address)
     if coll_response:
-        collection_name = coll_response['name']
         existing_token_ids = get_token_ids_from_collection(contract_address)
         if existing_token_ids:
-            print(f"Token IDs already exist for collection {collection_name}")
+            print(f"Token IDs already exist for collection {coll_response['name']}")
             token_ids = existing_token_ids
         else:
             token_ids = token_id_finder(contract_address, "ERC-721")
             if token_ids:
-                update_token_ids_in_collection(contract_address, collection_name, token_ids)
+                print(f"Token IDs found: {token_ids}")
+                update_token_ids_in_collection(contract_address, token_ids)
 
-        if not collection_exists(contract_address, collection_name):
-            insert_collection_to_db(coll_response, token_ids)
+        insert_collection_to_db(coll_response, token_ids)
         
+        cursor = conn.cursor()  # Initialize cursor
         cursor.execute("SELECT currval(pg_get_serial_sequence('transform.collection','collection_id'));")
         collection_id = cursor.fetchone()[0]
 
