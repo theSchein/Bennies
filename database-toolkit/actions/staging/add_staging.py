@@ -91,10 +91,11 @@ def add_staging(retry_count=3, retry_delay=5):
             return
 
     # Prompt for publisher information
-    is_publisher = input("Is there a publisher for this contract? (Y/n): ").strip().lower()
+    is_publisher = input("Is there a publisher for this contract? (y/N): ").strip().lower() or 'n'
     publisher_name = None
     if is_publisher == 'y':
-        publisher_name = input("Enter the publisher name: ")
+        print ('collection data:', collection_data)
+        publisher_name = collection_data.get('name', 'Unknown Publisher')
 
     conn = connect_db()
     if conn is not None:

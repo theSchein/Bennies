@@ -85,24 +85,68 @@ def insert_collection_to_db(collection_data, token_ids):
         conn.rollback()
         return None
 
-def update_token_ids_in_collection(contract_address, collection_name, token_ids):
+def update_token_ids(contract_address, name, token_ids, is_publisher=False):
     update_query = """
-    UPDATE transform.collection
-    SET token_ids = %s
-    WHERE contract_address = %s AND collection_name = %s;
-    """
+    UPDATE transform.{} SET token_ids = %s WHERE contract_address = %s AND {}_name = %s;
+    """.format('publisher' if is_publisher else 'collection', 'name' if is_publisher else 'collection_name')
     try:
-        cursor.execute(update_query, (token_ids, contract_address, collection_name))
+        cursor.execute(update_query, (token_ids, contract_address, name))
         conn.commit()
-        print(f"Token IDs updated for collection {collection_name} with contract address {contract_address}")
+        print(f"Token IDs updated for {'publisher' if is_publisher else 'collection'} {name} with contract address {contract_address}")
     except (Exception, Error) as error:
-        print(f"Error updating token IDs in collection: {error}")
+        print(f"Error updating token IDs: {error}")
         conn.rollback()
 
-def insert_nft_to_db(nft_data, collection_id, deployer_address):
+
+def insert_publisher_to_db(publisher_data, token_ids):
     insert_query = """
-    INSERT INTO transform.nft (contract_address_token_id, collection_id, contract_address, deployer_address, token_type, token_uri_gateway, nft_description, token_id, creation_date, media_url, nft_sales_link, nft_licence, nft_context, nft_utility, category, owners)
-    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+    INSERT INTO transform.publisher (name, description, media_url, contract_address, token_ids)
+    VALUES (%s, %s, %s, %s, %s)
+    ON CONFLICT (name) DO UPDATE SET
+        description = EXCLUDED.description,
+        media_url = EXCLUDED.media_url,
+        contract_address = EXCLUDED.contract_address,
+        token_ids = EXCLUDED.token_ids
+    RETURNING publisher_id;
+    """
+    try:
+        cursor.execute(insert_query, (
+            publisher_data['name'],
+            publisher_data.get('description', None),
+            publisher_data.get('media_url', None),
+            publisher_data.get('contract_address', None),
+            token_ids
+        ))
+        publisher_id = cursor.fetchone()[0]
+        conn.commit()
+        print("Publisher inserted/updated in transform table:", publisher_data['name'])
+        return publisher_id
+    except (Exception, Error) as error:
+        print(f"Error inserting publisher data: {error}")
+        conn.rollback()
+        return None
+
+
+def get_publisher_id(publisher_name):
+    query = """
+    SELECT publisher_id FROM transform.publisher
+    WHERE name = %s;
+    """
+    try:
+        cursor.execute(query, (publisher_name,))
+        row = cursor.fetchone()
+        if row:
+            return row[0]
+        else:
+            return None
+    except (Exception, Error) as error:
+        print(f"Error fetching publisher ID: {error}")
+        return None
+
+def insert_nft_to_db(nft_data, collection_id, deployer_address, publisher_id):
+    insert_query = """
+    INSERT INTO transform.nft (contract_address_token_id, collection_id, contract_address, deployer_address, token_type, token_uri_gateway, nft_description, token_id, creation_date, media_url, nft_sales_link, nft_licence, nft_context, nft_utility, category, owners, publisher_id)
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
     ON CONFLICT (contract_address_token_id) DO UPDATE SET
         collection_id = EXCLUDED.collection_id,
         contract_address = EXCLUDED.contract_address,
@@ -118,7 +162,8 @@ def insert_nft_to_db(nft_data, collection_id, deployer_address):
         nft_context = EXCLUDED.nft_context,
         nft_utility = EXCLUDED.nft_utility,
         category = EXCLUDED.category,
-        owners = EXCLUDED.owners;
+        owners = EXCLUDED.owners,
+        publisher_id = EXCLUDED.publisher_id;
     """
     try:
         contract_address_token_id = f"{nft_data['contract_address']}_{nft_data['token_id']}"
@@ -130,11 +175,11 @@ def insert_nft_to_db(nft_data, collection_id, deployer_address):
             contract_address_token_id,
             collection_id,
             nft_data.get('contract_address', None),
-            deployer_address,  
+            deployer_address,
             nft_data.get('contractType', None),
             nft_data.get('tokenURI', None),
             nft_data.get('description', None),
-            str(nft_data.get('token_id', None)),  # Ensure token_id is treated as a string
+            nft_data.get('token_id', None),
             nft_data.get('creation_date', None),
             nft_data.get('image', None),
             nft_data.get('animation_url', None),
@@ -142,7 +187,8 @@ def insert_nft_to_db(nft_data, collection_id, deployer_address):
             nft_data.get('nft_context', None),
             nft_data.get('nft_utility', None),
             nft_data.get('category', None),
-            owners
+            owners,
+            publisher_id
         ))
         conn.commit()
         print(f"NFT {nft_data.get('token_id', 'UNKNOWN')} inserted into transform table.")
@@ -189,11 +235,10 @@ def insert_token_to_db(token_data):
         conn.rollback()  # Rollback the transaction
 
 
-def get_token_ids_from_collection(contract_address):
+def get_token_ids(contract_address, is_publisher=False):
     query = """
-    SELECT token_ids FROM transform.collection
-    WHERE contract_address = %s;
-    """
+    SELECT token_ids FROM transform.{} WHERE contract_address = %s;
+    """.format('publisher' if is_publisher else 'collection')
     try:
         cursor.execute(query, (contract_address,))
         row = cursor.fetchone()
@@ -202,8 +247,9 @@ def get_token_ids_from_collection(contract_address):
         else:
             return None
     except (Exception, Error) as error:
-        print(f"Error fetching token IDs from collection: {error}")
+        print(f"Error fetching token IDs: {error}")
         return None
+
 
 def get_collection_id(contract_address, collection_name):
     query = """

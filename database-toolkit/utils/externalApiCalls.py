@@ -21,10 +21,10 @@ def fetch_erc20(contract_address):
         dict: The token data as a dictionary, or None if an error occurs or it's not an ERC-20 token.
     """
     alchemy_data = fetch_erc20_alchemy(contract_address)
-    if alchemy_data:
+    if alchemy_data and alchemy_data.get('tokenType') == 'ERC20':
         return alchemy_data
 
-    print("Alchemy request failed or returned no data. Trying Moralis...")
+    print("Alchemy request failed or returned no ERC-20 data. Trying Moralis...")
     moralis_data = fetch_erc20_moralis(contract_address)
     if moralis_data:
         return moralis_data
@@ -50,7 +50,11 @@ def fetch_erc20_alchemy(contract_address):
     try:
         response = requests.get(url, params=params)
         response.raise_for_status()  # Raises an HTTPError for bad responses
-        return response.json()  # Return the full token data as JSON
+        token_data = response.json()
+        if token_data.get('contractMetadata', {}).get('tokenType') == 'ERC20':
+            return token_data
+        else:
+            return None
     except requests.RequestException as e:
         print(f"Error fetching token data from Alchemy: {e}")
         return None
@@ -63,7 +67,7 @@ def fetch_erc20_moralis(contract_address):
         contract_address (str): The contract address to query.
 
     Returns:
-        dict: The token data as a dictionary, or None if an error occurs.
+        dict: The token data as a dictionary, or None if an error occurs or it's not an ERC-20 token.
     """
     base_url = "https://deep-index.moralis.io/api/v2/erc20/metadata"
     url = f"{base_url}"
@@ -77,22 +81,27 @@ def fetch_erc20_moralis(contract_address):
     try:
         response = requests.get(url, headers=headers, params=params)
         response.raise_for_status()  # Raises an HTTPError for bad responses
-        return response.json()[0]  # Return the first element of the JSON response
+        token_data = response.json()[0]
+        # Additional check to ensure the token is indeed ERC-20
+        if token_data.get('name') and token_data.get('symbol'):
+            return token_data
+        else:
+            return None
     except requests.RequestException as e:
         print(f"Error fetching token data from Moralis: {e}")
         return None
 
     
-def fetch_collection_data(contract_address):
+def fetch_contract_metadata(contract_address):
     """
-    Fetches collection data from Alchemy for a given contract address.
-    This is only called if the contract_address is not a token contract.
+    Fetches contract metadata from Alchemy for a given contract address.
+    This is used for both publishers and collections.
 
     Args:
         contract_address (str): The contract address to query.
 
     Returns:
-        dict: The collection data as a dictionary, or None if an error occurs.
+        dict: The contract metadata as a dictionary, or None if an error occurs.
     """
     config = load_db()
     api_key = config['alchemy_api_key']
@@ -104,7 +113,7 @@ def fetch_collection_data(contract_address):
     try:
         response = requests.get(url, params=params)
         response.raise_for_status()  # Raises an HTTPError for bad responses
-        return response.json()  # Return the full collection data as JSON
+        return response.json()  # Return the full contract metadata as JSON
     except requests.RequestException as e:
-        print(f"Error fetching collection data: {e}")
+        print(f"Error fetching contract metadata: {e}")
         return None
