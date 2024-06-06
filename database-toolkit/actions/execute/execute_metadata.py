@@ -90,7 +90,7 @@ def process_contract(contract_address, publisher_name):
         print(f"Error processing contract address {contract_address}: {e}")
         update_metadata_status(contract_address, False)
 
-def execute():
+def execute_metadata():
     unprocessed_contracts = get_contracts_from_staging()
     if not unprocessed_contracts:
         print("No unprocessed contracts found.")
@@ -104,4 +104,4 @@ def execute():
         process_contract(contract_address, publisher_name)
 
 if __name__ == "__main__":
-    execute()
+    execute_metadata()
