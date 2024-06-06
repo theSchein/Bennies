@@ -32,7 +32,7 @@ def get_contract_address_from_staging():
         return None, None, None
 
 def get_contracts_from_staging():
-    query = "SELECT contract_address, publisher_name, metadata_added FROM staging.staging_data WHERE metadata_added IS NULL OR metadata_added = FALSE;"
+    query = "SELECT contract_address, publisher_name, metadata_added, token_type FROM staging.staging_data WHERE metadata_added IS NULL OR metadata_added = FALSE;"
     try:
         cursor.execute(query)
         rows = cursor.fetchall()
@@ -40,6 +40,7 @@ def get_contracts_from_staging():
     except (Exception, Error) as error:
         print(f"Error fetching contract addresses: {error}")
         return []
+
 
 
 def collection_exists(contract_address, collection_name):
@@ -216,23 +217,24 @@ def insert_token_to_db(token_data):
         contract_metadata = token_data.get('contractMetadata', {})
         
         cursor.execute(insert_query, (
-            contract_metadata.get('name', ''),  # Token name
-            contract_metadata.get('symbol', ''),  # Token symbol
-            contract_metadata.get('openSea', {}).get('imageUrl', ''),  # Logo media
+            token_data.get('name', ''),  # Token name
+            token_data.get('symbol', ''),  # Token symbol
+            token_data.get('logo', ''),  # Logo media
             None,  # Creation date (if not available, keep as None)
             token_data.get('address', ''),  # Contract address
-            contract_metadata.get('contractDeployer', ''),  # Deployer address
-            contract_metadata.get('totalSupply', None),  # Supply
-            None,  # Decimals (if not available, keep as None)
+            None,  # Deployer address (if not available, keep as None)
+            token_data.get('totalSupply', None),  # Supply
+            token_data.get('decimals', None),  # Decimals
             None,  # Token utility (if not available, keep as None)
-            contract_metadata.get('openSea', {}).get('description', ''),  # Description
+            token_data.get('description', ''),  # Description
             None  # Category (if not available, keep as None)
         ))
         conn.commit()
-        print(f"Token {contract_metadata.get('name', 'UNKNOWN')} inserted/updated in the transform table.")
+        print(f"Token {token_data.get('name', 'UNKNOWN')} inserted/updated in the transform table.")
     except (Exception, Error) as error:
         print(f"Error inserting/updating token data: {error}")
         conn.rollback()  # Rollback the transaction
+
 
 
 def get_token_ids(contract_address, is_publisher=False):
@@ -287,4 +289,18 @@ def update_metadata_status(contract_address, status):
         print(f"Metadata status updated for contract address {contract_address} to {status}")
     except (Exception, Error) as error:
         print(f"Error updating metadata status: {error}")
+        conn.rollback()
+
+def insert_into_verification_table(contract_address):
+    insert_query = """
+    INSERT INTO transform.verification (contract_address)
+    VALUES (%s)
+    ON CONFLICT (contract_address) DO NOTHING;
+    """
+    try:
+        cursor.execute(insert_query, (contract_address,))
+        conn.commit()
+        print(f"Inserted {contract_address} into verification table.")
+    except (Exception, Error) as error:
+        print(f"Error inserting into verification table: {error}")
         conn.rollback()

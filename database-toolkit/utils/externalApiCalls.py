@@ -2,6 +2,7 @@ from utils.config import load_db
 import requests
 import os
 from dotenv import load_dotenv
+from moralis import evm_api
 
 load_dotenv()
 
@@ -21,7 +22,7 @@ def fetch_erc20(contract_address):
         dict: The token data as a dictionary, or None if an error occurs or it's not an ERC-20 token.
     """
     alchemy_data = fetch_erc20_alchemy(contract_address)
-    if alchemy_data and alchemy_data.get('tokenType') == 'ERC20':
+    if alchemy_data:
         return alchemy_data
 
     print("Alchemy request failed or returned no ERC-20 data. Trying Moralis...")
@@ -42,16 +43,25 @@ def fetch_erc20_alchemy(contract_address):
     Returns:
         dict: The token data as a dictionary, or None if an error occurs.
     """
-    base_url = "https://eth-mainnet.g.alchemy.com/v2/"
-    url = f"{base_url}{ALCHEMY_API_KEY}/getContractMetadata"
-
-    params = {'contractAddress': contract_address}
+    url = f"https://eth-mainnet.g.alchemy.com/v2/{ALCHEMY_API_KEY}"
+    payload = {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "method": "alchemy_getTokenMetadata",
+        "params": [contract_address]
+    }
+    headers = {
+        "accept": "application/json",
+        "content-type": "application/json"
+    }
 
     try:
-        response = requests.get(url, params=params)
+        response = requests.post(url, json=payload, headers=headers)
+        print(response.json())
         response.raise_for_status()  # Raises an HTTPError for bad responses
-        token_data = response.json()
-        if token_data.get('contractMetadata', {}).get('tokenType') == 'ERC20':
+        token_data = response.json().get('result', {})
+        if 'decimals' in token_data and 'symbol' in token_data:
+            token_data['tokenType'] = 'ERC20'  # Explicitly set tokenType for consistency
             return token_data
         else:
             return None
@@ -69,25 +79,25 @@ def fetch_erc20_moralis(contract_address):
     Returns:
         dict: The token data as a dictionary, or None if an error occurs or it's not an ERC-20 token.
     """
-    base_url = "https://deep-index.moralis.io/api/v2/erc20/metadata"
-    url = f"{base_url}"
-
-    headers = {
-        'x-api-key': MORALIS_API_KEY
+    params = {
+        "addresses": [contract_address],
+        "chain": "eth"
     }
 
-    params = {'chain': 'eth', 'addresses': contract_address}
-
     try:
-        response = requests.get(url, headers=headers, params=params)
-        response.raise_for_status()  # Raises an HTTPError for bad responses
-        token_data = response.json()[0]
-        # Additional check to ensure the token is indeed ERC-20
-        if token_data.get('name') and token_data.get('symbol'):
-            return token_data
-        else:
-            return None
-    except requests.RequestException as e:
+        result = evm_api.token.get_token_metadata(
+            api_key=MORALIS_API_KEY,
+            params=params,
+        )
+        if result:
+            token_data = result[0]
+            # Additional check to ensure the token is indeed ERC-20
+            if token_data.get('name') and token_data.get('symbol'):
+                token_data['tokenType'] = 'ERC20'  # Explicitly set tokenType for consistency
+                return token_data
+            else:
+                return None
+    except Exception as e:
         print(f"Error fetching token data from Moralis: {e}")
         return None
 

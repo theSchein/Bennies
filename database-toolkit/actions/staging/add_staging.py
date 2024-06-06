@@ -67,13 +67,20 @@ def add_staging(retry_count=3, retry_delay=5):
     if twitter_account.strip() == "":
         twitter_account = None  # Set to None if empty string is entered
 
-    # First, try fetching token data
-    token_data = fetch_token_data(contract_address)
+    # Prompt for token type
+    token_type = input("Is this contract an ERC-20 token? (yes/no) [No]: ").strip().lower() or 'no'
+    if token_type == 'yes':
+        token_type = 'ERC20'
+    else:
+        token_type = 'ERC721'
 
-    if token_data:
-        print(f"Contract {contract_address} is a token, not an NFT collection.")
-        # Handle token data (logic not shown here)
-        return
+    # First, try fetching token data
+    if token_type == 'ERC20':
+        token_data = fetch_token_data(contract_address)
+        if token_data:
+            print(f"Contract {contract_address} is a token, not an NFT collection.")
+            # Handle token data (logic not shown here)
+            return
 
     # If token data fetch fails, or contract_address is not a token, proceed with NFT logic
     collection_data = fetch_collection_data(contract_address)
@@ -105,21 +112,22 @@ def add_staging(retry_count=3, retry_delay=5):
                 try:
                     # Display what would happen in a dry run
                     print("Dry Run: Would insert the following data into staging.staging_data:")
-                    print(f"Contract Address: {contract_address}, Twitter Account: {twitter_account}, Publisher Name: {publisher_name}, Data: {collection_data}")
+                    print(f"Contract Address: {contract_address}, Twitter Account: {twitter_account}, Publisher Name: {publisher_name}, Token Type: {token_type}, Data: {collection_data}")
 
                     confirm = input("Do you want to proceed with actual insertion? (yes/no) [Yes]: ").strip().lower()
                     if confirm != 'no':
                         json_data = json.dumps(collection_data)  # Prepare JSON data for insertion
                         sql = """
-                            INSERT INTO staging.staging_data (contract_address, twitter_account, publisher_name, data)
-                            VALUES (%s, %s, %s, %s)
+                            INSERT INTO staging.staging_data (contract_address, twitter_account, publisher_name, token_type, data)
+                            VALUES (%s, %s, %s, %s, %s)
                             ON CONFLICT (contract_address) DO UPDATE SET
                                 twitter_account = EXCLUDED.twitter_account,
                                 publisher_name = EXCLUDED.publisher_name,
+                                token_type = EXCLUDED.token_type,
                                 data = EXCLUDED.data
                             RETURNING contract_address;
                         """
-                        cursor.execute(sql, (contract_address, twitter_account, publisher_name, json_data))
+                        cursor.execute(sql, (contract_address, twitter_account, publisher_name, token_type, json_data))
                         if cursor.rowcount > 0:
                             conn.commit()
                             print("Data staged successfully for contract address:", contract_address)
