@@ -291,14 +291,15 @@ def update_metadata_status(contract_address, status):
         print(f"Error updating metadata status: {error}")
         conn.rollback()
 
-def insert_into_verification_table(contract_address):
+
+def insert_into_verification_table(contract_address, token_type):
     insert_query = """
-    INSERT INTO transform.verification (contract_address)
-    VALUES (%s)
+    INSERT INTO transform.verification (contract_address, token_type)
+    VALUES (%s, %s)
     ON CONFLICT (contract_address) DO NOTHING;
     """
     try:
-        cursor.execute(insert_query, (contract_address,))
+        cursor.execute(insert_query, (contract_address, token_type))
         conn.commit()
         print(f"Inserted {contract_address} into verification table.")
     except (Exception, Error) as error:

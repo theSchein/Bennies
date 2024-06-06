@@ -3,8 +3,10 @@ from web3 import Web3
 from dotenv import load_dotenv
 from .dbCalls import (
     get_contracts_from_staging, 
-    insert_token_to_db, get_token_ids, 
-    update_token_ids, get_collection_id, 
+    insert_token_to_db, 
+    get_token_ids, 
+    update_token_ids, 
+    get_collection_id, 
     insert_collection_to_db, 
     insert_publisher_to_db, 
     nft_exists, 
@@ -37,7 +39,7 @@ def process_contract(contract_address, publisher_name, token_type):
                 insert_token_to_db(token_data)
                 print("Token data inserted into DB.")
                 update_metadata_status(contract_address, True)
-                insert_into_verification_table(contract_address)
+                insert_into_verification_table(contract_address, token_type)
                 return
             else:
                 print(f"Failed to fetch ERC-20 token data for contract address {contract_address}. Aborting.")
@@ -99,7 +101,7 @@ def process_contract(contract_address, publisher_name, token_type):
                     except Exception as e:
                         print("Error fetching token metadata:", e)
                 update_metadata_status(contract_address, True)
-                insert_into_verification_table(contract_address)
+                insert_into_verification_table(contract_address, token_type)
             else:
                 update_metadata_status(contract_address, False)
         else:

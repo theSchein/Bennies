@@ -3,6 +3,7 @@ from actions.staging.staging import staging
 from actions.cleanup.cleanup import cleanup
 from actions.backup.backup import backup
 from actions.execute.execute_metadata import execute_metadata
+from actions.verify.verify_metadata import verify_metadata
 
 def main_menu():
     print("Welcome to the Data Management Toolkit CLI")
@@ -10,6 +11,7 @@ def main_menu():
     print("2. Clean up Prod Database")
     print("3. Back Up Database")
     print("4. Add Metadata to Transform")
+    print("5. Verify Metadata in Transform table")
     print("0. Exit")
     choice = input("Enter your choice: ")
 
@@ -21,6 +23,8 @@ def main_menu():
         backup()
     elif choice == '4':
         execute_metadata()
+    elif choice == '5':
+        verify_metadata()
     elif choice == '0':
         print("Exiting the program.")
         exit()
