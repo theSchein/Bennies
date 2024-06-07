@@ -1,6 +1,9 @@
 import os
 from web3 import Web3
 from dotenv import load_dotenv
+import psycopg2
+from psycopg2 import Error
+
 from .dbCalls import (
     get_contracts_from_staging, 
     insert_token_to_db, 
@@ -13,37 +16,54 @@ from .dbCalls import (
     insert_nft_to_db, 
     update_metadata_status, 
     get_publisher_id,
-    insert_into_verification_table
+    insert_into_verification_table,
 )
 from utils.externalApiCalls import fetch_erc20, fetch_contract_metadata
 from utils.nodeCalls import fetch_token_metadata, token_id_finder
+
+
 
 # Load environment variables
 load_dotenv(dotenv_path='.env.local')
 
 ALCHEMY_API_KEY = os.getenv("ALCHEMY_API_KEY")
 MORALIS_API_KEY = os.getenv("MORALIS_API_KEY")
+DATABASE_URL = os.getenv("POSTGRES_URL")
+
+try:
+    conn = psycopg2.connect(DATABASE_URL)
+    cursor = conn.cursor()
+except (Exception, Error) as error:
+    print("Error connecting to database:", error)
+    exit(1)
 
 def process_contract(contract_address, publisher_name, token_type):
+    if not conn:
+        print("Failed to connect to the database.")
+        return
+
     try:
         contract_address = Web3.to_checksum_address(contract_address)
     except ValueError:
         print(f"Invalid contract address: {contract_address}")
         update_metadata_status(contract_address, False)
+        conn.close()
         return
 
     try:
         if token_type == 'ERC20':
             token_data = fetch_erc20(contract_address)
             if token_data:
-                insert_token_to_db(token_data)
+                insert_token_to_db(token_data, contract_address, conn)
                 print("Token data inserted into DB.")
                 update_metadata_status(contract_address, True)
                 insert_into_verification_table(contract_address, token_type)
+                conn.close()
                 return
             else:
                 print(f"Failed to fetch ERC-20 token data for contract address {contract_address}. Aborting.")
                 update_metadata_status(contract_address, False)
+                conn.close()
                 return
 
         print("Not an ERC-20 token. Proceeding to fetch contract metadata.")
@@ -79,6 +99,7 @@ def process_contract(contract_address, publisher_name, token_type):
                 if not publisher_id:
                     print(f"Failed to insert publisher for contract address {contract_address}. Aborting.")
                     update_metadata_status(contract_address, False)
+                    conn.close()
                     return
             else:
                 collection_id = get_collection_id(contract_address, metadata_response['name'])
@@ -109,6 +130,8 @@ def process_contract(contract_address, publisher_name, token_type):
     except Exception as e:
         print(f"Error processing contract address {contract_address}: {e}")
         update_metadata_status(contract_address, False)
+    finally:
+        conn.close()
 
 def execute_metadata():
     unprocessed_contracts = get_contracts_from_staging()

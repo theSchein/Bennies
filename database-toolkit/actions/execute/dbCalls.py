@@ -198,7 +198,7 @@ def insert_nft_to_db(nft_data, collection_id, deployer_address, publisher_id):
         conn.rollback()  # Rollback the transaction
 
 
-def insert_token_to_db(token_data):
+def insert_token_to_db(token_data, contract_address, conn):
     insert_query = """
     INSERT INTO transform.token (token_name, token_symbol, logo_media, creation_date, contract_address, deployer_address, supply, decimals, token_utility, description, category)
     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
@@ -214,23 +214,23 @@ def insert_token_to_db(token_data):
     category = EXCLUDED.category;
     """
     try:
-        contract_metadata = token_data.get('contractMetadata', {})
-        
-        cursor.execute(insert_query, (
-            token_data.get('name', ''),  # Token name
-            token_data.get('symbol', ''),  # Token symbol
-            token_data.get('logo', ''),  # Logo media
-            None,  # Creation date (if not available, keep as None)
-            token_data.get('address', ''),  # Contract address
-            None,  # Deployer address (if not available, keep as None)
-            token_data.get('totalSupply', None),  # Supply
-            token_data.get('decimals', None),  # Decimals
-            None,  # Token utility (if not available, keep as None)
-            token_data.get('description', ''),  # Description
-            None  # Category (if not available, keep as None)
-        ))
-        conn.commit()
-        print(f"Token {token_data.get('name', 'UNKNOWN')} inserted/updated in the transform table.")
+        with conn.cursor() as cursor:
+            deployer_address = token_data.get('deployerAddress', '') or None  # Set to a default value if not available
+            cursor.execute(insert_query, (
+                token_data.get('name', ''),  # Token name
+                token_data.get('symbol', ''),  # Token symbol
+                token_data.get('logo', ''),  # Logo media
+                None,  # Creation date (if not available, keep as None)
+                contract_address,  # Contract address
+                deployer_address,  # Deployer address (if not available, keep as None)
+                token_data.get('totalSupply', None),  # Supply
+                token_data.get('decimals', None),  # Decimals
+                None,  # Token utility (if not available, keep as None)
+                token_data.get('description', ''),  # Description
+                None  # Category (if not available, keep as None)
+            ))
+            conn.commit()
+            print(f"Token {token_data.get('name', 'UNKNOWN')} inserted/updated in the transform table.")
     except (Exception, Error) as error:
         print(f"Error inserting/updating token data: {error}")
         conn.rollback()  # Rollback the transaction

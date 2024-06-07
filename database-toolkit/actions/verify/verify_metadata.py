@@ -6,6 +6,12 @@ from .nftCalls import (
     process_nft_images, 
     verify_checksums
 )
+from .tokenCalls import (
+    check_token_duplicates,
+    fill_token_metadata,
+    process_token_logo,
+    verify_token_checksums
+)
 from psycopg2 import Error
 
 def update_verification_table(conn, contract_address, duplicates_checked, metadata_filled, images_processed, checksums_verified, verified):
@@ -36,43 +42,67 @@ def log_ingestion(conn, contract_address, token_id, status, error_message=None):
         conn.rollback()
 
 def verify_data(contract_address, token_type):
-    if token_type == 'ERC20':
-        print(f"Skipping verification for ERC-20 contract {contract_address}.")
-        return
-
-    conn = connect_db()
+    conn = connect_db()  # Ensure the connection is established before any database operations
     if not conn:
         return
 
     try:
-        duplicates_checked = check_duplicates(contract_address)
-        if not duplicates_checked:
-            log_ingestion(conn, contract_address, None, "failed", "Duplicates found")
-            update_verification_table(conn, contract_address, False, False, False, False, False)
-            return
+        if token_type == 'ERC20':
+            duplicates_checked = check_token_duplicates(conn, contract_address)
+            if not duplicates_checked:
+                log_ingestion(conn, contract_address, None, "failed", "Duplicates found")
+                update_verification_table(conn, contract_address, False, False, False, False, False)
+                return
 
-        metadata_filled = fill_metadata(contract_address)
-        if not metadata_filled:
-            log_ingestion(conn, contract_address, None, "failed", "Metadata not filled")
-            update_verification_table(conn, contract_address, True, False, False, False, False)
-            return
+            checksums_verified = verify_token_checksums(conn, contract_address)
+            if not checksums_verified:
+                log_ingestion(conn, contract_address, None, "failed", "Checksums not verified")
+                update_verification_table(conn, contract_address, True, False, False, False, False)
+                return
 
-        images_processed = process_nft_images(contract_address)
-        if not images_processed:
-            log_ingestion(conn, contract_address, None, "failed", "Images not processed")
-            update_verification_table(conn, contract_address, True, True, False, False, False)
-            return
+            metadata_filled = fill_token_metadata(conn, contract_address)
+            if not metadata_filled:
+                log_ingestion(conn, contract_address, None, "failed", "Metadata not filled")
+                update_verification_table(conn, contract_address, True, False, False, True, False)
+                return
 
-        checksums_verified = verify_checksums(contract_address)
-        if not checksums_verified:
-            log_ingestion(conn, contract_address, None, "failed", "Checksums not verified")
-            update_verification_table(conn, contract_address, True, True, True, False, False)
-            return
+            logo_processed = process_token_logo(conn, contract_address)
+            if not logo_processed:
+                log_ingestion(conn, contract_address, None, "failed", "Logo not processed")
+                update_verification_table(conn, contract_address, True, True, False, True, False)
+                return
 
-        update_verification_table(conn, contract_address, True, True, True, True, True)
-        log_ingestion(conn, contract_address, None, "success")
+            update_verification_table(conn, contract_address, True, True, True, True, True)
+            log_ingestion(conn, contract_address, None, "success")
+        else:
+            duplicates_checked = check_duplicates(contract_address)
+            if not duplicates_checked:
+                log_ingestion(conn, contract_address, None, "failed", "Duplicates found")
+                update_verification_table(conn, contract_address, False, False, False, False, False)
+                return
+
+            metadata_filled = fill_metadata(contract_address)
+            if not metadata_filled:
+                log_ingestion(conn, contract_address, None, "failed", "Metadata not filled")
+                update_verification_table(conn, contract_address, True, False, False, False, False)
+                return
+
+            images_processed = process_nft_images(contract_address)
+            if not images_processed:
+                log_ingestion(conn, contract_address, None, "failed", "Images not processed")
+                update_verification_table(conn, contract_address, True, True, False, False, False)
+                return
+
+            checksums_verified = verify_checksums(contract_address)
+            if not checksums_verified:
+                log_ingestion(conn, contract_address, None, "failed", "Checksums not verified")
+                update_verification_table(conn, contract_address, True, True, True, False, False)
+                return
+
+            update_verification_table(conn, contract_address, True, True, True, True, True)
+            log_ingestion(conn, contract_address, None, "success")
     finally:
-        conn.close()
+        conn.close()  # Ensure the connection is closed after operations
 
 def verify_metadata():
     conn = connect_db()
