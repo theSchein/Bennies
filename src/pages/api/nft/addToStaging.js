@@ -7,30 +7,35 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { contractAddress } = req.body;
+        const { contractAddress, collectionName } = req.body;
 
-        if (!contractAddress) {
-            return res.status(400).json({ error: "Missing contract address" });
+        if (!contractAddress ) {
+            return res.status(400).json({ error: "Missing contract address or token type" });
         }
 
-        // Generate a new source entry
-        const sourceId = uuidv4();
-        const sourceDescription = "Entered by user";
-
-        await db.none(
-            "INSERT INTO staging.sources (source_id, description) VALUES ($1, $2)",
-            [sourceId, sourceDescription]
+        // Check if the contract address is already in the user_submissions table
+        const existingEntry = await db.oneOrNone(
+            "SELECT * FROM staging.user_submissions WHERE contract_address = $1",
+            [contractAddress]
         );
 
-        // Insert into staging_data table
-        await db.none(
-            "INSERT INTO staging.staging_data (data_id, source_id, contract_address) VALUES ($1, $2, $3)",
-            [uuidv4(), sourceId, contractAddress]
-        );
+        if (existingEntry) {
+            // If it exists, increment the flagged_count and update the last_flagged timestamp
+            await db.none(
+                "UPDATE staging.user_submissions SET flagged_count = flagged_count + 1, received_at = CURRENT_TIMESTAMP WHERE contract_address = $1",
+                [contractAddress]
+            );
+        } else {
+            // If it doesn't exist, insert a new entry
+            await db.none(
+                "INSERT INTO staging.user_submissions (submission_id, contract_address, token_type, name, flagged_count) VALUES ($1, $2, $3, $4, $5)",
+                [uuidv4(), contractAddress, 'ERC721', collectionName, 1]
+            );
+        }
 
-        res.status(200).json({ message: "Finding benfits shortly, check back later!" });
+        res.status(200).json({ message: "Submission received, awaiting review by admin." });
     } catch (error) {
-        console.error("Error adding to staging:", error);
+        console.error("Error adding user submission:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
 }
