@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { contractAddress, collectionName } = req.body;
+        const { contractAddress, tokenType, collectionName } = req.body;
 
         if (!contractAddress) {
             return res.status(400).json({ error: "Missing contract address or token type" });
@@ -29,7 +29,7 @@ export default async function handler(req, res) {
             // If it doesn't exist, insert a new entry
             await db.none(
                 "INSERT INTO staging.spam (spam_id, contract_address, name, token_type, flagged_count, last_flagged) VALUES ($1, $2, $3, $4, $5, $6)",
-                [uuidv4(), contractAddress, collectionName, "ERC721", 1, new Date()]
+                [uuidv4(), contractAddress, collectionName, tokenType, 1, new Date()]
             );
         }
 

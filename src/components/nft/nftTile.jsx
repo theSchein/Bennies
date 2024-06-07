@@ -21,12 +21,16 @@ function NftTile({ nft }) {
 
     const handleFindBenefitsClick = async () => {
         try {
-            const response = await fetch("/api/nft/addToStaging", {
+            const response = await fetch("/api/crawl/addToStaging", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ contractAddress: nft.contractAddress }),
+                body: JSON.stringify({
+                    contractAddress: nft.contractAddress,
+                    tokenType: "ERC721",
+                    collectionName: nft.collectionName || "Unknown Collection",
+                }),
             });
 
             if (response.ok) {
@@ -42,13 +46,14 @@ function NftTile({ nft }) {
 
     const handleSpamClick = async () => {
         try {
-            const response = await fetch("/api/nft/markSpam", {
+            const response = await fetch("/api/crawl/markSpam", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
                     contractAddress: nft.contractAddress,
+                    tokenType: "ERC721",
                     collectionName: nft.collectionName || "Unknown Collection",
                 }),
             });

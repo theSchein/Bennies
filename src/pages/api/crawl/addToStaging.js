@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { contractAddress, collectionName } = req.body;
+        const { contractAddress, tokenType, collectionName } = req.body;
 
         if (!contractAddress ) {
             return res.status(400).json({ error: "Missing contract address or token type" });
@@ -29,7 +29,7 @@ export default async function handler(req, res) {
             // If it doesn't exist, insert a new entry
             await db.none(
                 "INSERT INTO staging.user_submissions (submission_id, contract_address, token_type, name, flagged_count) VALUES ($1, $2, $3, $4, $5)",
-                [uuidv4(), contractAddress, 'ERC721', collectionName, 1]
+                [uuidv4(), contractAddress, tokenType, collectionName, 1]
             );
         }
 

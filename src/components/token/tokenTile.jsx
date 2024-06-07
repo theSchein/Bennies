@@ -8,12 +8,16 @@ const TokenTile = ({ token }) => {
 
     const handleFindBenefitsClick = async () => {
         try {
-            const response = await fetch("/api/staging/addToStaging", {
+            const response = await fetch("/api/crawl/addToStaging", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ contractAddress: token.contractAddress }),
+                body: JSON.stringify({
+                    contractAddress: token.contractAddress,
+                    tokenType: "ERC20",
+                    collectionName: token.name,
+                }),
             });
 
             if (response.ok) {
@@ -29,13 +33,14 @@ const TokenTile = ({ token }) => {
 
     const handleSpamClick = async () => {
         try {
-            const response = await fetch("/api/staging/markSpam", {
+            const response = await fetch("/api/crawl/markSpam", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
                     contractAddress: token.contractAddress,
+                    tokenType: "ERC20",
                     collectionName: token.name,
                 }),
             });
@@ -65,8 +70,12 @@ const TokenTile = ({ token }) => {
                     <h2 className="text-xl font-bold">
                         {token.name || "Unknown Token"}
                     </h2>
-                    <p className="text-lg font-heading text-primary">{token.symbol || "N/A"}</p>
-                    <p className="text-sm ">Balance: <span className="font-bold">{token.balance}</span></p>
+                    <p className="text-lg font-heading text-primary">
+                        {token.symbol || "N/A"}
+                    </p>
+                    <p className="text-sm ">
+                        Balance: <span className="font-bold">{token.balance}</span>
+                    </p>
                 </div>
             </div>
             <div className="mb-4">
