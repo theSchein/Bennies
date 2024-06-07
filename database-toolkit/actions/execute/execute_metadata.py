@@ -54,7 +54,7 @@ def process_contract(contract_address, publisher_name, token_type):
         if token_type == 'ERC20':
             token_data = fetch_erc20(contract_address)
             if token_data:
-                insert_token_to_db(token_data, contract_address, conn)
+                insert_token_to_db(token_data, contract_address)
                 print("Token data inserted into DB.")
                 update_metadata_status(contract_address, True)
                 insert_into_verification_table(contract_address, token_type)

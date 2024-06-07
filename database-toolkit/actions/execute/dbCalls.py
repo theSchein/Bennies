@@ -198,7 +198,7 @@ def insert_nft_to_db(nft_data, collection_id, deployer_address, publisher_id):
         conn.rollback()  # Rollback the transaction
 
 
-def insert_token_to_db(token_data, contract_address, conn):
+def insert_token_to_db(token_data, contract_address):
     insert_query = """
     INSERT INTO transform.token (token_name, token_symbol, logo_media, creation_date, contract_address, deployer_address, supply, decimals, token_utility, description, category)
     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
