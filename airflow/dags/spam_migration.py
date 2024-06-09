@@ -1,13 +1,32 @@
+from airflow import DAG
+from airflow.operators.python_operator import PythonOperator
+from airflow.utils.dates import days_ago
 import psycopg2
 from psycopg2 import sql
-from psycopg2 import Error
 from dotenv import load_dotenv
 import os
 
-load_dotenv(dotenv_path='.env.local')
+# Load environment variables
+load_dotenv(dotenv_path='.env')
 
 DATABASE_URL = os.getenv("POSTGRES_URL")
 
+default_args = {
+    'owner': 'airflow',
+    'depends_on_past': False,
+    'email_on_failure': False,
+    'email_on_retry': False,
+    'retries': 1,
+}
+
+dag = DAG(
+    'spam_migration',
+    default_args=default_args,
+    description='A simple DAG to migrate spam entries from staging to production',
+    schedule_interval='@daily',
+    start_date=days_ago(1),
+    catchup=False,
+)
 
 def spam(threshold=3):
     try:
@@ -63,5 +82,12 @@ def spam(threshold=3):
         if conn:
             conn.close()
 
-if __name__ == "__main__":
-    spam()
+# Define the PythonOperator
+migrate_spam_task = PythonOperator(
+    task_id='migrate_spam',
+    python_callable=spam,
+    dag=dag,
+)
+
+# Define the task dependencies (if any)
+migrate_spam_task
