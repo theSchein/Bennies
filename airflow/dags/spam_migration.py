@@ -5,6 +5,7 @@ import psycopg2
 from psycopg2 import sql
 from dotenv import load_dotenv
 import os
+import logging
 
 # Load environment variables
 load_dotenv(dotenv_path='.env')
@@ -28,7 +29,11 @@ dag = DAG(
     catchup=False,
 )
 
-def spam(threshold=3):
+def spam(threshold=3, **context):
+    # Set up logging
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger(__name__)
+
     try:
         # Connect to the database
         conn = psycopg2.connect(DATABASE_URL)
@@ -44,7 +49,7 @@ def spam(threshold=3):
         spam_entries = cursor.fetchall()
 
         if not spam_entries:
-            print("No spam entries to migrate.")
+            logger.info("No spam entries to migrate.")
             return
 
         # Insert selected entries into the production table and mark them as filtered in the staging table
@@ -70,10 +75,10 @@ def spam(threshold=3):
             cursor.execute(update_query, (spam_id,))
 
         conn.commit()
-        print(f"Migrated {len(spam_entries)} spam entries to the production table.")
+        logger.info(f"Migrated {len(spam_entries)} spam entries to the production table.")
 
     except Exception as e:
-        print(f"An error occurred during migration: {e}")
+        logger.error(f"An error occurred during migration: {e}")
         if conn:
             conn.rollback()
     finally:
