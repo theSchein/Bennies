@@ -45,3 +45,5 @@ datbase-toolkit/notebooks/
 
 # airflow
 airflow/airflow.cfg
+airflow/logs/   
+airflow/airflow_venv/
