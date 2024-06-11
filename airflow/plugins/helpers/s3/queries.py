@@ -8,7 +8,7 @@ IPFS_GATEWAYS = [
     "https://ipfs.io/ipfs/",
 ]
 
-MAX_RETRIES = 5
+MAX_RETRIES = 3
 RETRY_DELAY = 1.5  # in seconds
 REQUEST_TIMEOUT = 25  # in seconds
 
@@ -30,7 +30,6 @@ def upload_file_to_s3(image_url, dest_file_name, bucket_name):
 
     def download_and_upload(attempt=0, gateway_index=0):
         try:
-            print(f"Attempt {attempt + 1}: Downloading and uploading {image_url}")
             source_url = image_url.replace("ipfs://", IPFS_GATEWAYS[gateway_index])
 
             response = requests.get(source_url, stream=True, timeout=REQUEST_TIMEOUT)
@@ -52,7 +51,6 @@ def upload_file_to_s3(image_url, dest_file_name, bucket_name):
                 print(f"Max retries reached, failed to download and upload: {e}")
         except Exception as e:
             if gateway_index < len(IPFS_GATEWAYS) - 1:
-                print(f"Switching to next IPFS gateway and retrying...")
                 return download_and_upload(attempt, gateway_index + 1)
             else:
                 print(f"Failed after trying all IPFS gateways: {e}")
