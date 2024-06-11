@@ -127,3 +127,20 @@ def fetch_contract_metadata(contract_address):
     except requests.RequestException as e:
         print(f"Error fetching contract metadata: {e}")
         return None
+
+def fetch_image_with_alchemy(contract_address, token_id):
+    url = f"https://eth-mainnet.g.alchemy.com/v2/{ALCHEMY_API_KEY}/getNFTMetadata?contractAddress={contract_address}&tokenId={token_id}&refreshCache=false"
+    headers = {"accept": "application/json"}
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        data = response.json()
+        image_url = data.get("image", {}).get("originalUrl")
+        if image_url:
+            return image_url
+        else:
+            print(f"No image URL found for contract {contract_address} and token ID {token_id}")
+            return None
+    except requests.RequestException as e:
+        print(f"Error fetching image URL from Alchemy: {e}")
+        return None

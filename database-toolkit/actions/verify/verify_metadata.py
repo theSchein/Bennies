@@ -14,18 +14,18 @@ from .tokenCalls import (
 )
 from psycopg2 import Error
 
-def update_verification_table(conn, contract_address, duplicates_checked, metadata_filled, images_processed, checksums_verified, verified):
-    query = """
+def update_verification_status(conn, contract_address, column, status):
+    query = f"""
     UPDATE transform.verification
-    SET duplicates_checked = %s, metadata_filled = %s, images_processed = %s, checksums_verified = %s, verified = %s, last_checked = CURRENT_TIMESTAMP
+    SET {column} = %s, last_checked = CURRENT_TIMESTAMP
     WHERE contract_address = %s;
     """
     try:
         with conn.cursor() as cursor:
-            cursor.execute(query, (duplicates_checked, metadata_filled, images_processed, checksums_verified, verified, contract_address))
+            cursor.execute(query, (status, contract_address))
             conn.commit()
     except (Exception, Error) as error:
-        print(f"Error updating verification table: {error}")
+        print(f"Error updating verification status for {column}: {error}")
         conn.rollback()
 
 def log_ingestion(conn, contract_address, token_id, status, error_message=None):
@@ -47,59 +47,79 @@ def verify_data(contract_address, token_type):
         return
 
     try:
+        with conn.cursor(cursor_factory=DictCursor) as cursor:
+            cursor.execute("SELECT * FROM transform.verification WHERE contract_address = %s;", (contract_address,))
+            verification_status = cursor.fetchone()
+
         if token_type == 'ERC20':
-            duplicates_checked = check_token_duplicates(conn, contract_address)
-            if not duplicates_checked:
-                log_ingestion(conn, contract_address, None, "failed", "Duplicates found")
-                update_verification_table(conn, contract_address, False, False, False, False, False)
-                return
+            if not verification_status['duplicates_checked']:
+                duplicates_checked = check_token_duplicates(conn, contract_address)
+                if not duplicates_checked:
+                    log_ingestion(conn, contract_address, None, "failed", "Duplicates found")
+                    update_verification_status(conn, contract_address, 'duplicates_checked', False)
+                    return
+                update_verification_status(conn, contract_address, 'duplicates_checked', True)
 
-            checksums_verified = verify_token_checksums(conn, contract_address)
-            if not checksums_verified:
-                log_ingestion(conn, contract_address, None, "failed", "Checksums not verified")
-                update_verification_table(conn, contract_address, True, False, False, False, False)
-                return
+            if not verification_status['checksums_verified']:
+                checksums_verified = verify_token_checksums(conn, contract_address)
+                if not checksums_verified:
+                    log_ingestion(conn, contract_address, None, "failed", "Checksums not verified")
+                    update_verification_status(conn, contract_address, 'checksums_verified', False)
+                    return
+                update_verification_status(conn, contract_address, 'checksums_verified', True)
 
-            metadata_filled = fill_token_metadata(conn, contract_address)
-            if not metadata_filled:
-                log_ingestion(conn, contract_address, None, "failed", "Metadata not filled")
-                update_verification_table(conn, contract_address, True, False, False, True, False)
-                return
+            if not verification_status['metadata_filled']:
+                metadata_filled = fill_token_metadata(conn, contract_address)
+                if not metadata_filled:
+                    log_ingestion(conn, contract_address, None, "failed", "Metadata not filled")
+                    update_verification_status(conn, contract_address, 'metadata_filled', False)
+                    return
+                update_verification_status(conn, contract_address, 'metadata_filled', True)
 
-            logo_processed = process_token_logo(conn, contract_address)
-            if not logo_processed:
-                log_ingestion(conn, contract_address, None, "failed", "Logo not processed")
-                update_verification_table(conn, contract_address, True, True, False, True, False)
-                return
+            if not verification_status['images_processed']:
+                logo_processed = process_token_logo(conn, contract_address)
+                if not logo_processed:
+                    log_ingestion(conn, contract_address, None, "failed", "Logo not processed")
+                    update_verification_status(conn, contract_address, 'images_processed', False)
+                    return
+                update_verification_status(conn, contract_address, 'images_processed', True)
 
-            update_verification_table(conn, contract_address, True, True, True, True, True)
+            update_verification_status(conn, contract_address, 'verified', True)
             log_ingestion(conn, contract_address, None, "success")
         else:
-            duplicates_checked = check_duplicates(contract_address)
-            if not duplicates_checked:
-                log_ingestion(conn, contract_address, None, "failed", "Duplicates found")
-                update_verification_table(conn, contract_address, False, False, False, False, False)
-                return
+            if not verification_status['duplicates_checked']:
+                duplicates_checked = check_duplicates(contract_address)
+                if not duplicates_checked:
+                    log_ingestion(conn, contract_address, None, "failed", "Duplicates found")
+                    update_verification_status(conn, contract_address, 'duplicates_checked', False)
+                    return
+                update_verification_status(conn, contract_address, 'duplicates_checked', True)
 
-            metadata_filled = fill_metadata(contract_address)
-            if not metadata_filled:
-                log_ingestion(conn, contract_address, None, "failed", "Metadata not filled")
-                update_verification_table(conn, contract_address, True, False, False, False, False)
-                return
+            if not verification_status['metadata_filled']:
+                metadata_filled = fill_metadata(contract_address)
+                if not metadata_filled:
+                    log_ingestion(conn, contract_address, None, "failed", "Metadata not filled")
+                    update_verification_status(conn, contract_address, 'metadata_filled', False)
+                    return
+                update_verification_status(conn, contract_address, 'metadata_filled', True)
 
-            images_processed = process_nft_images(contract_address, threshold=0.9)
-            if not images_processed:
-                log_ingestion(conn, contract_address, None, "failed", "Images not processed")
-                update_verification_table(conn, contract_address, True, True, False, False, False)
-                return
+            if not verification_status['images_processed']:
+                images_processed = process_nft_images(contract_address, threshold=0.9)
+                if not images_processed:
+                    log_ingestion(conn, contract_address, None, "failed", "Images not processed")
+                    update_verification_status(conn, contract_address, 'images_processed', False)
+                    return
+                update_verification_status(conn, contract_address, 'images_processed', True)
 
-            checksums_verified = verify_checksums(contract_address)
-            if not checksums_verified:
-                log_ingestion(conn, contract_address, None, "failed", "Checksums not verified")
-                update_verification_table(conn, contract_address, True, True, True, False, False)
-                return
+            if not verification_status['checksums_verified']:
+                checksums_verified = verify_checksums(contract_address)
+                if not checksums_verified:
+                    log_ingestion(conn, contract_address, None, "failed", "Checksums not verified")
+                    update_verification_status(conn, contract_address, 'checksums_verified', False)
+                    return
+                update_verification_status(conn, contract_address, 'checksums_verified', True)
 
-            update_verification_table(conn, contract_address, True, True, True, True, True)
+            update_verification_status(conn, contract_address, 'verified', True)
             log_ingestion(conn, contract_address, None, "success")
     finally:
         conn.close()  # Ensure the connection is closed after operations

@@ -119,7 +119,6 @@ def process_nft_images(contract_address, threshold=0.9):
         
         for nft in nfts_to_process:
             try:
-
                 print("Processing NFT:", nft)
 
                 media_url = nft.get('media_url', None)
@@ -132,16 +131,19 @@ def process_nft_images(contract_address, threshold=0.9):
                     continue
 
                 new_image_url = upload_file_to_s3(media_url, f"{contract_address}/{token_id}", "shuk")
-                cursor.execute("""
-                    UPDATE transform.nft SET media_url = %s WHERE nft_id = %s
-                """, (new_image_url, nft_id))
-                conn.commit()
-                print(f"Updated NFT ID {nft_id} with new media URL: {new_image_url}")
-                processed_count += 1
-                success_count += 1
+                if new_image_url is not None:
+                    cursor.execute("""
+                        UPDATE transform.nft SET media_url = %s WHERE nft_id = %s
+                    """, (new_image_url, nft_id))
+                    conn.commit()
+                    print(f"Updated NFT ID {nft_id} with new media URL: {new_image_url}")
+                    processed_count += 1
+                    success_count += 1
+                else:
+                    print(f"Skipping NFT {nft_id} due to failed image upload.")
 
             except Exception as e:
-                print(f"Error processing NFT {nft['nft_id'] if 'nft_id' in nft else 'unknown'}: {e}")
+                print(f"Error processing NFT {nft.get('nft_id', 'unknown')}: {e}")
 
         print(f"Processed {success_count} out of {total_nfts} NFTs successfully.")
         return success_count / total_nfts >= threshold

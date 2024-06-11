@@ -2,14 +2,18 @@ import requests
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 import time
 from .connection import connect_s3
+from utils.externalApiCalls import fetch_image_with_alchemy
 
 IPFS_GATEWAYS = [
     "https://gateway.pinata.cloud/ipfs/",
     "https://ipfs.io/ipfs/",
+    "https://cloudflare-ipfs.com/ipfs/",
+    "https://infura-ipfs.io/ipfs/",
+    "https://ipfs.infura.io/ipfs/"
 ]
 
-MAX_RETRIES = 5
-RETRY_DELAY = 1.5  # in seconds
+MAX_RETRIES = 3
+RETRY_DELAY = .5  # in seconds
 REQUEST_TIMEOUT = 25  # in seconds
 
 s3_client = connect_s3()
@@ -30,8 +34,13 @@ def upload_file_to_s3(image_url, dest_file_name, bucket_name):
 
     def download_and_upload(attempt=0, gateway_index=0):
         try:
-            print(f"Attempt {attempt + 1}: Downloading and uploading {image_url}")
-            source_url = image_url.replace("ipfs://", IPFS_GATEWAYS[gateway_index])
+            if attempt == MAX_RETRIES - 1:
+                contract_address = image_url.split('/')[4]
+                token_id = image_url.split('/')[-1]
+                alchemy_url = fetch_image_with_alchemy(contract_address, token_id)
+                source_url = alchemy_url if alchemy_url else image_url.replace("ipfs://", IPFS_GATEWAYS[gateway_index])
+            else:
+                source_url = image_url.replace("ipfs://", IPFS_GATEWAYS[gateway_index])
 
             response = requests.get(source_url, stream=True, timeout=REQUEST_TIMEOUT)
             response.raise_for_status()
@@ -45,20 +54,14 @@ def upload_file_to_s3(image_url, dest_file_name, bucket_name):
             return f"https://{bucket_name}.nyc3.digitaloceanspaces.com/{dest_file_name}"
         except (requests.RequestException, NoCredentialsError, PartialCredentialsError) as e:
             if attempt < MAX_RETRIES - 1:
-                print(f"Retry {attempt + 1}: Waiting {RETRY_DELAY} seconds before retrying")
                 time.sleep(RETRY_DELAY)
                 return download_and_upload(attempt + 1, gateway_index)
             else:
-                print(f"Max retries reached, failed to download and upload: {e}")
+                return None
         except Exception as e:
             if gateway_index < len(IPFS_GATEWAYS) - 1:
-                print(f"Switching to next IPFS gateway and retrying...")
                 return download_and_upload(attempt, gateway_index + 1)
             else:
-                print(f"Failed after trying all IPFS gateways: {e}")
-
-        # Continue to next item after max retries
-        print(f"Skipping image due to max retries reached: {image_url}")
-        return None
+                return None
 
     return download_and_upload()

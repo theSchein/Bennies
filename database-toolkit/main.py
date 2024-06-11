@@ -4,6 +4,7 @@ from actions.cleanup.cleanup import cleanup
 from actions.backup.backup import backup
 from actions.execute.execute_metadata import execute_metadata
 from actions.verify.verify_metadata import verify_metadata
+from actions.promotion.promotion import promote
 from actions.spam.spam import spam
 
 def main_menu():
@@ -13,7 +14,8 @@ def main_menu():
     print("3. Back Up Database")
     print("4. Add Metadata to Transform")
     print("5. Verify Metadata in Transform table")
-    print("6. Migrate Spam data")
+    print("6. Promote verified data to Production")
+    print("7. Migrate Spam data")
     print("0. Exit")
     choice = input("Enter your choice: ")
 
@@ -28,6 +30,8 @@ def main_menu():
     elif choice == '5':
         verify_metadata()
     elif choice == '6':
+        promote()
+    elif choice == '7':
         spam()
     elif choice == '0':
         print("Exiting the program.")

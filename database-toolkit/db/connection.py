@@ -14,7 +14,6 @@ def connect_db():
             password=config['password'],
             host=config['host']
         )
-        print("Database connection established.")
         return conn
     except psycopg2.DatabaseError as error:
         print(f"Failed to connect to database: {error}")
