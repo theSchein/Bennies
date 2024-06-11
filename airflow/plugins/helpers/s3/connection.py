@@ -1,6 +1,6 @@
 import boto3
 from botocore.config import Config
-from utils.config import load_s3
+from helpers.config import load_s3
 
 def connect_s3():
     """Creates a connection to the DigitalOcean Spaces using configuration loaded from the environment."""
@@ -16,7 +16,6 @@ def connect_s3():
         )
         return s3_client
     except Exception as e:
-        print(f"Failed to connect to S3: {e}")
         return None
 
 if __name__ == "__main__":
