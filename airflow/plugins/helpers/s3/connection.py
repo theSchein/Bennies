@@ -16,7 +16,6 @@ def connect_s3():
         )
         return s3_client
     except Exception as e:
-        print(f"Failed to connect to S3: {e}")
         return None
 
 if __name__ == "__main__":
