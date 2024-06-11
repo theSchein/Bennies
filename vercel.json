@@ -1,5 +1,6 @@
 {
   "crons": [
+<<<<<<< HEAD
     // {
     //   "path": "/api/cron/daily",
     //   "schedule": "0 0 * * *"
@@ -8,5 +9,15 @@
     //   "path": "/api/cron/hourly",
     //   "schedule": "0 0 * * *"
     // }
+=======
+    {
+      "path": "/api/cron/daily",
+      "schedule": "0 0 5 31 2 ?"
+    },
+    {
+      "path": "/api/cron/hourly",
+      "schedule": "0 0 5 31 2 ?"
+    }
+>>>>>>> parent of aca8d1c (undid that turning off cron to see if that where it all went wrong)
   ]
 }
