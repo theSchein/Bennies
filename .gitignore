@@ -47,3 +47,5 @@ datbase-toolkit/notebooks/
 airflow/airflow.cfg
 airflow/logs/   
 airflow/airflow_venv/
+airflow/airflow-*
+airflow/get-pip.py
