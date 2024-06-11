@@ -87,7 +87,7 @@ def verify_data(contract_address, token_type):
                 update_verification_table(conn, contract_address, True, False, False, False, False)
                 return
 
-            images_processed = process_nft_images(contract_address)
+            images_processed = process_nft_images(contract_address, threshold=0.9)
             if not images_processed:
                 log_ingestion(conn, contract_address, None, "failed", "Images not processed")
                 update_verification_table(conn, contract_address, True, True, False, False, False)

@@ -94,7 +94,7 @@ def fill_metadata(contract_address):
         cursor.close()
         conn.close()
 
-def process_nft_images(contract_address):
+def process_nft_images(contract_address, threshold=0.9):
     conn = connect_db()
     if not conn:
         print("Failed to connect to the database.")
@@ -107,21 +107,21 @@ def process_nft_images(contract_address):
             SELECT * FROM transform.nft WHERE contract_address = %s AND media_url IS NOT NULL AND media_url NOT LIKE 'https://shuk.nyc3.cdn.digitaloceanspaces.com/%%'
         """, (contract_address,))
         nfts_to_process = cursor.fetchall()
-        print(f"Found {len(nfts_to_process)} NFTs with missing media URLs.")
-        print("NFTs to process:", nfts_to_process)
+        total_nfts = len(nfts_to_process)
+        if total_nfts == 0:
+            print("No NFTs to process.")
+            return True
+
+        print(f"Found {total_nfts} NFTs to process.")
 
         processed_count = 0
-        max_process_count = 100000  
-
+        success_count = 0
+        
         for nft in nfts_to_process:
             try:
-                if processed_count >= max_process_count:
-                    print(f"Reached the maximum process count of {max_process_count}.")
-                    break  # Stop processing if the limit is reached
 
                 print("Processing NFT:", nft)
 
-                # Ensure required fields are present and not None
                 media_url = nft.get('media_url', None)
                 contract_address = nft.get('contract_address', None)
                 token_id = nft.get('token_id', None)
@@ -138,13 +138,13 @@ def process_nft_images(contract_address):
                 conn.commit()
                 print(f"Updated NFT ID {nft_id} with new media URL: {new_image_url}")
                 processed_count += 1
+                success_count += 1
 
             except Exception as e:
                 print(f"Error processing NFT {nft['nft_id'] if 'nft_id' in nft else 'unknown'}: {e}")
-                continue
 
-        print(f"Processed {processed_count} NFT images successfully.")
-        return True
+        print(f"Processed {success_count} out of {total_nfts} NFTs successfully.")
+        return success_count / total_nfts >= threshold
     except Exception as error:
         print(f"Failed to process NFT images: {error}")
         conn.rollback()
@@ -152,6 +152,7 @@ def process_nft_images(contract_address):
     finally:
         cursor.close()
         conn.close()
+
 
 def verify_checksums(contract_address):
     conn = connect_db()

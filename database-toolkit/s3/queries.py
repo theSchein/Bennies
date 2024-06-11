@@ -8,9 +8,9 @@ IPFS_GATEWAYS = [
     "https://ipfs.io/ipfs/",
 ]
 
-MAX_RETRIES = 15
+MAX_RETRIES = 5
 RETRY_DELAY = 1.5  # in seconds
-REQUEST_TIMEOUT = 30  # in seconds
+REQUEST_TIMEOUT = 25  # in seconds
 
 s3_client = connect_s3()
 
