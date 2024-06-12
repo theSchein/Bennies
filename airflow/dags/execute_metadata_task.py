@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 import psycopg2
 from psycopg2 import sql
 import os
+import requests
 
 # Importing functions from other modules
 from helpers.dbCalls import (
@@ -57,6 +58,7 @@ log = LoggingMixin().log
 
 def process_contract(contract_address, publisher_name, token_type):
     conn = None
+    cursor = None
     try:
         conn = psycopg2.connect(DATABASE_URL)
         cursor = conn.cursor()
@@ -121,13 +123,20 @@ def process_contract(contract_address, publisher_name, token_type):
                         log.info(f"NFT with contract address {contract_address} and token ID {token_id} already exists. Skipping fetch.")
                         continue
 
-                    try:
-                        response = fetch_token_metadata(contract_address, token_id, "ERC-721")
-                        if response:
-                            response['contract_address'] = contract_address
-                            insert_nft_to_db(response, collection_id, deployer_address, publisher_id)
-                    except Exception as e:
-                        log.error(f"Error fetching token metadata: {e}")
+                    for _ in range(3):  # Retry logic
+                        try:
+                            response = fetch_token_metadata(contract_address, token_id, "ERC-721")
+                            if response:
+                                response['contract_address'] = contract_address
+                                insert_nft_to_db(response, collection_id, deployer_address, publisher_id)
+                                break  # Exit retry loop on success
+                        except requests.exceptions.RequestException as e:
+                            log.error(f"Request error fetching token metadata: {e}")
+                            time.sleep(5)  # Wait before retrying
+                        except Exception as e:
+                            log.error(f"Error fetching token metadata: {e}")
+                            break  # Non-retryable error
+
                 update_metadata_status(contract_address, True)
                 insert_into_verification_table(contract_address, token_type)
             else:
