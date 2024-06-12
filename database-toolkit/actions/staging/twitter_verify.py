@@ -1,11 +1,13 @@
+## WIP: Test script to scrape twitter account data for each crypto project
+
 from datetime import datetime, timedelta
 import time
-import re  
+import re
 
 class TwitterVerifier:
-    def __init__(self):
+    def __init__(self, instance_url):
         from ntscraper import Nitter
-        self.scraper = Nitter()
+        self.scraper = Nitter(instance_url)
 
     def account_is_active(self, twitter_username, retries=3, delay=5):
         print(f"Checking if account {twitter_username} is active...")
@@ -49,11 +51,65 @@ class TwitterVerifier:
         print("All attempts failed, assuming account is inactive.")
         return False
 
+    def get_twitter_data(self, twitter_username):
+        try:
+            # Fetch profile data
+            profile = self.scraper.profile(twitter_username)
+            number_of_followers = profile['followers_count']
+            number_of_tweets = profile['statuses_count']
+
+            # Fetch tweets
+            three_years_ago = datetime.now() - timedelta(days=3*365)
+            all_tweets = []
+            last_tweet_activity = None
+
+            page = 1
+            while True:
+                tweets = self.scraper.user_tweets(twitter_username, page=page)
+                if not tweets:
+                    break
+
+                for tweet in tweets:
+                    tweet_date = datetime.strptime(tweet['date'], "%Y-%m-%dT%H:%M:%S.%fZ")
+                    if tweet_date < three_years_ago:
+                        break
+
+                    all_tweets.append(tweet)
+                    if last_tweet_activity is None or tweet_date > last_tweet_activity:
+                        last_tweet_activity = tweet_date
+
+                page += 1
+
+            return {
+                "last_tweet_activity": last_tweet_activity,
+                "last_three_years_tweets": [tweet['text'] for tweet in all_tweets],
+                "number_of_followers": number_of_followers,
+                "number_of_tweets": number_of_tweets
+            }
+        except Exception as e:
+            print(f"Error fetching data for {twitter_username}: {e}")
+            return None
+
 # Lazy initialization of the TwitterVerifier
 verifier = None
 
-def get_verifier():
+def get_verifier(instance_url):
     global verifier
     if verifier is None:
-        verifier = TwitterVerifier()
+        verifier = TwitterVerifier(instance_url)
     return verifier
+
+if __name__ == "__main__":
+    instance_url = "http://your-nitter-instance:8081"  # Replace with your Nitter instance URL
+    verifier = get_verifier(instance_url)
+    twitter_username = "BoredApeYC"  # Replace with the Twitter handle you want to check
+    if verifier.account_is_active(twitter_username):
+        twitter_data = verifier.get_twitter_data(twitter_username)
+        if twitter_data:
+            print("Twitter Data:")
+            print(f"Last Activity Date: {twitter_data['last_tweet_activity']}")
+            print(f"Number of Followers: {twitter_data['number_of_followers']}")
+            print(f"Number of Tweets: {twitter_data['number_of_tweets']}")
+            print(f"Last 3 Years Tweets: {twitter_data['last_three_years_tweets']}")
+    else:
+        print(f"Account {twitter_username} is inactive.")
