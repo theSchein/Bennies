@@ -19,26 +19,29 @@ class Nitter:
         params = {'n': number}
         response = requests.get(url, params=params, auth=self.auth)
         response.raise_for_status()
+        #print(f"GET TWEETS Response: {response.content.decode('utf-8')}")
         return self._parse_response(response)
 
     def profile(self, twitter_username):
-        url = f"{self.instance_url}/{twitter_username}/profile"
+        url = f"{self.instance_url}/{twitter_username}"
         response = requests.get(url, auth=self.auth)
         response.raise_for_status()
+        print(f"PROFILE Response: {response.content.decode('utf-8')}")
         return self._parse_response(response)
 
     def user_tweets(self, twitter_username, page=1):
         url = f"{self.instance_url}/{twitter_username}/tweets?page={page}"
         response = requests.get(url, auth=self.auth)
         response.raise_for_status()
+        print(f"USER TWEETS Response: {response.content.decode('utf-8')}")
         return self._parse_response(response)
     
     def _parse_response(self, response):
         if response.headers['Content-Type'] == 'application/json':
             return response.json()
         else:
-            print(f"Unexpected content type: {response.headers['Content-Type']}")
-            print(f"Response content: {response.content.decode('utf-8')}")
+            #print(f"Unexpected content type: {response.headers['Content-Type']}")
+            #print(f"Response content: {response.content.decode('utf-8')}")
             return {}
 
 class TwitterVerifier:
@@ -46,13 +49,13 @@ class TwitterVerifier:
         self.scraper = Nitter(instance_url, username=username, password=password)
 
     def account_is_active(self, twitter_username, retries=3, delay=5):
-        print(f"Checking if account {twitter_username} is active...")
+        #print(f"Checking if account {twitter_username} is active...")
         three_months_ago = datetime.now() - timedelta(days=90)
         for attempt in range(retries):
             try:
-                print(f"Attempt {attempt + 1}: Fetching tweets for {twitter_username}")
+                #print(f"Attempt {attempt + 1}: Fetching tweets for {twitter_username}")
                 tweets = self.scraper.get_tweets(twitter_username, mode='user', number=5)
-                print(f"Tweets fetched: {tweets}")
+                #print(f"Tweets fetched: {tweets}")
                 if not tweets.get('tweets'):
                     print("No tweets found. Account might be inactive or private.")
                     continue  # Continue to retry
@@ -64,7 +67,7 @@ class TwitterVerifier:
 
                     # Clean up the date string
                     cleaned_date_str = re.sub(r" ·", "", tweet_date_str)
-                    print(f"Cleaned tweet date string: {cleaned_date_str}")
+                    #print(f"Cleaned tweet date string: {cleaned_date_str}")
 
                     # Parse the date
                     try:
@@ -92,9 +95,9 @@ class TwitterVerifier:
     def get_twitter_data(self, twitter_username):
         try:
             # Fetch profile data
-            print(f"Fetching profile for {twitter_username}")
+            #print(f"Fetching profile for {twitter_username}")
             profile = self.scraper.profile(twitter_username)
-            print(f"Profile fetched: {profile}")
+            #print(f"Profile fetched: {profile}")
             number_of_followers = profile['followers_count']
             number_of_tweets = profile['statuses_count']
 
@@ -105,7 +108,7 @@ class TwitterVerifier:
 
             page = 1
             while True:
-                print(f"Fetching tweets for {twitter_username}, page {page}")
+                #print(f"Fetching tweets for {twitter_username}, page {page}")
                 tweets = self.scraper.user_tweets(twitter_username, page=page)
                 # print(f"Fetched tweets: {tweets}")
                 if not tweets:
@@ -153,9 +156,9 @@ if __name__ == "__main__":
         twitter_data = verifier.get_twitter_data(twitter_username)
         if twitter_data:
             print("Twitter Data:")
-            print(f"Last Activity Date: {twitter_data['last_tweet_activity']}")
-            print(f"Number of Followers: {twitter_data['number_of_followers']}")
-            print(f"Number of Tweets: {twitter_data['number_of_tweets']}")
-            print(f"Last 3 Years Tweets: {twitter_data['last_three_years_tweets']}")
+            #print(f"Last Activity Date: {twitter_data['last_tweet_activity']}")
+            #print(f"Number of Followers: {twitter_data['number_of_followers']}")
+            #print(f"Number of Tweets: {twitter_data['number_of_tweets']}")
+            #print(f"Last 3 Years Tweets: {twitter_data['last_three_years_tweets']}")
     else:
         print(f"Account {twitter_username} is inactive.")
