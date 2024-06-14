@@ -3,6 +3,7 @@ from actions.staging.staging import staging
 from actions.cleanup.cleanup import cleanup
 from actions.backup.backup import backup
 from actions.execute.execute_metadata import execute_metadata
+from actions.execute.execute_twitter import execute_twitter
 from actions.verify.verify_metadata import verify_metadata
 from actions.promotion.promotion import promote
 from actions.spam.spam import spam
@@ -13,6 +14,7 @@ def main_menu():
     print("2. Clean up Prod Database")
     print("3. Back Up Database")
     print("4. Add Metadata to Transform")
+    print("5. Add Twitter data to Transform table")
     print("5. Verify Metadata in Transform table")
     print("6. Promote verified data to Production")
     print("7. Migrate Spam data")
@@ -28,10 +30,12 @@ def main_menu():
     elif choice == '4':
         execute_metadata()
     elif choice == '5':
-        verify_metadata()
+        execute_twitter()
     elif choice == '6':
-        promote()
+        verify_metadata()
     elif choice == '7':
+        promote()
+    elif choice == '8':
         spam()
     elif choice == '0':
         print("Exiting the program.")

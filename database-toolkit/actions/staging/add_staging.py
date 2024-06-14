@@ -1,7 +1,6 @@
 from web3 import Web3  
 from db.connection import connect_db
 from utils.config import load_db 
-from .twitter_verify import get_verifier 
 import requests
 import json
 import time
