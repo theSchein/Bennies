@@ -30,7 +30,7 @@ dag = DAG(
     'twitter_data_pipeline',
     default_args=default_args,
     description='A DAG to fetch and process Twitter data',
-    schedule_interval='0 10 * * *',
+    schedule_interval='30 * * * *',
     start_date=days_ago(1),
     tags=['twitter', 'data_pipeline'],
 )
