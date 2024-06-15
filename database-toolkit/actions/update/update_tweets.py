@@ -11,66 +11,56 @@ load_dotenv(dotenv_path='.env.local')
 
 DATABASE_URL = os.getenv("POSTGRES_URL")
 
-def get_twitter_accounts_from_staging():
+def get_twitter_accounts_from_public():
     try:
         conn = psycopg2.connect(DATABASE_URL)
         cursor = conn.cursor()
         cursor.execute("""
-            SELECT contract_address, twitter_account
-            FROM staging.staging_data
-            WHERE twitter_account IS NOT NULL AND twitter_added IS NULL;
+            SELECT contract_address, twitter_profile
+            FROM public.twitters;
         """)
         twitter_accounts = cursor.fetchall()
         cursor.close()
         conn.close()
         return twitter_accounts
     except (Exception, Error) as error:
-        print("Error fetching twitter accounts from staging:", error)
+        print("Error fetching twitter accounts from public.twitters:", error)
         return []
 
-def insert_twitter_data(contract_address, twitter_profile, last_tweet, followers_count, recent_tweets_count, account_age_days, last_five_tweets):
+def update_twitter_data(contract_address, twitter_profile, last_tweet, followers_count, recent_tweets_count, account_age_days, last_five_tweets):
     try:
         conn = psycopg2.connect(DATABASE_URL)
         cursor = conn.cursor()
         cursor.execute("""
-            INSERT INTO transform.twitter_data (
-                contract_address, twitter_profile, last_tweet_date, followers_count,
-                tweets_last_3_months, account_age_days, last_5_tweets
-            )
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
-        """, (contract_address, twitter_profile, last_tweet, followers_count, recent_tweets_count, account_age_days, last_five_tweets))
+            UPDATE public.twitters
+            SET last_tweet_date = %s, followers_count = %s, tweets_last_3_months = %s, 
+                account_age_days = %s, last_5_tweets = %s
+            WHERE contract_address = %s AND twitter_profile = %s;
+        """, (last_tweet, followers_count, recent_tweets_count, account_age_days, last_five_tweets, contract_address, twitter_profile))
         conn.commit()
         cursor.close()
         conn.close()
+        print(f"Updated Twitter data for {twitter_profile}")
     except (Exception, Error) as error:
-        print("Error inserting twitter data:", error)
-
-def update_staging_twitter_added(contract_address):
-    try:
-        conn = psycopg2.connect(DATABASE_URL)
-        cursor = conn.cursor()
-        cursor.execute("""
-            UPDATE staging.staging_data
-            SET twitter_added = TRUE
-            WHERE contract_address = %s
-        """, (contract_address,))
-        conn.commit()
-        cursor.close()
-        conn.close()
-    except (Exception, Error) as error:
-        print("Error updating staging data:", error)
+        print("Error updating twitter data:", error)
 
 def process_twitter_data(scraper, profile_name, contract_address, retries=3, delay=5):
     attempt = 0
+    retries = int(retries)
     while attempt < retries:
         try:
             # Get profile information
             profile_info = scraper.get_profile_info(profile_name)
+            if not profile_info:
+                print("No profile information found.")
+                return False
             
             # Get tweets of the profile
             tweets_data = scraper.get_tweets(profile_name, mode='user')
+            if not tweets_data or 'tweets' not in tweets_data:
+                print("No tweets found for this profile.")
+                return False
             
-            # Ensure 'tweets' is in the expected format
             tweets = tweets_data.get('tweets', [])
             
             if not tweets:
@@ -82,9 +72,9 @@ def process_twitter_data(scraper, profile_name, contract_address, retries=3, del
             followers_count = number_of_followers(profile_info)
             recent_tweets = tweets_last_3_months(tweets)
             account_age_days = account_age(profile_info['joined'])
-            last_five_tweets = [tweet['text'] for tweet in tweets[:5]]
-            
-            insert_twitter_data(
+            last_five_tweets = [tweet['text'] for tweet in tweets[:5]] if len(tweets) >= 5 else [tweet['text'] for tweet in tweets]
+
+            update_twitter_data(
                 contract_address,
                 profile_name,
                 last_tweet,
@@ -104,18 +94,17 @@ def process_twitter_data(scraper, profile_name, contract_address, retries=3, del
                 print(f"All {retries} attempts failed. Skipping {profile_name}.")
                 return False
 
-def execute_twitter():
-    twitter_accounts = get_twitter_accounts_from_staging()
+def update_twitter():
+    twitter_accounts = get_twitter_accounts_from_public()
     if not twitter_accounts:
-        print("No Twitter accounts found in staging data.")
+        print("No Twitter accounts found in public.twitters.")
         return
 
     scraper = initialize_scraper(log_level=1, skip_instance_check=False)
 
     for contract_address, twitter_account in twitter_accounts:
         print(f"Processing Twitter account {twitter_account}...")
-        if process_twitter_data(scraper, twitter_account):
-            update_staging_twitter_added(contract_address)
+        process_twitter_data(scraper, twitter_account, contract_address)
 
 if __name__ == "__main__":
-    execute_twitter()
+    update_twitter()
