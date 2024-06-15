@@ -6,6 +6,7 @@ from actions.execute.execute_metadata import execute_metadata
 from actions.execute.execute_twitter import execute_twitter
 from actions.verify.verify_metadata import verify_metadata
 from actions.promotion.promotion import promote
+from actions.verify.verify_twitter import verify_and_promote_twitter
 from actions.spam.spam import spam
 
 def main_menu():
@@ -15,9 +16,10 @@ def main_menu():
     print("3. Back Up Database")
     print("4. Add Metadata to Transform")
     print("5. Add Twitter data to Transform table")
-    print("5. Verify Metadata in Transform table")
-    print("6. Promote verified data to Production")
-    print("7. Migrate Spam data")
+    print("6. Verify Metadata in Transform table")
+    print("7. Promote verified data to Production")
+    print("8. Verify and Promote Twitter data")
+    print("9. Migrate Spam data")
     print("0. Exit")
     choice = input("Enter your choice: ")
 
@@ -36,6 +38,8 @@ def main_menu():
     elif choice == '7':
         promote()
     elif choice == '8':
+        verify_and_promote_twitter()
+    elif choice == '9':
         spam()
     elif choice == '0':
         print("Exiting the program.")
