@@ -17,11 +17,10 @@ from .dbCalls import (
     update_metadata_status, 
     get_publisher_id,
     insert_into_verification_table,
+    mark_as_bad_contract  # New function to mark as bad contract
 )
 from utils.externalApiCalls import fetch_erc20, fetch_contract_metadata
 from utils.nodeCalls import fetch_token_metadata, token_id_finder
-
-
 
 # Load environment variables
 load_dotenv(dotenv_path='.env.local')
@@ -47,7 +46,7 @@ def process_contract(contract_address, publisher_name, token_type):
     except ValueError:
         print(f"Invalid contract address: {contract_address}")
         update_metadata_status(contract_address, False)
-        conn.close()
+        mark_as_bad_contract(contract_address)
         return
 
     try:
@@ -58,12 +57,11 @@ def process_contract(contract_address, publisher_name, token_type):
                 print("Token data inserted into DB.")
                 update_metadata_status(contract_address, True)
                 insert_into_verification_table(contract_address, token_type)
-                conn.close()
                 return
             else:
                 print(f"Failed to fetch ERC-20 token data for contract address {contract_address}. Aborting.")
                 update_metadata_status(contract_address, False)
-                conn.close()
+                mark_as_bad_contract(contract_address)
                 return
 
         print("Not an ERC-20 token. Proceeding to fetch contract metadata.")
@@ -99,7 +97,7 @@ def process_contract(contract_address, publisher_name, token_type):
                 if not publisher_id:
                     print(f"Failed to insert publisher for contract address {contract_address}. Aborting.")
                     update_metadata_status(contract_address, False)
-                    conn.close()
+                    mark_as_bad_contract(contract_address)
                     return
             else:
                 collection_id = get_collection_id(contract_address, metadata_response['name'])
@@ -125,13 +123,14 @@ def process_contract(contract_address, publisher_name, token_type):
                 insert_into_verification_table(contract_address, token_type)
             else:
                 update_metadata_status(contract_address, False)
+                mark_as_bad_contract(contract_address)
         else:
             update_metadata_status(contract_address, False)
+            mark_as_bad_contract(contract_address)
     except Exception as e:
         print(f"Error processing contract address {contract_address}: {e}")
         update_metadata_status(contract_address, False)
-    finally:
-        conn.close()
+        mark_as_bad_contract(contract_address)
 
 def execute_metadata():
     unprocessed_contracts = get_contracts_from_staging()
