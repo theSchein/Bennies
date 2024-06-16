@@ -306,6 +306,7 @@ def insert_into_verification_table(contract_address, token_type):
         print(f"Error inserting into verification table: {error}")
         conn.rollback()
 
+## this doesnt really work yet and we need to return to it
 def mark_as_bad_contract(contract_address):
     try:
         # Ensure contract_address is a string
