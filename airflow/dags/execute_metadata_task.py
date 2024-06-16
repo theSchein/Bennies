@@ -5,8 +5,10 @@ from airflow.utils.log.logging_mixin import LoggingMixin
 from web3 import Web3
 from dotenv import load_dotenv
 import psycopg2
-from psycopg2 import sql
+from psycopg2 import Error
 import os
+import requests
+import time
 
 # Importing functions from other modules
 from helpers.dbCalls import (
@@ -22,6 +24,7 @@ from helpers.dbCalls import (
     update_metadata_status,
     get_publisher_id,
     insert_into_verification_table,
+    mark_as_bad_contract  # Ensure this function is imported
 )
 from helpers.externalApiCalls import fetch_erc20, fetch_contract_metadata
 from helpers.nodeCalls import fetch_token_metadata, token_id_finder
@@ -57,6 +60,7 @@ log = LoggingMixin().log
 
 def process_contract(contract_address, publisher_name, token_type):
     conn = None
+    cursor = None
     try:
         conn = psycopg2.connect(DATABASE_URL)
         cursor = conn.cursor()
@@ -73,6 +77,7 @@ def process_contract(contract_address, publisher_name, token_type):
             else:
                 log.error(f"Failed to fetch ERC-20 token data for contract address {contract_address}. Aborting.")
                 update_metadata_status(contract_address, False)
+                mark_as_bad_contract(contract_address)
                 return
 
         log.info("Not an ERC-20 token. Proceeding to fetch contract metadata.")
@@ -107,6 +112,7 @@ def process_contract(contract_address, publisher_name, token_type):
                 if not publisher_id:
                     log.error(f"Failed to insert publisher for contract address {contract_address}. Aborting.")
                     update_metadata_status(contract_address, False)
+                    mark_as_bad_contract(contract_address)
                     return
             else:
                 collection_id = get_collection_id(contract_address, metadata_response['name'])
@@ -121,22 +127,32 @@ def process_contract(contract_address, publisher_name, token_type):
                         log.info(f"NFT with contract address {contract_address} and token ID {token_id} already exists. Skipping fetch.")
                         continue
 
-                    try:
-                        response = fetch_token_metadata(contract_address, token_id, "ERC-721")
-                        if response:
-                            response['contract_address'] = contract_address
-                            insert_nft_to_db(response, collection_id, deployer_address, publisher_id)
-                    except Exception as e:
-                        log.error(f"Error fetching token metadata: {e}")
+                    for _ in range(3):  # Retry logic
+                        try:
+                            response = fetch_token_metadata(contract_address, token_id, "ERC-721")
+                            if response:
+                                response['contract_address'] = contract_address
+                                insert_nft_to_db(response, collection_id, deployer_address, publisher_id)
+                                break  # Exit retry loop on success
+                        except requests.exceptions.RequestException as e:
+                            log.error(f"Request error fetching token metadata: {e}")
+                            time.sleep(5)  # Wait before retrying
+                        except Exception as e:
+                            log.error(f"Error fetching token metadata: {e}")
+                            break  # Non-retryable error
+
                 update_metadata_status(contract_address, True)
                 insert_into_verification_table(contract_address, token_type)
             else:
                 update_metadata_status(contract_address, False)
+                mark_as_bad_contract(contract_address)
         else:
             update_metadata_status(contract_address, False)
+            mark_as_bad_contract(contract_address)
     except Exception as e:
         log.error(f"Error processing contract address {contract_address}: {e}")
         update_metadata_status(contract_address, False)
+        mark_as_bad_contract(contract_address)
     finally:
         if cursor:
             cursor.close()

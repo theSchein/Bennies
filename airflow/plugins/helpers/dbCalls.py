@@ -305,3 +305,24 @@ def insert_into_verification_table(contract_address, token_type):
     except (Exception, Error) as error:
         print(f"Error inserting into verification table: {error}")
         conn.rollback()
+
+def mark_as_bad_contract(contract_address):
+    try:
+        # Ensure contract_address is a string
+        contract_address = str(contract_address)
+        # Use the same connection object as the main script to ensure consistency
+        global conn
+        if conn.closed:
+            conn = psycopg2.connect(DATABASE_URL)
+        cursor = conn.cursor()
+        update_query = """
+        UPDATE staging.staging_data
+        SET is_bad_contract = TRUE
+        WHERE contract_address = %s;
+        """
+        cursor.execute(update_query, (contract_address,))
+        conn.commit()
+        cursor.close()
+        print(f"Marked {contract_address} as a bad contract and committed the change.")
+    except Exception as e:
+        print(f"Error updating is_bad_contract for {contract_address}: {e}")
