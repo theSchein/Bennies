@@ -10,7 +10,6 @@ from helpers.nitter import initialize_scraper
 from helpers.twitterCalls import last_tweet_date, number_of_followers, tweets_last_3_months, account_age
 import time
 
-
 # Load environment variables
 from dotenv import load_dotenv
 load_dotenv(dotenv_path='.env')
@@ -52,22 +51,42 @@ def get_twitter_accounts_from_staging():
         print("Error fetching twitter accounts from staging:", error)
         return []
 
-def insert_twitter_data(contract_address, twitter_profile, last_tweet, followers_count, recent_tweets_count, account_age_days, last_five_tweets):
+def insert_or_update_twitter_data(contract_address, twitter_profile, last_tweet, followers_count, recent_tweets_count, account_age_days, last_five_tweets):
     try:
         conn = psycopg2.connect(DATABASE_URL)
         cursor = conn.cursor()
+        
+        # Check if the twitter_profile already exists
         cursor.execute("""
-            INSERT INTO transform.twitter_data (
-                contract_address, twitter_profile, last_tweet_date, followers_count,
-                tweets_last_3_months, account_age_days, last_5_tweets
-            )
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
-        """, (contract_address, twitter_profile, last_tweet, followers_count, recent_tweets_count, account_age_days, last_five_tweets))
+            SELECT id FROM transform.twitter_data WHERE twitter_profile = %s
+        """, (twitter_profile,))
+        existing_id = cursor.fetchone()
+
+        if existing_id:
+            # Update existing record
+            cursor.execute("""
+                UPDATE transform.twitter_data
+                SET last_tweet_date = %s, followers_count = %s, tweets_last_3_months = %s,
+                    account_age_days = %s, last_5_tweets = %s, contract_address = %s
+                WHERE twitter_profile = %s
+            """, (last_tweet, followers_count, recent_tweets_count, account_age_days, last_five_tweets, contract_address, twitter_profile))
+            print(f"Updated twitter_profile {twitter_profile} in the database.")
+        else:
+            # Insert new record
+            cursor.execute("""
+                INSERT INTO transform.twitter_data (
+                    contract_address, twitter_profile, last_tweet_date, followers_count,
+                    tweets_last_3_months, account_age_days, last_5_tweets
+                )
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """, (contract_address, twitter_profile, last_tweet, followers_count, recent_tweets_count, account_age_days, last_five_tweets))
+            print(f"Inserted new twitter_profile {twitter_profile} into the database.")
+
         conn.commit()
         cursor.close()
         conn.close()
     except (Exception, Error) as error:
-        print("Error inserting twitter data:", error)
+        print("Error inserting or updating twitter data:", error)
 
 def update_staging_twitter_added(contract_address):
     try:
@@ -108,7 +127,7 @@ def process_twitter_data(scraper, profile_name, contract_address, retries=3, del
             account_age_days = account_age(profile_info['joined'])
             last_five_tweets = [tweet['text'] for tweet in tweets[:5]]
             
-            insert_twitter_data(
+            insert_or_update_twitter_data(
                 contract_address,
                 profile_name,
                 last_tweet,
