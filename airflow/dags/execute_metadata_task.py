@@ -5,9 +5,10 @@ from airflow.utils.log.logging_mixin import LoggingMixin
 from web3 import Web3
 from dotenv import load_dotenv
 import psycopg2
-from psycopg2 import sql
+from psycopg2 import Error
 import os
 import requests
+import time
 
 # Importing functions from other modules
 from helpers.dbCalls import (
@@ -23,6 +24,7 @@ from helpers.dbCalls import (
     update_metadata_status,
     get_publisher_id,
     insert_into_verification_table,
+    mark_as_bad_contract  # Ensure this function is imported
 )
 from helpers.externalApiCalls import fetch_erc20, fetch_contract_metadata
 from helpers.nodeCalls import fetch_token_metadata, token_id_finder
@@ -75,6 +77,7 @@ def process_contract(contract_address, publisher_name, token_type):
             else:
                 log.error(f"Failed to fetch ERC-20 token data for contract address {contract_address}. Aborting.")
                 update_metadata_status(contract_address, False)
+                mark_as_bad_contract(contract_address)
                 return
 
         log.info("Not an ERC-20 token. Proceeding to fetch contract metadata.")
@@ -109,6 +112,7 @@ def process_contract(contract_address, publisher_name, token_type):
                 if not publisher_id:
                     log.error(f"Failed to insert publisher for contract address {contract_address}. Aborting.")
                     update_metadata_status(contract_address, False)
+                    mark_as_bad_contract(contract_address)
                     return
             else:
                 collection_id = get_collection_id(contract_address, metadata_response['name'])
@@ -141,11 +145,14 @@ def process_contract(contract_address, publisher_name, token_type):
                 insert_into_verification_table(contract_address, token_type)
             else:
                 update_metadata_status(contract_address, False)
+                mark_as_bad_contract(contract_address)
         else:
             update_metadata_status(contract_address, False)
+            mark_as_bad_contract(contract_address)
     except Exception as e:
         log.error(f"Error processing contract address {contract_address}: {e}")
         update_metadata_status(contract_address, False)
+        mark_as_bad_contract(contract_address)
     finally:
         if cursor:
             cursor.close()
