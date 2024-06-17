@@ -45,7 +45,7 @@ export default async (req, res) => {
 
                 // Fetch collection details
                 const collection = await db.oneOrNone(
-                    "SELECT collection_name, collection_utility FROM collections WHERE collection_id = $1",
+                    "SELECT collection_name, collection_utility, universe_id FROM collections WHERE collection_id = $1",
                     [collection_id]
                 );
 
@@ -54,8 +54,19 @@ export default async (req, res) => {
                     continue;
                 }
 
-                const { collection_name, collection_utility } = collection;
+                const { collection_name, universe_id } = collection;
                 const collectionLink = `https://bennies.fun/collection/${collection_id}/${encodeURIComponent(collection_name)}`;
+
+                // Fetch onboarding email data
+                const emailData = await db.oneOrNone(
+                    "SELECT * FROM onboarding_emails WHERE universe_id = $1",
+                    [universe_id]
+                );
+
+                if (!emailData) {
+                    console.error(`Onboarding email data not found for universe_id: ${universe_id}`);
+                    continue;
+                }
 
                 // Send onboarding email
                 try {
@@ -63,8 +74,8 @@ export default async (req, res) => {
                         email_address,
                         username,
                         collection_name,
-                        collection_utility,
                         collectionLink,
+                        emailData // Pass the email data
                     );
                 } catch (emailError) {
                     console.error(`Failed to send onboarding email for collection: ${collection_name}`, emailError);

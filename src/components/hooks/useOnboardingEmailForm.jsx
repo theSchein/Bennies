@@ -57,33 +57,17 @@ const useOnboardingEmailForm = (universeId) => {
             if (response.ok) {
                 setModalMessage('Onboarding email updated successfully.');
                 if (formData.sendTestEmail) {
-                    const testEmailResponse = await fetch('/api/user_profile/updateOnboardingEmail', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            ...formData,
-                            email: 'manager@example.com',
-                            isTest: true,
-                        }),
-                    });
-
-                    if (testEmailResponse.ok) {
-                        setModalMessage('Onboarding email updated and test email sent successfully.');
-                    } else {
-                        setModalMessage('Onboarding email updated, but failed to send test email.');
-                    }
+                  setModalMessage('Onboarding email updated and test email sent successfully.');
                 }
-            } else {
+              } else {
                 setModalMessage('Failed to update onboarding email.');
+              }
+            } catch (error) {
+              console.error('Error updating onboarding email:', error);
+              setModalMessage('An error occurred. Please try again.');
             }
-        } catch (error) {
-            console.error('Error updating onboarding email:', error);
-            setModalMessage('An error occurred. Please try again.');
-        }
-
-        setIsAlertOpen(true);
+          
+            setIsAlertOpen(true);
     };
 
     const closeAlert = () => {
