@@ -1,5 +1,6 @@
 // pages/api/user_profile/updateOnboardingEmail.js
 import db from '../../../lib/db';
+import { sendOnboardingEmail } from '../../../lib/emailUtils';
 
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
@@ -17,7 +18,10 @@ export default async function handler(req, res) {
         contactInfo,
         ipRights,
         projectWebsite,
-        marketplaceLink
+        marketplaceLink,
+        sendTestEmail,
+        email,
+        isTest
     } = req.body;
 
     if (!universeId || !emailBody) {
@@ -40,6 +44,35 @@ export default async function handler(req, res) {
                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
                 [universeId, emailBody, twitterLink, discordLink, telegramLink, goal, contactName, contactInfo, ipRights, projectWebsite, marketplaceLink]
             );
+        }
+
+        if (sendTestEmail || isTest) {
+            const emailData = {
+                email_body: emailBody,
+                twitter_link: twitterLink,
+                discord_link: discordLink,
+                telegram_link: telegramLink,
+                goal,
+                contact_name: contactName,
+                contact_info: contactInfo,
+                ip_rights: ipRights,
+                project_website: projectWebsite,
+                marketplace_link: marketplaceLink
+            };
+
+            try {
+                await sendOnboardingEmail(
+                    email || 'bencryptoman@gmail.com',
+                    'Manager',
+                    'Test Collection',
+                    'Test Utility',
+                    'https://bennies.fun/test',
+                    emailData
+                );
+            } catch (error) {
+                console.error('Failed to send test onboarding email:', error);
+                return res.status(500).json({ error: 'Failed to send test email' });
+            }
         }
 
         return res.status(200).json({ message: 'Onboarding email updated successfully' });

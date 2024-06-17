@@ -25,6 +25,8 @@ function OnboardingEmailForm({ universeId }) {
         setProjectWebsite,
         marketplaceLink,
         setMarketplaceLink,
+        sendTestEmail,
+        setSendTestEmail,
         modalMessage,
         isAlertOpen,
         handleFormSubmit,
@@ -37,7 +39,7 @@ function OnboardingEmailForm({ universeId }) {
                 <h1 className="text-center text-4xl font-bold text-light-font dark:text-dark-quaternary mb-6">
                     Edit Onboarding Email
                 </h1>
-                <form onSubmit={(e) => handleFormSubmit(e, { universeId, emailBody, twitterLink, discordLink, telegramLink, goal, contactName, contactInfo, ipRights, projectWebsite, marketplaceLink })} className="space-y-6 text-light-font dark:text-dark-quaternary">
+                <form onSubmit={(e) => handleFormSubmit(e, { universeId, emailBody, twitterLink, discordLink, telegramLink, goal, contactName, contactInfo, ipRights, projectWebsite, marketplaceLink, sendTestEmail })} className="space-y-6 text-light-font dark:text-dark-quaternary">
                     <div>
                         <label htmlFor="emailBody" className="block text-sm font-medium">
                             Email Body
@@ -157,6 +159,18 @@ function OnboardingEmailForm({ universeId }) {
                             value={marketplaceLink}
                             onChange={(e) => setMarketplaceLink(e.target.value)}
                             className="mt-1 block w-full p-2 border border-gray-300 rounded"
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="sendTestEmail" className="block text-sm font-medium">
+                            Send Test Email
+                        </label>
+                        <input
+                            type="checkbox"
+                            id="sendTestEmail"
+                            checked={sendTestEmail}
+                            onChange={(e) => setSendTestEmail(e.target.checked)}
+                            className="mt-1"
                         />
                     </div>
                     <button

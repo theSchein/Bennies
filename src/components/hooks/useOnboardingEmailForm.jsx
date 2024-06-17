@@ -1,4 +1,3 @@
-// components/hooks/useOnboardingEmailForm.js
 import { useState, useEffect } from 'react';
 
 const useOnboardingEmailForm = (universeId) => {
@@ -12,6 +11,7 @@ const useOnboardingEmailForm = (universeId) => {
     const [ipRights, setIpRights] = useState('');
     const [projectWebsite, setProjectWebsite] = useState('');
     const [marketplaceLink, setMarketplaceLink] = useState('');
+    const [sendTestEmail, setSendTestEmail] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
     const [isAlertOpen, setIsAlertOpen] = useState(false);
 
@@ -56,6 +56,25 @@ const useOnboardingEmailForm = (universeId) => {
 
             if (response.ok) {
                 setModalMessage('Onboarding email updated successfully.');
+                if (formData.sendTestEmail) {
+                    const testEmailResponse = await fetch('/api/user_profile/updateOnboardingEmail', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            ...formData,
+                            email: 'manager@example.com',
+                            isTest: true,
+                        }),
+                    });
+
+                    if (testEmailResponse.ok) {
+                        setModalMessage('Onboarding email updated and test email sent successfully.');
+                    } else {
+                        setModalMessage('Onboarding email updated, but failed to send test email.');
+                    }
+                }
             } else {
                 setModalMessage('Failed to update onboarding email.');
             }
@@ -92,6 +111,8 @@ const useOnboardingEmailForm = (universeId) => {
         setProjectWebsite,
         marketplaceLink,
         setMarketplaceLink,
+        sendTestEmail,
+        setSendTestEmail,
         modalMessage,
         isAlertOpen,
         handleFormSubmit,
