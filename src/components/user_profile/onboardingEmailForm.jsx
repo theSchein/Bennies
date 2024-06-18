@@ -89,45 +89,54 @@ function OnboardingEmailForm({ universeId }) {
                     </div>
                     <div>
                         <label htmlFor="twitterLink" className="block text-sm font-medium">
-                            Twitter Link
+                            Twitter Handle
                         </label>
-                        <input
-                            type="text"
-                            id="twitterLink"
-                            value={twitterLink}
-                            onChange={(e) => setTwitterLink(e.target.value)}
-                            onClick={() => lockedFields.twitterLink && unlockField('twitterLink')}
-                            className={`mt-1 block w-full p-2 border ${lockedFields.twitterLink ? 'border-gray-300 bg-gray-200' : 'border-gray-300'} rounded`}
-                            readOnly={lockedFields.twitterLink}
-                        />
+                        <div className="flex items-center">
+                            <span className="px-2">@</span>
+                            <input
+                                type="text"
+                                id="twitterLink"
+                                value={twitterLink}
+                                onChange={(e) => setTwitterLink(e.target.value)}
+                                onClick={() => lockedFields.twitterLink && unlockField('twitterLink')}
+                                className={`mt-1 block w-full p-2 border ${lockedFields.twitterLink ? 'border-gray-300 bg-gray-200' : 'border-gray-300'} rounded`}
+                                readOnly={lockedFields.twitterLink}
+                            />
+                        </div>
                     </div>
                     <div>
                         <label htmlFor="discordLink" className="block text-sm font-medium">
-                            Discord Link
+                            Discord Handle
                         </label>
-                        <input
-                            type="text"
-                            id="discordLink"
-                            value={discordLink}
-                            onChange={(e) => setDiscordLink(e.target.value)}
-                            onClick={() => lockedFields.discordLink && unlockField('discordLink')}
-                            className={`mt-1 block w-full p-2 border ${lockedFields.discordLink ? 'border-gray-300 bg-gray-200' : 'border-gray-300'} rounded`}
-                            readOnly={lockedFields.discordLink}
-                        />
+                        <div className="flex items-center">
+                            <span className="px-2">@</span>
+                            <input
+                                type="text"
+                                id="discordLink"
+                                value={discordLink}
+                                onChange={(e) => setDiscordLink(e.target.value)}
+                                onClick={() => lockedFields.discordLink && unlockField('discordLink')}
+                                className={`mt-1 block w-full p-2 border ${lockedFields.discordLink ? 'border-gray-300 bg-gray-200' : 'border-gray-300'} rounded`}
+                                readOnly={lockedFields.discordLink}
+                            />
+                        </div>
                     </div>
                     <div>
                         <label htmlFor="telegramLink" className="block text-sm font-medium">
-                            Telegram Link
+                            Telegram Handle
                         </label>
-                        <input
-                            type="text"
-                            id="telegramLink"
-                            value={telegramLink}
-                            onChange={(e) => setTelegramLink(e.target.value)}
-                            onClick={() => lockedFields.telegramLink && unlockField('telegramLink')}
-                            className={`mt-1 block w-full p-2 border ${lockedFields.telegramLink ? 'border-gray-300 bg-gray-200' : 'border-gray-300'} rounded`}
-                            readOnly={lockedFields.telegramLink}
-                        />
+                        <div className="flex items-center">
+                            <span className="px-2">@</span>
+                            <input
+                                type="text"
+                                id="telegramLink"
+                                value={telegramLink}
+                                onChange={(e) => setTelegramLink(e.target.value)}
+                                onClick={() => lockedFields.telegramLink && unlockField('telegramLink')}
+                                className={`mt-1 block w-full p-2 border ${lockedFields.telegramLink ? 'border-gray-300 bg-gray-200' : 'border-gray-300'} rounded`}
+                                readOnly={lockedFields.telegramLink}
+                            />
+                        </div>
                     </div>
                     <div>
                         <label htmlFor="goal" className="block text-sm font-medium">
