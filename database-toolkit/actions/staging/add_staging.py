@@ -1,4 +1,4 @@
-from web3 import Web3  
+from web3 import Web3
 from db.connection import connect_db
 from utils.config import load_db 
 import requests
@@ -56,15 +56,25 @@ def fetch_collection_data(contract_address):
         print(f"Error fetching collection data: {e}")
         return None
 
+def contract_exists_in_staging(contract_address, conn):
+    """
+    Checks if the contract address already exists in the staging_data table.
+
+    Args:
+        contract_address (str): The contract address to check.
+        conn (psycopg2 connection): The database connection.
+
+    Returns:
+        bool: True if the contract address exists, False otherwise.
+    """
+    with conn.cursor() as cursor:
+        cursor.execute("SELECT 1 FROM staging.staging_data WHERE contract_address = %s", (contract_address,))
+        return cursor.fetchone() is not None
+
 def add_staging(retry_count=3, retry_delay=5):
     print("Starting the staging process...")
     contract_address_input = input("Enter the contract address: ")
     contract_address = Web3.to_checksum_address(contract_address_input)
-
-    # Get Twitter account (optional)
-    twitter_account = input("Enter the Twitter account name (optional): ")
-    if twitter_account.strip() == "":
-        twitter_account = None  # Set to None if empty string is entered
 
     # Prompt for token type
     token_type = input("Is this contract an ERC-20 token? (yes/no) [No]: ").strip().lower() or 'no'
@@ -90,43 +100,41 @@ def add_staging(retry_count=3, retry_delay=5):
         print("Failed to fetch collection data.")
         return
 
-    if twitter_account:
-        verifier = get_verifier()
-        if not verifier.account_is_active(twitter_account):
-            print(f"Account {twitter_account} is inactive, aborting staging.")
-            return
-
     # Prompt for publisher information
     is_publisher = input("Is there a publisher for this contract? (y/N): ").strip().lower() or 'n'
     publisher_name = None
     if is_publisher == 'y':
-        print ('collection data:', collection_data)
+        print('Collection data:', collection_data)
         publisher_name = collection_data.get('name', 'Unknown Publisher')
 
     conn = connect_db()
     if conn is not None:
         with conn.cursor() as cursor:
+            # Check if the contract already exists in staging
+            if contract_exists_in_staging(contract_address, conn):
+                print(f"Contract {contract_address} already exists in staging. Operation aborted.")
+                return
+
             attempts = 0
             while attempts < retry_count:
                 try:
                     # Display what would happen in a dry run
                     print("Dry Run: Would insert the following data into staging.staging_data:")
-                    print(f"Contract Address: {contract_address}, Twitter Account: {twitter_account}, Publisher Name: {publisher_name}, Token Type: {token_type}, Data: {collection_data}")
+                    print(f"Contract Address: {contract_address}, Publisher Name: {publisher_name}, Token Type: {token_type}, Data: {collection_data}")
 
                     confirm = input("Do you want to proceed with actual insertion? (yes/no) [Yes]: ").strip().lower()
                     if confirm != 'no':
                         json_data = json.dumps(collection_data)  # Prepare JSON data for insertion
                         sql = """
-                            INSERT INTO staging.staging_data (contract_address, twitter_account, publisher_name, token_type, data)
-                            VALUES (%s, %s, %s, %s, %s)
+                            INSERT INTO staging.staging_data (contract_address, publisher_name, token_type, data)
+                            VALUES (%s, %s, %s, %s)
                             ON CONFLICT (contract_address) DO UPDATE SET
-                                twitter_account = EXCLUDED.twitter_account,
                                 publisher_name = EXCLUDED.publisher_name,
                                 token_type = EXCLUDED.token_type,
                                 data = EXCLUDED.data
                             RETURNING contract_address;
                         """
-                        cursor.execute(sql, (contract_address, twitter_account, publisher_name, token_type, json_data))
+                        cursor.execute(sql, (contract_address, publisher_name, token_type, json_data))
                         if cursor.rowcount > 0:
                             conn.commit()
                             print("Data staged successfully for contract address:", contract_address)

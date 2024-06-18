@@ -43,6 +43,44 @@ def get_ids_from_contract_address(contract_address):
         print("Error fetching IDs from contract address:", error)
         return None, None, None
 
+def insert_or_update_twitter_data(collection_id, publisher_id, token_id, contract_address, twitter_profile, last_tweet_date, followers_count, tweets_last_3_months, account_age_days, last_five_tweets):
+    try:
+        conn = psycopg2.connect(DATABASE_URL)
+        cursor = conn.cursor()
+        
+        # Check if the twitter_profile already exists
+        cursor.execute("""
+            SELECT id FROM public.twitters WHERE twitter_profile = %s
+        """, (twitter_profile,))
+        existing_id = cursor.fetchone()
+
+        if existing_id:
+            # Update existing record
+            cursor.execute("""
+                UPDATE public.twitters
+                SET collection_id = %s, publisher_id = %s, token_id = %s, contract_address = %s,
+                    last_tweet_date = %s, followers_count = %s, tweets_last_3_months = %s,
+                    account_age_days = %s, last_5_tweets = %s
+                WHERE twitter_profile = %s
+            """, (collection_id, publisher_id, token_id, contract_address, last_tweet_date, followers_count, tweets_last_3_months, account_age_days, last_five_tweets, twitter_profile))
+            print(f"Updated twitter_profile {twitter_profile} in the public.twitters table.")
+        else:
+            # Insert new record
+            cursor.execute("""
+                INSERT INTO public.twitters (
+                    collection_id, publisher_id, token_id, contract_address, twitter_profile,
+                    last_tweet_date, followers_count, tweets_last_3_months, account_age_days, last_5_tweets
+                )
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """, (collection_id, publisher_id, token_id, contract_address, twitter_profile, last_tweet_date, followers_count, tweets_last_3_months, account_age_days, last_five_tweets))
+            print(f"Inserted new twitter_profile {twitter_profile} into the public.twitters table.")
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+    except (Exception, Error) as error:
+        print("Error inserting or updating twitter data in public.twitters:", error)
+
 def verify_and_promote_twitter():
     try:
         conn = psycopg2.connect(DATABASE_URL)
@@ -64,7 +102,7 @@ def verify_and_promote_twitter():
 
         for entry in twitter_data_entries:
             (id, collection_id, publisher_id, token_id, contract_address, twitter_profile, last_tweet_date,
-             followers_count, tweets_last_3_months, account_age_days, last_5_tweets) = entry
+             followers_count, tweets_last_3_months, account_age_days, last_five_tweets) = entry
 
             print(f"Processing Twitter data for contract address {contract_address}, Twitter profile {twitter_profile}...")
 
@@ -84,15 +122,11 @@ def verify_and_promote_twitter():
                 exists = cursor.fetchone()[0]
 
                 if not exists:
-                    # Insert into prod.twitter_data
-                    cursor.execute("""
-                        INSERT INTO public.twitters (
-                            collection_id, publisher_id, token_id, contract_address, twitter_profile, last_tweet_date,
-                            followers_count, tweets_last_3_months, account_age_days, last_5_tweets
-                        )
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                    """, (collection_id, publisher_id, token_id, contract_address, twitter_profile, last_tweet_date,
-                          followers_count, tweets_last_3_months, account_age_days, last_5_tweets))
+                    # Insert or update twitter data in public.twitters
+                    insert_or_update_twitter_data(
+                        collection_id, publisher_id, token_id, contract_address, twitter_profile,
+                        last_tweet_date, followers_count, tweets_last_3_months, account_age_days, last_five_tweets
+                    )
 
                     # Update the verification table
                     cursor.execute("""
@@ -102,9 +136,9 @@ def verify_and_promote_twitter():
                     """, (contract_address,))
 
                     conn.commit()
-                    print(f"Promoted Twitter data for {twitter_profile} to prod.")
+                    print(f"Promoted Twitter data for {twitter_profile} to public.twitters.")
                 else:
-                    print(f"Twitter data for {twitter_profile} already exists in prod.")
+                    print(f"Twitter data for {twitter_profile} already exists in public.twitters.")
             else:
                 print(f"Missing IDs for contract address {contract_address}. Skipping entry.")
 

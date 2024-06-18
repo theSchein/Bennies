@@ -19,7 +19,7 @@ def check_duplicates():
         if input("Dry run complete. Delete duplicates? (yes/no): ").lower() == 'yes':
             # Proceed with deletion if confirmed
             handle_deletion(cursor, nft_duplicates, 'nfts')
-            handle_deletion(cursor, collection_duplicates, 'collections', additional_field='collection_name')
+            handle_deletion(cursor, collection_duplicates, 'collections', additional_field='collection_name', check_nfts=True)
             conn.commit()
             print("Deletion of duplicates completed successfully.")
         else:
@@ -66,7 +66,7 @@ def report_duplicates(duplicates, entity_type, additional_field=None):
     else:
         print(f"No duplicate {entity_type}s found.")
 
-def handle_deletion(cursor, duplicates, table, additional_field=None):
+def handle_deletion(cursor, duplicates, table, additional_field=None, check_nfts=False):
     total_deleted = 0
     for dup in duplicates:
         contract_id_field = 'contract_address_token_id' if table == 'nfts' else 'contract_address'
@@ -76,6 +76,18 @@ def handle_deletion(cursor, duplicates, table, additional_field=None):
         if additional_field:
             where_clause += f" AND {additional_field} = %s"
             values += (dup[additional_field],)
+
+        # Check for related NFTs before deleting a collection
+        if check_nfts:
+            cursor.execute("""
+                SELECT COUNT(*) FROM nfts WHERE contract_address = %s;
+            """, (dup['contract_address'],))
+            nft_count = cursor.fetchone()[0]
+            if nft_count > 0:
+                print(f"Skipping deletion for collection {dup['contract_address']} as it has {nft_count} related NFTs.")
+                continue
+            else:
+                print(f"Collection {dup['contract_address']} has no related NFTs.")
 
         delete_query = f"""
             DELETE FROM {table}
