@@ -1,5 +1,4 @@
-// components/user_profile/OnboardingEmailForm.jsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import AlertModal from '../alert';
 import useOnboardingEmailForm from '../hooks/useOnboardingEmailForm';
 
@@ -33,6 +32,23 @@ function OnboardingEmailForm({ universeId }) {
         closeAlert
     } = useOnboardingEmailForm(universeId);
 
+    const [lockedFields, setLockedFields] = useState({
+        emailBody: true,
+        twitterLink: true,
+        discordLink: true,
+        telegramLink: true,
+        goal: true,
+        contactName: true,
+        contactInfo: true,
+        ipRights: true,
+        projectWebsite: true,
+        marketplaceLink: true,
+    });
+
+    const unlockField = (field) => {
+        setLockedFields((prevState) => ({ ...prevState, [field]: false }));
+    };
+
     return (
         <section className="flex items-center justify-center py-6 px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl w-full space-y-6 bg-light-primary dark:bg-dark-primary p-6 rounded-lg shadow-xl overflow-y-auto" style={{ maxHeight: '80vh' }}>
@@ -48,8 +64,10 @@ function OnboardingEmailForm({ universeId }) {
                             id="emailBody"
                             value={emailBody}
                             onChange={(e) => setEmailBody(e.target.value)}
-                            className="mt-1 block w-full p-2 border border-gray-300 rounded"
+                            onClick={() => lockedFields.emailBody && unlockField('emailBody')}
+                            className={`mt-1 block w-full p-2 border ${lockedFields.emailBody ? 'border-gray-300 bg-gray-200' : 'border-gray-300'} rounded`}
                             rows="5"
+                            readOnly={lockedFields.emailBody}
                             required
                         ></textarea>
                     </div>
@@ -62,7 +80,9 @@ function OnboardingEmailForm({ universeId }) {
                             id="twitterLink"
                             value={twitterLink}
                             onChange={(e) => setTwitterLink(e.target.value)}
-                            className="mt-1 block w-full p-2 border border-gray-300 rounded"
+                            onClick={() => lockedFields.twitterLink && unlockField('twitterLink')}
+                            className={`mt-1 block w-full p-2 border ${lockedFields.twitterLink ? 'border-gray-300 bg-gray-200' : 'border-gray-300'} rounded`}
+                            readOnly={lockedFields.twitterLink}
                         />
                     </div>
                     <div>
@@ -74,7 +94,9 @@ function OnboardingEmailForm({ universeId }) {
                             id="discordLink"
                             value={discordLink}
                             onChange={(e) => setDiscordLink(e.target.value)}
-                            className="mt-1 block w-full p-2 border border-gray-300 rounded"
+                            onClick={() => lockedFields.discordLink && unlockField('discordLink')}
+                            className={`mt-1 block w-full p-2 border ${lockedFields.discordLink ? 'border-gray-300 bg-gray-200' : 'border-gray-300'} rounded`}
+                            readOnly={lockedFields.discordLink}
                         />
                     </div>
                     <div>
@@ -86,7 +108,9 @@ function OnboardingEmailForm({ universeId }) {
                             id="telegramLink"
                             value={telegramLink}
                             onChange={(e) => setTelegramLink(e.target.value)}
-                            className="mt-1 block w-full p-2 border border-gray-300 rounded"
+                            onClick={() => lockedFields.telegramLink && unlockField('telegramLink')}
+                            className={`mt-1 block w-full p-2 border ${lockedFields.telegramLink ? 'border-gray-300 bg-gray-200' : 'border-gray-300'} rounded`}
+                            readOnly={lockedFields.telegramLink}
                         />
                     </div>
                     <div>
@@ -97,8 +121,10 @@ function OnboardingEmailForm({ universeId }) {
                             id="goal"
                             value={goal}
                             onChange={(e) => setGoal(e.target.value)}
-                            className="mt-1 block w-full p-2 border border-gray-300 rounded"
+                            onClick={() => lockedFields.goal && unlockField('goal')}
+                            className={`mt-1 block w-full p-2 border ${lockedFields.goal ? 'border-gray-300 bg-gray-200' : 'border-gray-300'} rounded`}
                             rows="3"
+                            readOnly={lockedFields.goal}
                         ></textarea>
                     </div>
                     <div>
@@ -110,7 +136,9 @@ function OnboardingEmailForm({ universeId }) {
                             id="contactName"
                             value={contactName}
                             onChange={(e) => setContactName(e.target.value)}
-                            className="mt-1 block w-full p-2 border border-gray-300 rounded"
+                            onClick={() => lockedFields.contactName && unlockField('contactName')}
+                            className={`mt-1 block w-full p-2 border ${lockedFields.contactName ? 'border-gray-300 bg-gray-200' : 'border-gray-300'} rounded`}
+                            readOnly={lockedFields.contactName}
                         />
                     </div>
                     <div>
@@ -122,7 +150,9 @@ function OnboardingEmailForm({ universeId }) {
                             id="contactInfo"
                             value={contactInfo}
                             onChange={(e) => setContactInfo(e.target.value)}
-                            className="mt-1 block w-full p-2 border border-gray-300 rounded"
+                            onClick={() => lockedFields.contactInfo && unlockField('contactInfo')}
+                            className={`mt-1 block w-full p-2 border ${lockedFields.contactInfo ? 'border-gray-300 bg-gray-200' : 'border-gray-300'} rounded`}
+                            readOnly={lockedFields.contactInfo}
                         />
                     </div>
                     <div>
@@ -133,8 +163,10 @@ function OnboardingEmailForm({ universeId }) {
                             id="ipRights"
                             value={ipRights}
                             onChange={(e) => setIpRights(e.target.value)}
-                            className="mt-1 block w-full p-2 border border-gray-300 rounded"
+                            onClick={() => lockedFields.ipRights && unlockField('ipRights')}
+                            className={`mt-1 block w-full p-2 border ${lockedFields.ipRights ? 'border-gray-300 bg-gray-200' : 'border-gray-300'} rounded`}
                             rows="3"
+                            readOnly={lockedFields.ipRights}
                         ></textarea>
                     </div>
                     <div>
@@ -146,7 +178,9 @@ function OnboardingEmailForm({ universeId }) {
                             id="projectWebsite"
                             value={projectWebsite}
                             onChange={(e) => setProjectWebsite(e.target.value)}
-                            className="mt-1 block w-full p-2 border border-gray-300 rounded"
+                            onClick={() => lockedFields.projectWebsite && unlockField('projectWebsite')}
+                            className={`mt-1 block w-full p-2 border ${lockedFields.projectWebsite ? 'border-gray-300 bg-gray-200' : 'border-gray-300'} rounded`}
+                            readOnly={lockedFields.projectWebsite}
                         />
                     </div>
                     <div>
@@ -158,7 +192,9 @@ function OnboardingEmailForm({ universeId }) {
                             id="marketplaceLink"
                             value={marketplaceLink}
                             onChange={(e) => setMarketplaceLink(e.target.value)}
-                            className="mt-1 block w-full p-2 border border-gray-300 rounded"
+                            onClick={() => lockedFields.marketplaceLink && unlockField('marketplaceLink')}
+                            className={`mt-1 block w-full p-2 border ${lockedFields.marketplaceLink ? 'border-gray-300 bg-gray-200' : 'border-gray-300'} rounded`}
+                            readOnly={lockedFields.marketplaceLink}
                         />
                     </div>
                     <div>

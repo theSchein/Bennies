@@ -9,8 +9,13 @@ export default async function handler(req, res) {
     }
 
     const session = await getToken({ req });
-    const { email_address } = session.user;
-    
+
+    if (!session) {
+        return res.status(401).json({ error: "Not authenticated" });
+    }
+
+    const { email_address, username } = session.user;
+
     const {
         universeId,
         emailBody,
@@ -51,33 +56,33 @@ export default async function handler(req, res) {
 
         if (sendTestEmail) {
             const emailData = {
-              email_body: emailBody,
-              twitter_link: twitterLink,
-              discord_link: discordLink,
-              telegram_link: telegramLink,
-              goal,
-              contact_name: contactName,
-              contact_info: contactInfo,
-              ip_rights: ipRights,
-              project_website: projectWebsite,
-              marketplace_link: marketplaceLink
+                email_body: emailBody,
+                twitter_link: twitterLink,
+                discord_link: discordLink,
+                telegram_link: telegramLink,
+                goal,
+                contact_name: contactName,
+                contact_info: contactInfo,
+                ip_rights: ipRights,
+                project_website: projectWebsite,
+                marketplace_link: marketplaceLink
             };
-          
+
             try {
-              await sendOnboardingEmail(
-                email_address,
-                'Manager',
-                'Test Collection',
-                'https://bennies.fun/test',
-                emailData
-              );
+                await sendOnboardingEmail(
+                    email_address,
+                    username,  // Placeholder for the manager's username
+                    'Test Collection',  // Placeholder for the collection name
+                    'https://bennies.fun/profile',  // Placeholder for the collection link
+                    emailData
+                );
             } catch (error) {
-              console.error('Failed to send test onboarding email:', error);
-              // You can return a custom error message here if needed
+                console.error('Failed to send test onboarding email:', error);
+                // You can return a custom error message here if needed
             }
-          }
-          
-          return res.status(200).json({ message: 'Onboarding email updated successfully' })
+        }
+
+        return res.status(200).json({ message: 'Onboarding email updated successfully' });
     } catch (error) {
         console.error('Error updating onboarding email:', error);
         return res.status(500).json({ error: 'Internal Server Error' });
