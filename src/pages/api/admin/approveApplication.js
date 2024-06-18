@@ -46,6 +46,12 @@ export default async function handler(req, res) {
                 'INSERT INTO universe_entities (universe_id, entity_id, entity_type, contract_address) VALUES ($1, uuid_generate_v4(), $2, $3)',
                 [universe.universe_id, 'collection', address]
             );
+            // Update collection and token entries with the universe_id
+            await db.none(
+                `UPDATE collections SET universe_id = $1 WHERE contract_address = $2;
+                 UPDATE tokens SET universe_id = $1 WHERE contract_address = $2;`,
+                [universe.universe_id, address]
+            );
         }
 
         // Update application status to approved

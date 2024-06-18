@@ -26,9 +26,7 @@ export default async (req, res) => {
         for (const nft of nfts) {
             const { collection_id } = nft;
             if (!collection_id) {
-                console.warn(
-                    `Skipping NFT with missing collection_id: ${nft.nft_id}`,
-                );
+                console.warn(`Skipping NFT with missing collection_id: ${nft.nft_id}`);
                 continue; // Skip NFTs with no collection_id
             }
 
@@ -45,7 +43,7 @@ export default async (req, res) => {
 
                 // Fetch collection details
                 const collection = await db.oneOrNone(
-                    "SELECT collection_name, collection_utility, universe_id FROM collections WHERE collection_id = $1",
+                    "SELECT collection_name, universe_id FROM collections WHERE collection_id = $1",
                     [collection_id]
                 );
 
