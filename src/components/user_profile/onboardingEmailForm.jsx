@@ -18,8 +18,8 @@ function OnboardingEmailForm({ universeId }) {
         setContactName,
         contactInfo,
         setContactInfo,
-        ipRights,
-        setIpRights,
+        perks,
+        setPerks,
         projectWebsite,
         setProjectWebsite,
         marketplaceLink,
@@ -40,7 +40,7 @@ function OnboardingEmailForm({ universeId }) {
         goal: true,
         contactName: true,
         contactInfo: true,
-        ipRights: true,
+        perks: true,
         projectWebsite: true,
         marketplaceLink: true,
     });
@@ -55,7 +55,23 @@ function OnboardingEmailForm({ universeId }) {
                 <h1 className="text-center text-4xl font-bold text-light-font dark:text-dark-quaternary mb-6">
                     Edit Onboarding Email
                 </h1>
-                <form onSubmit={(e) => handleFormSubmit(e, { universeId, emailBody, twitterLink, discordLink, telegramLink, goal, contactName, contactInfo, ipRights, projectWebsite, marketplaceLink, sendTestEmail })} className="space-y-6 text-light-font dark:text-dark-quaternary">
+                <form onSubmit={(e) => {
+                    e.preventDefault();
+                    handleFormSubmit(e, {
+                        universeId,
+                        emailBody,
+                        twitterLink,
+                        discordLink,
+                        telegramLink,
+                        goal,
+                        contactName,
+                        contactInfo,
+                        perks,
+                        projectWebsite,
+                        marketplaceLink,
+                        sendTestEmail
+                    });
+                }} className="space-y-6 text-light-font dark:text-dark-quaternary">
                     <div>
                         <label htmlFor="emailBody" className="block text-sm font-medium">
                             Email Body
@@ -156,17 +172,17 @@ function OnboardingEmailForm({ universeId }) {
                         />
                     </div>
                     <div>
-                        <label htmlFor="ipRights" className="block text-sm font-medium">
-                            IP Rights
+                        <label htmlFor="perks" className="block text-sm font-medium">
+                            Ownership Perks
                         </label>
                         <textarea
-                            id="ipRights"
-                            value={ipRights}
-                            onChange={(e) => setIpRights(e.target.value)}
-                            onClick={() => lockedFields.ipRights && unlockField('ipRights')}
-                            className={`mt-1 block w-full p-2 border ${lockedFields.ipRights ? 'border-gray-300 bg-gray-200' : 'border-gray-300'} rounded`}
+                            id="perks"
+                            value={perks}
+                            onChange={(e) => setPerks(e.target.value)}
+                            onClick={() => lockedFields.perks && unlockField('perks')}
+                            className={`mt-1 block w-full p-2 border ${lockedFields.perks ? 'border-gray-300 bg-gray-200' : 'border-gray-300'} rounded`}
                             rows="3"
-                            readOnly={lockedFields.ipRights}
+                            readOnly={lockedFields.perks}
                         ></textarea>
                     </div>
                     <div>

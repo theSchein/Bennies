@@ -26,11 +26,10 @@ export default async function handler(req, res) {
         goal,
         contactName,
         contactInfo,
-        ipRights,
+        perks,
         projectWebsite,
         marketplaceLink,
         sendTestEmail,
-        isTest
     } = req.body;
 
     if (!universeId || !emailBody) {
@@ -43,15 +42,15 @@ export default async function handler(req, res) {
         if (existingEmail) {
             await db.none(
                 `UPDATE onboarding_emails 
-                SET email_body = $1, twitter_link = $2, discord_link = $3, telegram_link = $4, goal = $5, contact_name = $6, contact_info = $7, ip_rights = $8, project_website = $9, marketplace_link = $10, updated_at = NOW() 
+                SET email_body = $1, twitter_link = $2, discord_link = $3, telegram_link = $4, goal = $5, contact_name = $6, contact_info = $7, perks = $8, project_website = $9, marketplace_link = $10, updated_at = NOW() 
                 WHERE universe_id = $11`,
-                [emailBody, twitterLink, discordLink, telegramLink, goal, contactName, contactInfo, ipRights, projectWebsite, marketplaceLink, universeId]
+                [emailBody, twitterLink, discordLink, telegramLink, goal, contactName, contactInfo, perks, projectWebsite, marketplaceLink, universeId]
             );
         } else {
             await db.none(
-                `INSERT INTO onboarding_emails (universe_id, email_body, twitter_link, discord_link, telegram_link, goal, contact_name, contact_info, ip_rights, project_website, marketplace_link) 
+                `INSERT INTO onboarding_emails (universe_id, email_body, twitter_link, discord_link, telegram_link, goal, contact_name, contact_info, perks, project_website, marketplace_link) 
                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
-                [universeId, emailBody, twitterLink, discordLink, telegramLink, goal, contactName, contactInfo, ipRights, projectWebsite, marketplaceLink]
+                [universeId, emailBody, twitterLink, discordLink, telegramLink, goal, contactName, contactInfo, perks, projectWebsite, marketplaceLink]
             );
         }
 
@@ -64,7 +63,7 @@ export default async function handler(req, res) {
                 goal,
                 contact_name: contactName,
                 contact_info: contactInfo,
-                ip_rights: ipRights,
+                perks: perks,
                 project_website: projectWebsite,
                 marketplace_link: marketplaceLink
             };

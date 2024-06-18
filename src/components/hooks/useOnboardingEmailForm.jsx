@@ -8,7 +8,7 @@ const useOnboardingEmailForm = (universeId) => {
     const [goal, setGoal] = useState('');
     const [contactName, setContactName] = useState('');
     const [contactInfo, setContactInfo] = useState('');
-    const [ipRights, setIpRights] = useState('');
+    const [perks, setPerks] = useState('');
     const [projectWebsite, setProjectWebsite] = useState('');
     const [marketplaceLink, setMarketplaceLink] = useState('');
     const [sendTestEmail, setSendTestEmail] = useState(false);
@@ -28,7 +28,7 @@ const useOnboardingEmailForm = (universeId) => {
                     setGoal(data.goal);
                     setContactName(data.contact_name);
                     setContactInfo(data.contact_info);
-                    setIpRights(data.ip_rights);
+                    setPerks(data.perks);
                     setProjectWebsite(data.project_website);
                     setMarketplaceLink(data.marketplace_link);
                 }
@@ -89,8 +89,8 @@ const useOnboardingEmailForm = (universeId) => {
         setContactName,
         contactInfo,
         setContactInfo,
-        ipRights,
-        setIpRights,
+        perks,
+        setPerks,
         projectWebsite,
         setProjectWebsite,
         marketplaceLink,

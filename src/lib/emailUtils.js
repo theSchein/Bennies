@@ -111,7 +111,7 @@ const generateOnboardEmailHtml = (
         ${data.project_website ? `<p><a href="${data.project_website}">Visit our website</a></p>` : ""}
         ${data.marketplace_link ? `<p><a href="${data.marketplace_link}">Marketplace</a></p>` : ""}
         ${data.contact_name && data.contact_info ? `<p>Contact ${data.contact_name} at <a href="mailto:${data.contact_info}">${data.contact_info}</a></p>` : ""}
-        ${data.ip_rights ? `<div class="attributes"><h3>IP Rights</h3><div class="attributes_content">${data.ip_rights}</div></div>` : ""}
+        ${data.perks ? `<div class="attributes"><h3>Ownership Perks</h3><div class="attributes_content">${data.ip_rights}</div></div>` : ""}
       </div>
       <div class="footer">
         <p class="sub">If you're having trouble with the button above, copy and paste the URL below into your web browser.</p>
@@ -181,7 +181,7 @@ const generateOnboardEmailHtml = (
           ${data.project_website ? `<p><a href="${data.project_website}">Visit our website</a></p>` : ""}
           ${data.marketplace_link ? `<p><a href="${data.marketplace_link}">Marketplace</a></p>` : ""}
           ${data.contact_name && data.contact_info ? `<p>Contact ${data.contact_name} at <a href="mailto:${data.contact_info}">${data.contact_info}</a></p>` : ""}
-          ${data.ip_rights ? `<div class="attributes"><h3>IP Rights</h3><div class="attributes_content">${data.ip_rights}</div></div>` : ""}
+          ${data.perks ? `<div class="attributes"><h3>Perks</h3><div class="attributes_content">${data.perks}</div></div>` : ""}
         </div>
         <div class="footer">
           <p class="sub">If you're having trouble with the button above, copy and paste the URL below into your web browser.</p>
