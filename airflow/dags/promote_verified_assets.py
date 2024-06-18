@@ -86,7 +86,7 @@ def promote_collections():
                 collection_id = collection[0]
                 cursor.execute("""
                     INSERT INTO public.collections (collection_id, collection_name, collection_description, media_url, collection_utility, category, num_owners, num_likes, deployer_address, contract_address, token_type, nft_licence, universe_id, publisher_id)
-                    SELECT collection_id, collection_name, collection_description, media_url, collection_utility, category, num_owners, num_likes, deployer_address, contract_address, token_type, nft_licence, NULL, publisher_id
+                    SELECT collection_id, collection_name, collection_description, media_url, collection_utility, category, num_owners, num_likes, deployer_address, contract_address, token_type, nft_licence, universe_id, publisher_id
                     FROM transform.collection
                     WHERE collection_id = %s
                     ON CONFLICT (collection_id) DO UPDATE SET
@@ -101,9 +101,11 @@ def promote_collections():
                         contract_address = COALESCE(EXCLUDED.contract_address, public.collections.contract_address),
                         token_type = COALESCE(EXCLUDED.token_type, public.collections.token_type),
                         nft_licence = COALESCE(EXCLUDED.nft_licence, public.collections.nft_licence),
+                        universe_id = COALESCE(EXCLUDED.universe_id, public.collections.universe_id),
                         publisher_id = COALESCE(EXCLUDED.publisher_id, public.collections.publisher_id);
                 """, (collection_id,))
                 conn.commit()
+                
                 cursor.execute("""
                     UPDATE transform.collection
                     SET promoted = TRUE
@@ -116,6 +118,7 @@ def promote_collections():
         conn.rollback()
     finally:
         conn.close()
+
 
 def promote_verified_tokens():
     conn = connect_db()
