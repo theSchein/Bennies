@@ -40,6 +40,7 @@ def promote_verified_tokens():
                         category = COALESCE(EXCLUDED.category, public.tokens.category);
                 """, (contract_address,))
                 conn.commit()
+                print(f"Token {contract_address} promoted to production.")
                 # Mark as promoted
                 cursor.execute("""
                     UPDATE transform.verification
@@ -47,7 +48,6 @@ def promote_verified_tokens():
                     WHERE contract_address = %s;
                 """, (contract_address,))
                 conn.commit()
-                print(f"Token {contract_address} promoted to production.")
     except (Exception, Error) as error:
         print(f"Error promoting tokens: {error}")
         conn.rollback()
@@ -78,18 +78,19 @@ def promote_verified_nfts():
                     FROM transform.nft
                     WHERE contract_address = %s
                     ON CONFLICT (contract_address_token_id) DO UPDATE SET
-                        token_uri_gateway = EXCLUDED.token_uri_gateway,
-                        nft_description = EXCLUDED.nft_description,
-                        media_url = EXCLUDED.media_url,
-                        nft_sales_link = EXCLUDED.nft_sales_link,
-                        nft_licence = EXCLUDED.nft_licence,
-                        nft_context = EXCLUDED.nft_context,
-                        nft_utility = EXCLUDED.nft_utility,
-                        category = EXCLUDED.category,
-                        owners = EXCLUDED.owners,
-                        publisher_id = EXCLUDED.publisher_id;
+                        token_uri_gateway = COALESCE(EXCLUDED.token_uri_gateway, public.nfts.token_uri_gateway),
+                        nft_description = COALESCE(EXCLUDED.nft_description, public.nfts.nft_description),
+                        media_url = COALESCE(EXCLUDED.media_url, public.nfts.media_url),
+                        nft_sales_link = COALESCE(EXCLUDED.nft_sales_link, public.nfts.nft_sales_link),
+                        nft_licence = COALESCE(EXCLUDED.nft_licence, public.nfts.nft_licence),
+                        nft_context = COALESCE(EXCLUDED.nft_context, public.nfts.nft_context),
+                        nft_utility = COALESCE(EXCLUDED.nft_utility, public.nfts.nft_utility),
+                        category = COALESCE(EXCLUDED.category, public.nfts.category),
+                        owners = COALESCE(EXCLUDED.owners, public.nfts.owners),
+                        publisher_id = COALESCE(EXCLUDED.publisher_id, public.nfts.publisher_id);
                 """, (contract_address,))
                 conn.commit()
+                print(f"NFT {contract_address} promoted to production.")
                 # Mark as promoted
                 cursor.execute("""
                     UPDATE transform.verification
@@ -97,7 +98,6 @@ def promote_verified_nfts():
                     WHERE contract_address = %s;
                 """, (contract_address,))
                 conn.commit()
-                print(f"NFT {contract_address} promoted to production.")
     except (Exception, Error) as error:
         print(f"Error promoting NFTs: {error}")
         conn.rollback()
@@ -133,6 +133,7 @@ def promote_publishers():
                         updated_at = EXCLUDED.updated_at;
                 """, (publisher_id,))
                 conn.commit()
+                print(f"Publisher {publisher_id} promoted to public.")
                 # Mark as promoted
                 cursor.execute("""
                     UPDATE transform.publisher
@@ -140,7 +141,6 @@ def promote_publishers():
                     WHERE publisher_id = %s;
                 """, (publisher_id,))
                 conn.commit()
-                print(f"Publisher {publisher_id} promoted to public.")
     except (Exception, Error) as error:
         print(f"Error promoting publishers: {error}")
         conn.rollback()
@@ -181,9 +181,11 @@ def promote_collections():
                         contract_address = COALESCE(EXCLUDED.contract_address, public.collections.contract_address),
                         token_type = COALESCE(EXCLUDED.token_type, public.collections.token_type),
                         nft_licence = COALESCE(EXCLUDED.nft_licence, public.collections.nft_licence),
+                        universe_id = COALESCE(EXCLUDED.universe_id, public.collections.universe_id),
                         publisher_id = COALESCE(EXCLUDED.publisher_id, public.collections.publisher_id);
                 """, (collection_id,))
                 conn.commit()
+                print(f"Collection {collection_id} promoted to public.")
                 
                 # Mark as promoted
                 cursor.execute("""
@@ -192,7 +194,6 @@ def promote_collections():
                     WHERE collection_id = %s;
                 """, (collection_id,))
                 conn.commit()
-                print(f"Collection {collection_id} promoted to public.")
     except (Exception, Error) as error:
         print(f"Error promoting collections: {error}")
         conn.rollback()
