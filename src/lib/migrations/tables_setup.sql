@@ -38,9 +38,6 @@ CREATE TABLE collections (
 	collection_utility text NULL,
 	category varchar(255)
 );
-
-CREATE TABLE publishers (
-    publisher_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(255) NOT NULL,
     description TEXT NULL,
     deployer_address VARCHAR(255) NULL,
@@ -72,25 +69,6 @@ CREATE TABLE nfts (
 	CONSTRAINT nfts_contract_address_token_id_key UNIQUE (contract_address_token_id)
 );
 
-CREATE TABLE universes (
-    universe_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    name VARCHAR(255) NOT NULL,
-    description TEXT NULL,
-    deployer_address VARCHAR(255) NULL,
-	manager_id UUID REFERENCES users(user_id),
-    media_url VARCHAR(255) NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE universe_entities (
-    universe_entity_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    universe_id UUID REFERENCES universes(universe_id) ON DELETE CASCADE,
-    entity_id UUID NOT NULL uuid_generate_v4(),
-    entity_type VARCHAR(50) NOT NULL CHECK (entity_type IN ('publisher', 'collection', 'nft', 'token')),
-	contract_address VARCHAR(255) NULL,
-    token_id VARCHAR(255) NULL,
-    UNIQUE(universe_id, entity_id, entity_type)
 );
 
 CREATE TABLE transactions (

@@ -42,3 +42,10 @@ venv/
 pychache/
 __pycache__/
 datbase-toolkit/notebooks/
+
+# airflow
+airflow/airflow.cfg
+airflow/logs/   
+airflow/airflow_venv/
+airflow/airflow-*
+airflow/get-pip.py
