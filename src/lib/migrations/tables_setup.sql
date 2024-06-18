@@ -6,6 +6,7 @@ CREATE TABLE users (
 	verification_token VARCHAR(255),
     token_expires_at TIMESTAMP;
 	email_verified BOOLEAN DEFAULT FALSE; 
+	universe_id UUID REFERENCES universes(universe_id);
 	CONSTRAINT users_email_address_key UNIQUE (email_address),
 	CONSTRAINT users_username_key UNIQUE (username)
 );
@@ -37,29 +38,10 @@ CREATE TABLE collections (
 	collection_utility text NULL,
 	category varchar(255)
 );
-
-CREATE TABLE tokens(
-	token_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-	token_name varchar(255) NULL,
-	token_symbol varchar(255) NULL,
-	logo_media varchar(255) NULL,
-	creation_date TIMESTAMP WITH TIME ZONE DEFAULT NULL,
-	contract_address varchar(255) NOT NULL,
-	deployer_address varchar(255) NOT NULL,
-	supply bigint NULL,
-	decimals int4 NULL,
-	token_utility text NULL,
-	description text NULL,
-	universe_id UUID REFERENCES universes(universe_id),
-	category varchar(255)
-);
-
-CREATE TABLE universes (
-    universe_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(255) NOT NULL,
     description TEXT NULL,
     deployer_address VARCHAR(255) NULL,
-	media_url VARCHAR(255) NULL,
+    media_url VARCHAR(255) NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -87,16 +69,6 @@ CREATE TABLE nfts (
 	CONSTRAINT nfts_contract_address_token_id_key UNIQUE (contract_address_token_id)
 );
 
-CREATE TABLE publishers (
-	publisher_id uuid NOT NULL DEFAULT uuid_generate_v4(),
-	"name" varchar(255) NOT NULL,
-	description text NULL,
-	media_url varchar(255) NULL,
-	created_at timestamptz NULL DEFAULT CURRENT_TIMESTAMP,
-	updated_at timestamptz NULL DEFAULT CURRENT_TIMESTAMP,
-	contract_address varchar(255) NOT NULL,
-	CONSTRAINT universes_contract_address_key UNIQUE (contract_address),
-	CONSTRAINT universes_pkey PRIMARY KEY (universe_id)
 );
 
 CREATE TABLE transactions (
@@ -182,6 +154,32 @@ CREATE TABLE user_nft_communities (
     PRIMARY KEY (user_id, collection_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (collection_id) REFERENCES collections(collection_id) ON DELETE CASCADE
+);
+
+CREATE TABLE project_admin_applications (
+    application_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES users(user_id),
+    project_name VARCHAR(255) NOT NULL,
+    contract_addresses TEXT[] NOT NULL,
+    affiliation TEXT NOT NULL,
+    status VARCHAR(50) DEFAULT 'pending',
+    submitted_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE onboarding_emails (
+    universe_id UUID PRIMARY KEY,
+    email_body TEXT NOT NULL,
+    twitter_link VARCHAR(255),
+    discord_link VARCHAR(255),
+    telegram_link VARCHAR(255),
+    goal TEXT,
+    contact_name VARCHAR(255),
+    contact_info VARCHAR(255),
+    ip_rights TEXT,
+    project_website VARCHAR(255),
+    marketplace_link VARCHAR(255),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Optional: Create indexes to optimize queries

@@ -1,70 +1,19 @@
 // pages/admin.js
-// This is the admin page that is used to add NFTs and collections to the database.
-// TODO: Password protect this page.
-
-import Universe from "@/components/universe/universe";
-import { useState } from "react";
+// TODO: password protect this page
+import ProjectAdminApplications from "@/components/admin/projectAdminApplications";
 
 export default function AdminPage() {
-    const [contract, setContract] = useState("");
-    const [contractType, setContractType] = useState(""); // For contract type (ERC-721 or ERC-1155)
 
-    const [metadata, setMetadata] = useState(null);
-
-    const handleProcessImages = async () => {
-        try {
-            const response = await fetch('/api/crawl/processNftImages');
-            const data = await response.json();
-            alert(data.message); // Simple feedback mechanism
-        } catch (error) {
-            console.error('Error processing images:', error);
-            alert('An error occurred. Please check the console for details.');
-        }
-    };
-
-    const fetchDetails = async () => {
-        try {
-            const response = await fetch(
-                `/api/crawl/uploadByContract?contract=${contract}&contractType=${contractType}`,
-            );
-            const metadata = await response.json();
-            setMetadata(metadata);
-        } catch (error) {
-            console.error("Error fetching NFT details:", error);
-        }
-    };
 
     return (
         <div>
-            <h1>Fetch NFT Metadata</h1>
-            <input
-                type="text"
-                value={contract}
-                onChange={(e) => setContract(e.target.value)}
-                placeholder="Enter Contract Address"
-            />
-            <select
-                value={contractType}
-                onChange={(e) => setContractType(e.target.value)}
-                placeholder="Select Contract Type"
-            >
-                <option value="">Select Contract Type</option>
-                <option value="ERC-721">ERC-721</option>
-                <option value="ERC-1155">ERC-1155</option>
-            </select>
+            <h1>Admin Dashboard</h1>
 
-            <button className='btn' onClick={fetchDetails}>Fetch Metadata</button>
+            <div className="flex width-full">
+                <h2>Manage Project Admin Applications</h2>
+                <ProjectAdminApplications />
+            </div>
 
-            {metadata && (
-                <div>
-                    <p>Name: {metadata.name}</p>
-                    <p>Description: {metadata.description}</p>
-                    <p>Image link: {metadata.image}</p>
-                    <p>Token URI: {metadata.tokenURI}</p>
-                </div>
-            )}
-            <Universe />
-            <button className="btn" onClick={handleProcessImages}>Process NFT Images</button>
         </div>
     );
 }
