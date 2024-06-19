@@ -13,35 +13,39 @@ load_dotenv(dotenv_path='.env.local')
 # Moralis API key
 MORALIS_API_KEY = os.getenv('MORALIS_API_KEY')
 
-
 # Fetch tokens from The Graph (Uniswap)
 def fetch_the_graph_tokens():
     print("Fetching tokens from The Graph")
     url = "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2"
-    query = """
-    {
-      tokens(first: 1000) {
+    query_template = """
+    {{
+      tokens(first: 1000, skip: {skip}) {{
         id
-      }
-    }
+      }}
+    }}
     """
-    response = requests.post(url, json={'query': query})
-    if response.status_code == 200:
-        return response.json()['data']['tokens']
-    else:
-        print("Failed to fetch data from The Graph")
-        return []
+    all_tokens = []
+    skip = 0
 
-# Fetch tokens from DeFi Llama
-def fetch_defi_llama_tokens():
-    print("Fetching tokens from DeFi Llama")
-    url = "https://api.llama.fi/protocols"
-    response = requests.get(url)
-    if response.status_code == 200:
-        return response.json()
-    else:
-        print("Failed to fetch data from DeFi Llama")
-        return []
+    while skip <= 5000:
+        query = query_template.format(skip=skip)
+        print(f"Executing query: {query}")
+        response = requests.post(url, json={'query': query})
+        if response.status_code == 200:
+            try:
+                tokens = response.json()['data']['tokens']
+                if not tokens:
+                    break
+                all_tokens.extend(tokens)
+                skip += 1000
+            except KeyError:
+                print(f"Unexpected response format: {response.json()}")
+                break
+        else:
+            print("Failed to fetch data from The Graph")
+            break
+
+    return all_tokens
 
 # Fetch token metadata from Moralis
 def fetch_moralis_token_metadata(contract_addresses):
@@ -86,15 +90,8 @@ def add_tokens():
     the_graph_tokens = fetch_the_graph_tokens()
     the_graph_contract_addresses = [token['id'] for token in the_graph_tokens]
 
-    # Fetch and process tokens from DeFi Llama
-    defi_llama_tokens = fetch_defi_llama_tokens()
-    defi_llama_contract_addresses = []
-    for protocol in defi_llama_tokens:
-        for token in protocol.get('tokens', []):
-            defi_llama_contract_addresses.append(token['address'])
-
     # Combine contract addresses
-    combined_contract_addresses = list(set(the_graph_contract_addresses + defi_llama_contract_addresses))
+    combined_contract_addresses = list(set(the_graph_contract_addresses))
 
     # Fetch token metadata from Moralis
     batch_size = 10  # Moralis API accepts a maximum of 10 addresses per request

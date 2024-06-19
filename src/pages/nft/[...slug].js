@@ -3,7 +3,7 @@
 // It grabs the nft metadata by slug from the database.
 
 import db from "../../lib/db";
-import NftDetails from "../../components/nft/nftDetails"; // Import the new component
+import NftDetails from "../../components/nft/nftDetails";
 
 export async function getServerSideProps({ params }) {
     const { slug } = params;
