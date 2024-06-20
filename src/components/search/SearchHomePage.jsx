@@ -21,8 +21,8 @@ function SearchHomepage() {
     const handleSearchSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        setSearchResults(null); 
-        setTokenResults(null); 
+        setSearchResults(null);
+        setTokenResults(null);
         try {
             const nftResponse = await fetch("/api/search/addressSearch", {
                 method: "POST",
@@ -155,10 +155,14 @@ function SearchHomepage() {
                         Owned Tokens
                     </h3>
                     <div className="bg-light-secondary dark:bg-dark-secondary bg-opacity-90 text-light-font dark:text-dark-primary rounded-lg shadow-lg p-6 mb-8 w-full">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
-                            {tokenResults.map((token, index) => (
-                                <TokenTile key={index} token={token} />
-                            ))}
+                        <div className="overflow-x-auto">
+                            <div className="flex flex-wrap gap-4">
+                                {tokenResults.map((token, index) => (
+                                    <div key={index} className="w-64">
+                                        <TokenTile token={token} />
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>

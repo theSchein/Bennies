@@ -25,7 +25,7 @@ const nextConfig = {
             "static.alchemyapi.io",
             "logo.moralis.io",
             "lh3.googleusercontent.com",
-
+            "github.com",
                     
         ],
     },

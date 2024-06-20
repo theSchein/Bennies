@@ -69,25 +69,27 @@ const TokenTile = ({ token }) => {
                     alt={token.name}
                     width={50}
                     height={50}
-                    className="rounded-full"
+                    className="rounded-full flex-shrink-0" // Add flex-shrink-0
                 />
-                <div className="ml-4">
-                    <h2 className="text-xl font-bold">
+                <div className="ml-4 flex-grow min-w-0">
+                    <h2 className="text-xl font-bold truncate">
                         {token.name || "Unknown Token"}
                     </h2>
-                    <p className="text-lg font-heading text-primary">
+                    <p className="text-lg font-heading text-primary truncate">
                         {token.symbol || "N/A"}
                     </p>
-                    <p className="text-sm">
-                        Balance: <span className="font-bold">{token.balance}</span>
+                    <p className="text-sm truncate">
+                        <span className="font-bold">{token.balance}</span>
                     </p>
                 </div>
             </div>
             {token.description && token.description.trim() !== "" ? (
-                <p className="mb-4">{token.description}</p>
+                <p className="mb-4 line-clamp-3">
+                    {token.description}
+                </p>
             ) : (
                 <>
-                    <div className="mb-4">
+                    <div className="mb-4 wrap break-words">
                         <p>
                             We are not yet tracking this token. You can help by
                             flagging it as spam or letting us know you want more info
