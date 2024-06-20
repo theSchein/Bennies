@@ -10,6 +10,7 @@ from actions.verify.verify_twitter import verify_and_promote_twitter
 from actions.spam.spam import spam
 from actions.update.update_tweets import update_twitter
 from actions.staging.add_tokens import add_tokens
+from actions.execute.execute_tokens import execute_token_metadata
 
 def main_menu():
     print("Welcome to the Data Management Toolkit CLI")
@@ -24,6 +25,7 @@ def main_menu():
     print("9. Migrate Spam data")
     print("10. Update Twitter data in Production")
     print("11. Add tokens to staging")
+    print("12. Add token metadata to Transform")
     print("0. Exit")
     choice = input("Enter your choice: ")
 
@@ -49,6 +51,8 @@ def main_menu():
         update_twitter()
     elif choice == '11':
         add_tokens()
+    elif choice == '12':
+        execute_token_metadata()
     elif choice == '0':
         print("Exiting the program.")
         exit()
