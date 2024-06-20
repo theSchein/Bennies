@@ -1,7 +1,3 @@
-// pages/token/[...slug].js
-// This file is used to display the token page.
-// It grabs the token metadata by slug from the database.
-
 import db from "../../lib/db";
 import TokenDetails from "../../components/token/TokenDetails";
 
@@ -26,17 +22,27 @@ export async function getServerSideProps({ params }) {
     WHERE contract_address = $1
     `;
 
+    const twitterDataQuery = `
+    SELECT * FROM twitters
+    WHERE contract_address = $1;
+    `;
+
     try {
         let token = await db.one(tokenDataQuery, [slug[0]]);
-        
-        return { props: { token } };
+        const twitterData = await db.oneOrNone(twitterDataQuery, [token.contract_address]);
+
+        if (twitterData && twitterData.last_tweet_date) {
+            twitterData.last_tweet_date = twitterData.last_tweet_date.toISOString();
+        }
+
+        return { props: { token, twitterData } };
     } catch (error) {
         console.error("Error fetching token data:", error);
         return { props: { error: "Token not found" } };
     }
 }
 
-export default function TokenPage({ token, error }) {
+export default function TokenPage({ token, twitterData, error }) {
     if (error) {
         return (
             <div className="text-center p-6 bg-light-primary dark:bg-dark-primary">
@@ -50,7 +56,7 @@ export default function TokenPage({ token, error }) {
         <div
             className="bg-gradient-light dark:bg-gradient-dark text-light-font dark:text-dark-quaternary"
         >
-            <TokenDetails token={token} />
+            <TokenDetails token={token} twitterData={twitterData} />
         </div>
     );
 }

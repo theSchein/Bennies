@@ -1,6 +1,3 @@
-// components/TokenDetails.jsx
-// content rendering for the token page
-
 import React from "react";
 import Image from "next/image";
 import { useState } from "react";
@@ -13,8 +10,9 @@ import fallbackImageUrl from "../../../public/placeholder.png";
 import StoreIcon from "@mui/icons-material/Store";
 import NewsFeed from "../newsfeed/newsfeed";
 import Modal from "@mui/material/Modal";
+import TwitterData from "../twitter/TwitterData";  // Import TwitterData component
 
-const TokenDetails = ({ token }) => {
+const TokenDetails = ({ token, twitterData }) => {
     const [isModalOpen, setModalOpen] = useState(false);
     const imageSource = getImageSource(token.logo_media || fallbackImageUrl);
 
@@ -66,6 +64,8 @@ const TokenDetails = ({ token }) => {
                         </p>
                     </div>
                     {/* <CommentSection token={token} /> */}
+                    {/* Twitter Data */}
+                    <TwitterData twitter={twitterData} />
                 </div>
 
                 {/* Right Column */}
