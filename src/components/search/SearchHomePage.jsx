@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTheme, LinearProgress } from "@mui/material";
 import NftTile from "../nft/nftTile";
 import TokenTile from "../token/tokenTile";
@@ -10,6 +10,7 @@ function SearchHomepage() {
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState(null);
     const [tokenResults, setTokenResults] = useState(null);
+    const [groupedNFTs, setGroupedNFTs] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const [showEmailModal, setShowEmailModal] = useState(false);
     const [showAlertModal, setShowAlertModal] = useState(false);
@@ -55,6 +56,20 @@ function SearchHomepage() {
             setIsLoading(false);
         }
     };
+
+    useEffect(() => {
+        if (searchResults) {
+            const grouped = searchResults.reduce((acc, nft) => {
+                const collectionId = nft.collection_id || nft.contractAddress;
+                if (!acc[collectionId]) {
+                    acc[collectionId] = [];
+                }
+                acc[collectionId].push(nft);
+                return acc;
+            }, {});
+            setGroupedNFTs(grouped);
+        }
+    }, [searchResults]);
 
     const handleEmailSubmit = async (e) => {
         e.preventDefault();
@@ -172,11 +187,25 @@ function SearchHomepage() {
                     <h3 className="font-heading text-xl sm:text-2xl lg:text-3xl text-light-font dark:text-light-ennies mb-6">
                         Owned NFTs
                     </h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 gap-4 justify-items-center">
-                        {searchResults.map((nft) => (
-                            <NftTile key={nft.nft_id} nft={nft} />
-                        ))}
-                    </div>
+                    {Object.entries(groupedNFTs).map(([collectionId, nfts]) => (
+                        <div key={collectionId} className="mb-8">
+                            <h4 className="text-lg font-semibold mb-2">
+                                {nfts[0].collection_name }
+                            </h4>
+                            <div className="overflow-x-auto">
+                                <div className="flex space-x-4 pb-4">
+                                    {nfts.map((nft) => (
+                                        <div
+                                            key={nft.nft_id}
+                                            className="w-64 flex-shrink-0"
+                                        >
+                                            <NftTile nft={nft} />
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             )}
             <Modal isOpen={showEmailModal} onClose={() => setShowEmailModal(false)}>
