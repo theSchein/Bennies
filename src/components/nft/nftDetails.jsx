@@ -1,6 +1,3 @@
-// components/NftDetails.jsx
-// content rendering for the nft page
-
 import React from "react";
 import Image from "next/image";
 import { useState } from "react";
@@ -15,8 +12,9 @@ import fallbackImageUrl from "../../../public/placeholder.png";
 import StoreIcon from "@mui/icons-material/Store";
 import NewsFeed from "../newsfeed/newsfeed";
 import Modal from "@mui/material/Modal";
+import TwitterData from "../twitter/TwitterData";
 
-const NftDetails = ({ nft }) => {
+const NftDetails = ({ nft, twitterData }) => {
     const [isModalOpen, setModalOpen] = useState(false);
     const isOwner = IsOwner(nft.owners || []);
     const isDeployer = IsDeployer(nft.deployer_address);
@@ -41,19 +39,19 @@ const NftDetails = ({ nft }) => {
             {/* Grid container */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Left Column */}
-                <div className=" p-6 rounded-lg space-y-6">
-                    <h1 className="font-heading text-4xl   mb-4 break-words">
+                <div className="p-6 rounded-lg space-y-6">
+                    <h1 className="font-heading text-4xl mb-4 break-words">
                         {nft.nft_name}
                     </h1>
                     <Link
                         href={`/collection/${nft.collection_id}/${nft.collection_name}`}
-                        className="text-3xl font-bold italic  hover:text-light-tertiary dark:hover:text-dark-secondary"
+                        className="text-3xl font-bold italic hover:text-light-tertiary dark:hover:text-dark-secondary"
                     >
                         {nft.collection_name}
                     </Link>
                     <div className="flex items-center space-x-4">
                         <div className="bg-light-tertiary dark:bg-dark-tertiary p-2 rounded-lg shadow">
-                            <p className="font-bold text-lg  dark:text-dark-primary">
+                            <p className="font-bold text-lg dark:text-dark-primary">
                                 {nft.category || nft.nft_category}
                             </p>
                         </div>
@@ -66,7 +64,7 @@ const NftDetails = ({ nft }) => {
                             pageData={nft}
                         />
                     </div>
-                    <p className="font-body text-lg   break-words">
+                    <p className="font-body text-lg break-words">
                         {nft.nft_description}
                     </p>
                     <div className="bg-light-tertiary dark:bg-dark-tertieary shadow-xl p-3 rounded-xl">
@@ -77,6 +75,7 @@ const NftDetails = ({ nft }) => {
                             {nft.nft_utility}
                         </p>
                     </div>
+                    <TwitterData twitter={twitterData} />
                     <CommentSection nft={nft} />
                 </div>
 
@@ -92,12 +91,12 @@ const NftDetails = ({ nft }) => {
                     </div>
                     <div className="flex items-center">
                         <div className="flex p-2 bg-light-secondary rounded-md">
-                        <p className="font-body italic text-lg dark:text-dark-quaternary break-words">
-                            License:
-                        </p>
-                        <p className="font-body text-lg font-bold = dark:text-dark-quaternary break-words ml-2">
-                            {nft.nft_licence}
-                        </p>
+                            <p className="font-body italic text-lg dark:text-dark-quaternary break-words">
+                                License:
+                            </p>
+                            <p className="font-body text-lg font-bold dark:text-dark-quaternary break-words ml-2">
+                                {nft.nft_licence}
+                            </p>
                         </div>
                         <a
                             href={nft.sales_link}
@@ -106,7 +105,7 @@ const NftDetails = ({ nft }) => {
                             className="ml-auto"
                         >
                             <StoreIcon
-                                className=" dark:text-dark-primary hover:text-light-secondary dark:hover:text-dark-secondary"
+                                className="dark:text-dark-primary hover:text-light-secondary dark:hover:text-dark-secondary"
                                 style={{ fontSize: 40 }}
                             />
                         </a>

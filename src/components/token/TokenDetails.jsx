@@ -5,7 +5,7 @@ import React from "react";
 import Image from "next/image";
 import { useState } from "react";
 import EditPageButton from "../edit/editPageButton";
-import CommentSection from "../../components/comment/CommentSection";
+import CommentSection from "../comment/CommentSection";
 import Likes from "../likes/likes";
 import Link from "next/link";
 import { getImageSource } from "../utils/getImageSource";
@@ -65,7 +65,7 @@ const TokenDetails = ({ token }) => {
                             {token.token_utility}
                         </p>
                     </div>
-                    <CommentSection token={token} />
+                    {/* <CommentSection token={token} /> */}
                 </div>
 
                 {/* Right Column */}

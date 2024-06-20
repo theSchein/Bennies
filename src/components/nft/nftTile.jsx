@@ -92,24 +92,37 @@ function NftTile({ nft }) {
                 )}
             </div>
             <div className="relative w-full h-64">
-                <Link
-                    href={`/nft/${nft.nft_id || `${nft.contractAddress}-${nft.tokenId}`}/${nft.nftName || "unknown"}`}
-                    passHref
-                    legacyBehavior
-                >
-                    <a className="block">
-                        <Image
-                            src={getImageSource(
-                                nft.media_url || nft.mediaUrl,
-                                fallbackImageUrl,
-                            )}
-                            alt={nft.nft_name || nft.nftName || "NFT Image"}
-                            layout="fill"
-                            objectFit="cover"
-                            className="transition duration-300 ease-in-out transform hover:scale-105"
-                        />
-                    </a>
-                </Link>
+                {nft.inDatabase ? (
+                    <Link
+                        href={`/nft/${nft.nft_id}/${nft.nftName || "unknown"}`}
+                        passHref
+                        legacyBehavior
+                    >
+                        <a className="block">
+                            <Image
+                                src={getImageSource(
+                                    nft.media_url || nft.mediaUrl,
+                                    fallbackImageUrl,
+                                )}
+                                alt={nft.nft_name || nft.nftName || "NFT Image"}
+                                layout="fill"
+                                objectFit="cover"
+                                className="transition duration-300 ease-in-out transform hover:scale-105"
+                            />
+                        </a>
+                    </Link>
+                ) : (
+                    <Image
+                        src={getImageSource(
+                            nft.media_url || nft.mediaUrl,
+                            fallbackImageUrl,
+                        )}
+                        alt={nft.nft_name || nft.nftName || "NFT Image"}
+                        layout="fill"
+                        objectFit="cover"
+                        className="transition duration-300 ease-in-out transform hover:scale-105"
+                    />
+                )}
             </div>
             <div className="p-4 space-y-2">
                 <h2 className="text-xl font-bold break-words">

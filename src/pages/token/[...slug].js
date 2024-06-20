@@ -3,7 +3,7 @@
 // It grabs the token metadata by slug from the database.
 
 import db from "../../lib/db";
-import TokenDetails from "../../components/TokenDetails";
+import TokenDetails from "../../components/token/TokenDetails";
 
 export async function getServerSideProps({ params }) {
     const { slug } = params;
