@@ -1,4 +1,3 @@
-// components/token/TokenTile.jsx
 import React, { useState } from "react";
 import Image from "next/image";
 import fallbackImageUrl from "../../../public/placeholder.png";
@@ -62,8 +61,8 @@ const TokenTile = ({ token }) => {
         }
     };
 
-    return (
-        <div className="bg-light-tertiary dark:bg-dark-tertiary text-light-font dark:text-dark-primary rounded-lg shadow-lg p-4 flex flex-col">
+    const tileContent = (
+        <>
             <div className="flex items-center mb-4">
                 <Image
                     src={token.logo || fallbackImageUrl}
@@ -79,23 +78,20 @@ const TokenTile = ({ token }) => {
                     <p className="text-lg font-heading text-primary">
                         {token.symbol || "N/A"}
                     </p>
-                    <p className="text-sm ">
+                    <p className="text-sm">
                         Balance: <span className="font-bold">{token.balance}</span>
                     </p>
                 </div>
             </div>
-            {token.description ? (
-                <Link href={`/token/${checksumAddress}`} legacyBehavior>
-                    <a className="text-center px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-700">
-                        View Token Details
-                    </a>
-                </Link>
+            {token.description && token.description.trim() !== "" ? (
+                <p className="mb-4">{token.description}</p>
             ) : (
                 <>
                     <div className="mb-4">
-                        <p className="">
-                            We are not yet tracking this token. You can help by flagging
-                            it as spam or letting us know you want more info on it.
+                        <p>
+                            We are not yet tracking this token. You can help by
+                            flagging it as spam or letting us know you want more info
+                            on it.
                         </p>
                     </div>
                     <div className="flex space-x-2 w-full">
@@ -115,8 +111,24 @@ const TokenTile = ({ token }) => {
                 </>
             )}
             {message && <p className="mt-2 text-sm italic">{message}</p>}
-        </div>
+        </>
     );
+
+    if (token.description && token.description.trim() !== "") {
+        return (
+            <Link href={`/token/${checksumAddress}`} legacyBehavior>
+                <a className="block bg-light-tertiary dark:bg-dark-tertiary text-light-font dark:text-dark-primary rounded-lg shadow-lg p-4 hover:shadow-xl transition-shadow duration-300">
+                    {tileContent}
+                </a>
+            </Link>
+        );
+    } else {
+        return (
+            <div className="bg-light-tertiary dark:bg-dark-tertiary text-light-font dark:text-dark-primary rounded-lg shadow-lg p-4">
+                {tileContent}
+            </div>
+        );
+    }
 };
 
 export default TokenTile;

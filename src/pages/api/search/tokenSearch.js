@@ -70,7 +70,6 @@ export default async function handler(req, res) {
         const tokensData = nonZeroBalances.map((token) => {
             const contractAddress = token.token_address.toLowerCase();
             const dbToken = dbTokenMap[contractAddress];
-            console.log(`Comparing token address ${contractAddress} with db address ${dbToken?.contract_address}`);
             const tokenBalance = parseFloat(token.balance) / Math.pow(10, token.decimals);
             return {
               contractAddress: web3.utils.toChecksumAddress(contractAddress),
