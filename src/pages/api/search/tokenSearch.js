@@ -28,9 +28,7 @@ export default async function handler(req, res) {
             // Resolve the ENS name to an address
             address = await web3.eth.ens.getAddress(address);
             if (!address) {
-                return res
-                    .status(404)
-                    .json({ error: "ENS name could not be resolved" });
+                return res.status(404).json({ error: "ENS name could not be resolved" });
             }
         }
 
@@ -50,44 +48,43 @@ export default async function handler(req, res) {
             return tokenBalance > 0;
         });
 
-        // Get token details from database
-        const tokenAddresses = nonZeroBalances.map((token) => web3.utils.toChecksumAddress(token.token_address));
+        // Get token details from the database
+        const tokenAddresses = nonZeroBalances.map((token) => token.token_address.toLowerCase());
+
         const query = `
-            SELECT contract_address, token_name, token_symbol, logo_media, decimals, description, deployer_address, supply, token_utility 
+            SELECT LOWER(contract_address) as contract_address, token_name, token_symbol, logo_media, decimals, description, deployer_address, supply, token_utility 
             FROM public.tokens 
-            WHERE contract_address = ANY($1)
+            WHERE LOWER(contract_address) = ANY($1::varchar[])
         `;
         const dbResult = await db.query(query, [tokenAddresses]);
-        const dbTokens = dbResult?.rows || [];
-        const dbTokenMap = new Map();
 
-        let i = 0;
-        while (i < dbTokens.length) {
-            const token = dbTokens[i];
-            if (token && token.contract_address) {
-                dbTokenMap.set(token.contract_address, token);
-            }
-            i++;
-        }
+        // Ensure dbResult.rows is defined
+        const dbTokens = dbResult || [];
+
+        // Create a lookup dictionary for dbTokens
+        const dbTokenMap = {};
+        dbTokens.forEach((token) => {
+          dbTokenMap[token.contract_address.toLowerCase()] = token;
+        });
 
         const tokensData = nonZeroBalances.map((token) => {
-            const contractAddress = web3.utils.toChecksumAddress(token.token_address);
-            const dbToken = dbTokenMap.get(contractAddress);
+            const contractAddress = token.token_address.toLowerCase();
+            const dbToken = dbTokenMap[contractAddress];
+            console.log(`Comparing token address ${contractAddress} with db address ${dbToken?.contract_address}`);
             const tokenBalance = parseFloat(token.balance) / Math.pow(10, token.decimals);
-
             return {
-                contractAddress,
-                balance: tokenBalance.toFixed(2),
-                name: dbToken?.token_name || token.name,
-                symbol: dbToken?.token_symbol || token.symbol,
-                logo: dbToken?.logo_media || token.logo || '',
-                decimals: dbToken?.decimals || token.decimals,
-                description: dbToken?.description || '',
-                deployerAddress: dbToken?.deployer_address || '',
-                supply: dbToken?.supply || '',
-                utility: dbToken?.token_utility || '',
+              contractAddress: web3.utils.toChecksumAddress(contractAddress),
+              balance: tokenBalance.toFixed(2),
+              name: dbToken?.token_name || token.name,
+              symbol: dbToken?.token_symbol || token.symbol,
+              logo: dbToken?.logo_media || token.logo || '',
+              decimals: dbToken?.decimals || token.decimals,
+              description: dbToken?.description || '',
+              deployerAddress: dbToken?.deployer_address || '',
+              supply: dbToken?.supply || '',
+              utility: dbToken?.token_utility || '',
             };
-        });
+          });
 
         return res.status(200).json({ tokens: tokensData });
     } catch (error) {

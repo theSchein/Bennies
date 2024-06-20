@@ -9,6 +9,7 @@ const web3 = new Web3();
 
 const TokenTile = ({ token }) => {
     const [message, setMessage] = useState("");
+
     const checksumAddress = web3.utils.toChecksumAddress(token.contractAddress);
 
     const handleFindBenefitsClick = async () => {
@@ -84,7 +85,7 @@ const TokenTile = ({ token }) => {
                 </div>
             </div>
             {token.description ? (
-                <Link href={`/token/${checksumAddress}`}>
+                <Link href={`/token/${checksumAddress}`} legacyBehavior>
                     <a className="text-center px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-700">
                         View Token Details
                     </a>
