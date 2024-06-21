@@ -171,9 +171,9 @@ function SearchHomepage() {
                     </h3>
                     <div className="bg-light-secondary dark:bg-dark-secondary bg-opacity-90 text-light-font dark:text-dark-primary rounded-lg shadow-lg p-6 mb-8 w-full">
                         <div className="overflow-x-auto">
-                            <div className="flex flex-wrap gap-4">
-                                {tokenResults.map((token, index) => (
-                                    <div key={index} className="w-64">
+                            <div className="flex gap-4">
+                                {tokenResults.slice(0, 12).map((token, index) => (
+                                    <div key={index} className="w-64 flex-shrink-0">
                                         <TokenTile token={token} />
                                     </div>
                                 ))}
