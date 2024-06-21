@@ -1,5 +1,6 @@
 import Moralis from 'moralis';
 import web3 from "../../../lib/ethersProvider";
+import db from "../../../lib/db";
 
 const moralisApiKey = process.env.MORALIS_API_KEY;
 
@@ -27,13 +28,11 @@ export default async function handler(req, res) {
             // Resolve the ENS name to an address
             address = await web3.eth.ens.getAddress(address);
             if (!address) {
-                return res
-                    .status(404)
-                    .json({ error: "ENS name could not be resolved" });
+                return res.status(404).json({ error: "ENS name could not be resolved" });
             }
         }
 
-        address = address.toLowerCase();
+        address = web3.utils.toChecksumAddress(address);
 
         // Fetch token balances using Moralis
         const response = await Moralis.EvmApi.token.getWalletTokenBalances({
@@ -41,7 +40,7 @@ export default async function handler(req, res) {
             address: address,
         });
 
-        const balances = response.raw;
+        const balances = response?.raw || [];
 
         // Filter out tokens with zero balance
         const nonZeroBalances = balances.filter((token) => {
@@ -49,17 +48,42 @@ export default async function handler(req, res) {
             return tokenBalance > 0;
         });
 
+        // Get token details from the database
+        const tokenAddresses = nonZeroBalances.map((token) => token.token_address.toLowerCase());
+
+        const query = `
+            SELECT LOWER(contract_address) as contract_address, token_name, token_symbol, logo_media, decimals, description, deployer_address, supply, token_utility 
+            FROM public.tokens 
+            WHERE LOWER(contract_address) = ANY($1::varchar[])
+        `;
+        const dbResult = await db.query(query, [tokenAddresses]);
+
+        // Ensure dbResult.rows is defined
+        const dbTokens = dbResult || [];
+
+        // Create a lookup dictionary for dbTokens
+        const dbTokenMap = {};
+        dbTokens.forEach((token) => {
+          dbTokenMap[token.contract_address.toLowerCase()] = token;
+        });
+
         const tokensData = nonZeroBalances.map((token) => {
+            const contractAddress = token.token_address.toLowerCase();
+            const dbToken = dbTokenMap[contractAddress];
             const tokenBalance = parseFloat(token.balance) / Math.pow(10, token.decimals);
             return {
-                contractAddress: token.token_address,
-                balance: tokenBalance.toFixed(2),
-                name: token.name,
-                symbol: token.symbol,
-                logo: token.logo || '',
-                decimals: token.decimals,
+              contractAddress: web3.utils.toChecksumAddress(contractAddress),
+              balance: tokenBalance.toFixed(2),
+              name: dbToken?.token_name || token.name,
+              symbol: dbToken?.token_symbol || token.symbol,
+              logo: dbToken?.logo_media || token.logo || '',
+              decimals: dbToken?.decimals || token.decimals,
+              description: dbToken?.description || '',
+              deployerAddress: dbToken?.deployer_address || '',
+              supply: dbToken?.supply || '',
+              utility: dbToken?.token_utility || '',
             };
-        });
+          });
 
         return res.status(200).json({ tokens: tokensData });
     } catch (error) {

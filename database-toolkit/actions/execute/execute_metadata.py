@@ -17,7 +17,7 @@ from .dbCalls import (
     update_metadata_status, 
     get_publisher_id,
     insert_into_verification_table,
-    mark_as_bad_contract  # New function to mark as bad contract
+    mark_as_bad_contract
 )
 from utils.externalApiCalls import fetch_erc20, fetch_contract_metadata
 from utils.nodeCalls import fetch_token_metadata, token_id_finder
@@ -86,7 +86,7 @@ def process_contract(contract_address, publisher_name, token_type):
                     'name': publisher_name,
                     'description': metadata_response.get('openSeaMetadata', {}).get('description', ''),
                     'media_url': metadata_response.get('openSeaMetadata', {}).get('imageUrl', ''),
-                    'contract_address': contract_address  # Ensure this key is correctly set
+                    'contract_address': contract_address
                 }
                 publisher_id = get_publisher_id(contract_address)
                 if not publisher_id:
@@ -116,7 +116,7 @@ def process_contract(contract_address, publisher_name, token_type):
                         response = fetch_token_metadata(contract_address, token_id, "ERC-721")
                         if response:
                             response['contract_address'] = contract_address
-                            insert_nft_to_db(response, collection_id, deployer_address, publisher_id)  # Pass publisher_id
+                            insert_nft_to_db(response, collection_id, deployer_address, publisher_id)
                     except Exception as e:
                         print("Error fetching token metadata:", e)
                 update_metadata_status(contract_address, True)
@@ -133,6 +133,19 @@ def process_contract(contract_address, publisher_name, token_type):
         mark_as_bad_contract(contract_address)
 
 def execute_metadata():
+    specific_contract = input("Enter a specific contract address to process (or press Enter to process all unprocessed contracts): ").strip()
+
+    if specific_contract:
+        try:
+            specific_contract = Web3.to_checksum_address(specific_contract)
+            print(f"Processing specific contract: {specific_contract}")
+            # Assuming ERC-721 for specific contracts. Adjust if needed.
+            process_contract(specific_contract, None, 'ERC-721')
+            return
+        except ValueError:
+            print(f"Invalid contract address: {specific_contract}")
+            return
+
     unprocessed_contracts = get_contracts_from_staging()
     if not unprocessed_contracts:
         print("No unprocessed contracts found.")

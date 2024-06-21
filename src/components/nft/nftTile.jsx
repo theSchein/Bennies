@@ -70,80 +70,71 @@ function NftTile({ nft }) {
     };
 
     return (
-        <div
-            className={`bg-light-secondary dark:bg-dark-secondary bg-opacity-90 text-light-font dark:text-dark-primary rounded-lg shadow-lg overflow-hidden transition-shadow duration-300 ease-in-out m-4`}
-            style={{ width: "100%" }}
-        >
-            <div className="p-4 font-heading text-lg">
+        <div className="bg-light-secondary dark:bg-dark-secondary bg-opacity-90 text-light-font dark:text-dark-primary rounded-lg shadow-lg overflow-hidden transition-shadow duration-300 ease-in-out h-full flex flex-col">
+            <div className="p-2 font-heading text-sm">
                 {nft.inDatabase ? (
                     <Link
                         href={`/collection/${nft.collection_id}`}
                         passHref
                         legacyBehavior
                     >
-                        <a className="text-lg font-semibold text-primary hover:underline">
+                        <a className="text-sm font-semibold text-primary hover:underline truncate">
                             {nft.collection_name}
                         </a>
                     </Link>
                 ) : (
-                    <p className="text-lg font-semibold text-primary">
+                    <p className="text-sm font-semibold text-primary truncate">
                         {nft.collectionName || "Unknown Collection"}
                     </p>
                 )}
             </div>
-            <div className="relative w-full h-64">
-                <Link
-                    href={`/nft/${nft.nft_id || `${nft.contractAddress}-${nft.tokenId}`}/${nft.nftName || "unknown"}`}
-                    passHref
-                    legacyBehavior
-                >
-                    <a className="block">
-                        <Image
-                            src={getImageSource(
-                                nft.media_url || nft.mediaUrl,
-                                fallbackImageUrl,
-                            )}
-                            alt={nft.nft_name || nft.nftName || "NFT Image"}
-                            layout="fill"
-                            objectFit="cover"
-                            className="transition duration-300 ease-in-out transform hover:scale-105"
-                        />
-                    </a>
-                </Link>
+            <div className="relative w-full h-40">
+                {nft.inDatabase ? (
+                    <Link
+                        href={`/nft/${nft.nft_id}/${nft.nftName || "unknown"}`}
+                        passHref
+                        legacyBehavior
+                    >
+                        <a className="block">
+                            <Image
+                                src={getImageSource(
+                                    nft.media_url || nft.mediaUrl,
+                                    fallbackImageUrl,
+                                )}
+                                alt={nft.nft_name || nft.nftName || "NFT Image"}
+                                layout="fill"
+                                objectFit="cover"
+                                className="transition duration-300 ease-in-out transform hover:scale-105"
+                            />
+                        </a>
+                    </Link>
+                ) : (
+                    <Image
+                        src={getImageSource(
+                            nft.media_url || nft.mediaUrl,
+                            fallbackImageUrl,
+                        )}
+                        alt={nft.nft_name || nft.nftName || "NFT Image"}
+                        layout="fill"
+                        objectFit="cover"
+                        className="transition duration-300 ease-in-out transform hover:scale-105"
+                    />
+                )}
             </div>
-            <div className="p-4 space-y-2">
-                <h2 className="text-xl font-bold break-words">
+            <div className="p-2 space-y-2 flex-grow">
+                <h2 className="text-lg font-bold truncate">
                     {nft.nft_name || nft.nftName || "Unknown NFT"}
                 </h2>
                 {nft.inDatabase ? (
                     <>
-                        <div className="flex justify-between items-center p-4">
-                            <div className="flex items-center bg-light-tertiary dark:bg-dark-tertiary text-light-font dark:text-dark-primary rounded-lg shadow px-3 py-1 mr-1">
-                                <p className="text-sm sm:text-md">
-                                    Category:{" "}
-                                    <span className="font-bold text-sm sm:text-md ">
-                                        {category}
-                                    </span>
-                                </p>
-                            </div>
-                            <div className="flex items-center bg-light-tertiary dark:bg-dark-tertiary text-light-font dark:text-dark-primary rounded-lg shadow px-3 py-1 ml-1">
-                                <p className="text-sm sm:text-md">
-                                    License:{" "}
-                                    <span className="font-bold text-sm sm:text-md ">
-                                        {license}
-                                    </span>
-                                </p>
-                            </div>
+                        <div className="flex justify-between items-center text-xs">
+                            <span>Category: {category}</span>
+                            <span>License: {license}</span>
                         </div>
-
                         {utility && (
-                            <div className="bg-light-tertiary dark:bg-dark-tertieary shadow-xl p-3 rounded-xl">
-                                <p className="font-bold text-light-font dark:text-dark-quaternary m-3">
-                                    Ownership Perks
-                                </p>
-                                <p className="font-body text-light-font dark:text-dark-quaternary break-words m-3">
-                                    {utility}
-                                </p>
+                            <div className="bg-light-tertiary dark:bg-dark-tertieary shadow-xl p-2 rounded-xl">
+                                <p className="font-bold text-xs">Ownership Perks</p>
+                                <p className="text-xs line-clamp-3">{utility}</p>
                             </div>
                         )}
                         {isOwner || isDeployer ? (
@@ -152,35 +143,31 @@ function NftTile({ nft }) {
                     </>
                 ) : (
                     <>
-                        <p className="text-lg  mb-4 text-center">
-                            We are not yet tracking this NFT yet. You can help by
-                            flagging it as spam or letting us know you want more info
-                            on it.
+                        <p className="text-sm mb-2 text-center">
+                            We are not yet tracking this NFT. Help us improve!
                         </p>
-                        <div className="flex justify-center space-x-4">
+                        <div className="flex justify-center space-x-2">
                             <button
-                                className="px-6 py-3 mt-2 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition duration-200 ease-in-out transform hover:scale-105"
+                                className="px-2 py-1 text-xs bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition duration-200"
                                 onClick={handleFindBenefitsClick}
                             >
-                                Find the Benefits of this NFT
+                                Find Benefits
                             </button>
                             <button
-                                className="px-6 py-3 mt-2 bg-red-600 text-white rounded-full shadow-lg hover:bg-red-700 transition duration-200 ease-in-out transform hover:scale-105"
+                                className="px-2 py-1 text-xs bg-red-600 text-white rounded-full shadow-lg hover:bg-red-700 transition duration-200"
                                 onClick={handleSpamClick}
                             >
-                                This NFT is spam, remove it
+                                Mark as Spam
                             </button>
                         </div>
-                        {message && (
-                            <p className="mt-4 text-lg italic mb-4 text-center">
-                                {message}
-                            </p>
-                        )}
                     </>
                 )}
             </div>
+            {message && (
+                <p className="p-2 text-xs italic text-center">{message}</p>
+            )}
             {nft.inDatabase && (
-                <div className="px-4 pb-4 dark:text-dark-quaternary text-light-font">
+                <div className="px-2 pb-2 dark:text-dark-quaternary text-light-font">
                     <NewsFeed
                         collectionIds={[nft.collection_id]}
                         viewingGroup="holders"

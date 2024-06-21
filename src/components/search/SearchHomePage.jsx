@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTheme, LinearProgress } from "@mui/material";
 import NftTile from "../nft/nftTile";
 import TokenTile from "../token/tokenTile";
@@ -10,6 +10,7 @@ function SearchHomepage() {
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState(null);
     const [tokenResults, setTokenResults] = useState(null);
+    const [groupedNFTs, setGroupedNFTs] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const [showEmailModal, setShowEmailModal] = useState(false);
     const [showAlertModal, setShowAlertModal] = useState(false);
@@ -21,8 +22,8 @@ function SearchHomepage() {
     const handleSearchSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        setSearchResults(null); 
-        setTokenResults(null); 
+        setSearchResults(null);
+        setTokenResults(null);
         try {
             const nftResponse = await fetch("/api/search/addressSearch", {
                 method: "POST",
@@ -55,6 +56,20 @@ function SearchHomepage() {
             setIsLoading(false);
         }
     };
+
+    useEffect(() => {
+        if (searchResults) {
+            const grouped = searchResults.reduce((acc, nft) => {
+                const collectionId = nft.collection_id || nft.contractAddress;
+                if (!acc[collectionId]) {
+                    acc[collectionId] = [];
+                }
+                acc[collectionId].push(nft);
+                return acc;
+            }, {});
+            setGroupedNFTs(grouped);
+        }
+    }, [searchResults]);
 
     const handleEmailSubmit = async (e) => {
         e.preventDefault();
@@ -155,10 +170,14 @@ function SearchHomepage() {
                         Owned Tokens
                     </h3>
                     <div className="bg-light-secondary dark:bg-dark-secondary bg-opacity-90 text-light-font dark:text-dark-primary rounded-lg shadow-lg p-6 mb-8 w-full">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
-                            {tokenResults.map((token, index) => (
-                                <TokenTile key={index} token={token} />
-                            ))}
+                        <div className="overflow-x-auto">
+                            <div className="flex gap-4">
+                                {tokenResults.slice(0, 12).map((token, index) => (
+                                    <div key={index} className="w-64 flex-shrink-0">
+                                        <TokenTile token={token} />
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -168,10 +187,39 @@ function SearchHomepage() {
                     <h3 className="font-heading text-xl sm:text-2xl lg:text-3xl text-light-font dark:text-light-ennies mb-6">
                         Owned NFTs
                     </h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 gap-4 justify-items-center">
-                        {searchResults.map((nft) => (
-                            <NftTile key={nft.nft_id} nft={nft} />
-                        ))}
+                    <div className="overflow-x-auto">
+                        <div className="flex gap-4 pb-4">
+                            {Object.entries(groupedNFTs).map(([collectionId, nfts]) => {
+                                // Sort NFTs: in DB first, then those without background images
+                                const sortedNFTs = nfts.sort((a, b) => {
+                                    if (a.inDatabase && !b.inDatabase) return -1;
+                                    if (!a.inDatabase && b.inDatabase) return 1;
+                                    if (a.media_url && !b.media_url) return -1;
+                                    if (!a.media_url && b.media_url) return 1;
+                                    return 0;
+                                });
+
+                                return (
+                                    <div key={collectionId} className="w-full flex-shrink-5 bg-light-tertiary dark:bg-dark-secondary rounded-lg shadow-lg p-4">
+                                        <h4 className="text-lg font-semibold mb-2">
+                                            {nfts[0].collection_name}
+                                        </h4>
+                                        <div className="overflow-x-auto">
+                                            <div className="flex space-x-4">
+                                                {sortedNFTs.map((nft) => (
+                                                    <div
+                                                        key={nft.nft_id}
+                                                        className="w-64 flex-shrink-0"
+                                                    >
+                                                        <NftTile nft={nft} />
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
                 </div>
             )}

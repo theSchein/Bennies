@@ -13,6 +13,7 @@ from .tokenCalls import (
     verify_token_checksums
 )
 from psycopg2 import Error
+from web3 import Web3
 
 def update_verification_status(conn, contract_address, column, status):
     query = f"""
@@ -125,22 +126,42 @@ def verify_data(contract_address, token_type):
         conn.close()  # Ensure the connection is closed after operations
 
 def verify_metadata():
+    specific_contract = input("Enter a specific contract address to verify (or press Enter to verify all unverified contracts): ").strip()
+
     conn = connect_db()
     if not conn:
         print("Failed to connect to the database.")
         return
 
-    query = "SELECT contract_address, token_type FROM transform.verification WHERE verified = FALSE;"
     try:
-        with conn.cursor() as cursor:
-            cursor.execute(query)
-            contracts = cursor.fetchall()
-            for contract in contracts:
-                contract_address = contract[0]
-                token_type = contract[1]
-                verify_data(contract_address, token_type)
+        if specific_contract:
+            try:
+                specific_contract = Web3.to_checksum_address(specific_contract)
+                print(f"Verifying specific contract: {specific_contract}")
+                
+                # Check if the contract exists in the verification table
+                with conn.cursor(cursor_factory=DictCursor) as cursor:
+                    cursor.execute("SELECT token_type FROM transform.verification WHERE contract_address = %s;", (specific_contract,))
+                    result = cursor.fetchone()
+                    
+                    if result:
+                        token_type = result['token_type']
+                        verify_data(specific_contract, token_type)
+                    else:
+                        print(f"Contract {specific_contract} not found in the verification table. Please ensure it's been added to the database first.")
+            except ValueError:
+                print(f"Invalid contract address: {specific_contract}")
+        else:
+            query = "SELECT contract_address, token_type FROM transform.verification WHERE verified = FALSE;"
+            with conn.cursor() as cursor:
+                cursor.execute(query)
+                contracts = cursor.fetchall()
+                for contract in contracts:
+                    contract_address = contract[0]
+                    token_type = contract[1]
+                    verify_data(contract_address, token_type)
     except (Exception, Error) as error:
-        print(f"Error fetching contracts for verification: {error}")
+        print(f"Error during verification process: {error}")
     finally:
         conn.close()
 
