@@ -187,25 +187,40 @@ function SearchHomepage() {
                     <h3 className="font-heading text-xl sm:text-2xl lg:text-3xl text-light-font dark:text-light-ennies mb-6">
                         Owned NFTs
                     </h3>
-                    {Object.entries(groupedNFTs).map(([collectionId, nfts]) => (
-                        <div key={collectionId} className="mb-8">
-                            <h4 className="text-lg font-semibold mb-2">
-                                {nfts[0].collection_name }
-                            </h4>
-                            <div className="overflow-x-auto">
-                                <div className="flex space-x-4 pb-4">
-                                    {nfts.map((nft) => (
-                                        <div
-                                            key={nft.nft_id}
-                                            className="w-64 flex-shrink-0"
-                                        >
-                                            <NftTile nft={nft} />
+                    <div className="overflow-x-auto">
+                        <div className="flex gap-4 pb-4">
+                            {Object.entries(groupedNFTs).map(([collectionId, nfts]) => {
+                                // Sort NFTs: in DB first, then those without background images
+                                const sortedNFTs = nfts.sort((a, b) => {
+                                    if (a.inDatabase && !b.inDatabase) return -1;
+                                    if (!a.inDatabase && b.inDatabase) return 1;
+                                    if (a.media_url && !b.media_url) return -1;
+                                    if (!a.media_url && b.media_url) return 1;
+                                    return 0;
+                                });
+
+                                return (
+                                    <div key={collectionId} className="w-full flex-shrink-5 bg-light-tertiary dark:bg-dark-secondary rounded-lg shadow-lg p-4">
+                                        <h4 className="text-lg font-semibold mb-2">
+                                            {nfts[0].collection_name}
+                                        </h4>
+                                        <div className="overflow-x-auto">
+                                            <div className="flex space-x-4">
+                                                {sortedNFTs.map((nft) => (
+                                                    <div
+                                                        key={nft.nft_id}
+                                                        className="w-64 flex-shrink-0"
+                                                    >
+                                                        <NftTile nft={nft} />
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </div>
-                                    ))}
-                                </div>
-                            </div>
+                                    </div>
+                                );
+                            })}
                         </div>
-                    ))}
+                    </div>
                 </div>
             )}
             <Modal isOpen={showEmailModal} onClose={() => setShowEmailModal(false)}>
