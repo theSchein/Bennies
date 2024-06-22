@@ -38,7 +38,7 @@ const NewsFeed = ({ collectionIds, viewingGroup }) => {
     return (
         <div className="news-feed mt-8">
             {newsItems.length > 0 ? (
-                <ul className="space-y-4">
+                <ul className="space-y-4 text-light-font dark:text-dark-quaternary">
                     {filteredNewsItems.map((item, index) => (
                         <li key={index} className={`p-4 rounded-lg shadow ${item.viewing_group === 'holders' ? 'bg-blue-200' : item.viewing_group === 'collectors' ? 'bg-green-200' : 'bg-red-100'}`}>
                             <h3 className="text-xl font-semibold">{item.title}</h3>
@@ -49,7 +49,7 @@ const NewsFeed = ({ collectionIds, viewingGroup }) => {
                 </ul>
             ) : (
                 <div className='p-2 rounded-md shadow bg-light-secondary dark:bg-dark-secondary'> 
-                <p className="text-light-font dark:text-dark-primary">No news items to display.</p>
+                <p className="text-light-font dark:text-dark-quaternary">No news items to display.</p>
                 </div>
             )}
         </div>

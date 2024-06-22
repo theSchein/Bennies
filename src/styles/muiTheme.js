@@ -16,6 +16,7 @@ const muiTheme = createTheme({
                 tertiary: '#BFD8AF',
                 quaternary: '#99BC85',
                 background: '#99BC85',
+                font: '#294B29',
             },
         },
         dark: {
@@ -30,7 +31,8 @@ const muiTheme = createTheme({
             secondary: '#789461',
             tertiary: '#50623A',
             quaternary: '#294B29',
-            background: '#294B29'
+            background: '#294B29',
+            font: '#F0E5CF',
         },
     },
     typography: {

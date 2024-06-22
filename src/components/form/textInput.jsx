@@ -4,7 +4,6 @@ import React from "react";
 import { useFormContext } from "react-hook-form";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
-import Input from "@mui/material/Input";
 import OutlinedInput from "@mui/material/OutlinedInput";
 
 const TextInput = ({ name, label, as: Component = "input", ...rest }) => {

@@ -45,7 +45,7 @@ const CollectionSidebar = ({ collection, onNftsFetched }) => {
     }, [sortOrder, sortBy, page, collection.collection_id]);
 
     return (
-        <div className="bg-light-secondary dark:bg-dark-secondary text-light-quaternary dark:text-dark-quaternary p-4 rounded-lg shadow-lg space-y-4 opacity-85">
+        <div className="bg-light-secondary dark:bg-dark-secondary text-light-font dark:text-dark-font p-4 rounded-lg shadow-lg space-y-4 opacity-85">
             <h1 className="font-heading text-3xl sm:text-4xl text-center mb-4">
                 {collection.collection_name}
             </h1>
