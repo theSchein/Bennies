@@ -39,7 +39,6 @@ export const sendPasswordResetEmail = async (email, link) => {
         },
     });
 };
-
 const generateOnboardEmailHtml = (
   data,
   username,
@@ -63,8 +62,8 @@ const generateOnboardEmailHtml = (
         h2 { font-family: 'Comfortaa', sans-serif; color: #294B29; margin-top: 20px; }
         p { font-size: 16px; line-height: 1.5; margin: 15px 0; }
         .body-action { margin: 20px 0; text-align: center; }
-        .button { background-color: #294B29; color: #E1F0DA; padding: 15px 30px; text-decoration: none; border-radius: 5px; border: none; outline: none; font-size: 16px; display: inline-block; }
-        .button:hover { background-color: #50623A; }
+        .button { background-color: #FFFFFF; color: #294B29; padding: 15px 30px; text-decoration: none; border-radius: 5px; border: 2px solid #294B29; outline: none; font-size: 16px; display: inline-block; }
+        .button:hover { background-color: #E1F0DA; }
         .attributes { margin: 20px 0; }
         .attributes_content { background-color: #D4E7C5; padding: 15px; border-radius: 5px; }
         .attributes_item { padding: 5px 0; }
@@ -102,9 +101,12 @@ const generateOnboardEmailHtml = (
           </table>
         </div>
         
-        ${data.project_website ? `<p><a href="${data.project_website}">Visit our website</a></p>` : ""}
-        ${data.marketplace_link ? `<p><a href="${data.marketplace_link}">Marketplace</a></p>` : ""}
-        ${data.contact_name && data.contact_info ? `<p>Contact ${data.contact_name} at <a href="mailto:${data.contact_info}">${data.contact_info}</a></p>` : ""}
+        <div class="center-align">
+          ${data.project_website ? `<p><a href="${data.project_website}">Visit our website</a></p>` : ""}
+          ${data.marketplace_link ? `<p><a href="${data.marketplace_link}">Marketplace</a></p>` : ""}
+          ${data.contact_name && data.contact_info ? `<p>Contact ${data.contact_name} at <a href="mailto:${data.contact_info}">${data.contact_info}</a></p>` : ""}
+        </div>
+
         ${data.perks ? `<div class="attributes"><h3>Perks</h3><div class="attributes_content">${data.perks}</div></div>` : ""}
       </div>
       <div class="footer">
