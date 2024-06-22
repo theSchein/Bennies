@@ -16,7 +16,7 @@ export default function HowItWorks() {
                 >
                     <h3 className="font-bold text-xl items-center ">Find Bennies</h3>
                     <p className="text-lg">
-                        See the art license, utility, community, events, and more.
+                        See the project updates, activity, license, utility, events, and more.
                     </p>
                 </button>
                 <button
@@ -25,7 +25,7 @@ export default function HowItWorks() {
                 >
                     <h3 className="font-bold text-xl items-center">Join</h3>
                     <p className="text-lg">
-                        Register your NFTs to receive a welcome email and gated community access.
+                        Register your assets to receive a welcome email from the holders and gated community access. <span className="italic bold">(NO KYC Required)</span>
                     </p>
                 </button>
                 <div className="bg-gradient-to-r dark:text-dark-font from-light-quaternary to-light-tertiary dark:from-dark-tertiary dark:to-dark-secondary p-4 rounded-lg shadow-lg relative transform transition duration-300 hover:scale-105 hover:shadow-xl  group">
