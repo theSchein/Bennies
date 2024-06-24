@@ -115,7 +115,7 @@ const RegisterNftButton = ({ onNftsFetched }) => {
         <div>
             <button
                 onClick={handleButtonClick}
-                className="btn"
+                className="btn width-full mt-4" 
             >
                 Register NFTs
             </button>

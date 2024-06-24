@@ -26,7 +26,6 @@ const style = {
 };
 
 const NftForm = ({ role, nft, isOpen, onClose }) => {
-    console.log("nft data boiii:", nft);
     const methods = useForm({
         defaultValues: nft,
     });
@@ -49,7 +48,7 @@ const NftForm = ({ role, nft, isOpen, onClose }) => {
             <Modal open={isOpen} onClose={onClose}>
                 <Box
                     sx={style}
-                    className="bg-light-secondary dark:bg-dark-quaternary text-light-quaternary dark:text-dark-primary flex-wrap"
+                    className="bg-light-primary dark:bg-dark-primary text-light-font dark:text-dark-quaternary flex-wrap"
                 >
                     <h1 className="text-center text-2xl font-bold mb-4">
                         Edit NFT Page
@@ -65,7 +64,7 @@ const NftForm = ({ role, nft, isOpen, onClose }) => {
                             )} */}
 
                             {isFieldEditable("nft_licence") && (
-                                <div className="flex flex-col text-light-quaternary dark:text-dark-primary">
+                                <div className="flex flex-col text-light-font dark:text-dark-quaternary">
                                     <label
                                         htmlFor="nft_licence"
                                         className="mb-2 font-medium text-sm sm:text-base"
@@ -79,7 +78,7 @@ const NftForm = ({ role, nft, isOpen, onClose }) => {
                                             <select
                                                 {...field}
                                                 id="nft_licence"
-                                                className="p-2 border text-light-quaternary dark:text-dark-quaternaryternary dark:text-dark-quaternary rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent mb-2"
+                                                className="p-2 border text-light-font dark:text-dark-quaternary rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent mb-2"
                                             >
                                                 <option value="">
                                                     Select a License
@@ -105,20 +104,20 @@ const NftForm = ({ role, nft, isOpen, onClose }) => {
                                         href="https://medium.com/the-link-art-blocks/licensing-cheat-sheet-54223616ea50"
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="mt-2 italic text-xs sm:text-sm text-light-quaternary dark:text-dark-quaternary hover:underline"
+                                        className="mt-2 italic text-xs sm:text-sm text-light-font dark:text-dark-quaternary hover:underline"
                                     >
                                         Learn more about licensing
                                     </a>
                                 </div>
                             )}
 
-                            <div className="text-light-quaternary">
+                            <div >
                                 {isFieldEditable("nft_context") && (
                                     <TextInput
                                         name="nft_context"
                                         label="Additional NFT Information: Tell us things about this piece"
                                         as="textarea"
-                                        className="text-light-quaternary dark:text-dark-primary"
+                                        className="text-light-font dark:text-dark-quaternary"
                                     />
                                 )}
 
@@ -127,13 +126,13 @@ const NftForm = ({ role, nft, isOpen, onClose }) => {
                                         name="nft_utility"
                                         label="Utility: What can the owner do with this NFT?"
                                         as="textarea"
-                                        className="text-light-quaternary dark:text-dark-primary"
+                                        className="text-light-font dark:text-dark-quaternary"
                                     />
                                 )}
                             </div>
 
                             {isFieldEditable("category") && (
-                                <div className="flex flex-col text-light-quaternary dark:text-dark-quaternary">
+                                <div className="flex flex-col text-light-font dark:text-dark-quaternary">
                                     <label
                                         htmlFor="category"
                                         className="mb-2 font-medium text-sm sm:text-base"
@@ -147,7 +146,7 @@ const NftForm = ({ role, nft, isOpen, onClose }) => {
                                             <select
                                                 {...field}
                                                 id="category"
-                                                className="p-2 border text-light-quaternary dark:text-dark-quaternary rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent mb-2"
+                                                className="p-2 border text-light-font dark:text-dark-quaternary rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent mb-2"
                                             >
                                                 <option value="">
                                                     Select a category
@@ -181,7 +180,7 @@ const NftForm = ({ role, nft, isOpen, onClose }) => {
                                 />
                                 <label
                                     htmlFor="updateCollection"
-                                    className="ml-2 text-sm font-medium text-light-quaternary dark:text-dark-quaternary"
+                                    className="ml-2 text-sm font-medium text-light-font dark:text-dark-quaternary"
                                 >
                                     Propagate changes to the collection
                                 </label>

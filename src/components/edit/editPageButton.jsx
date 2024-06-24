@@ -40,7 +40,7 @@ const EditButton = ({ isOwner, isDeployer, pageData }) => {
                             color:
                                 theme.palette.mode === "dark"
                                     ? theme.palette.dark.text.quaternary
-                                    : theme.palette.light.text.quaternary,
+                                    : theme.palette.light.text.font,
                             "&:hover": {
                                 backgroundColor:
                                     theme.palette.mode === "dark"

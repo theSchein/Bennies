@@ -45,7 +45,7 @@ const MakeNews = ({ collectionId }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="max-w-xl mx-auto bg-light-primary dark:bg-dark-primary text-light-quaternary dark:text-dark-quaternary p-8 rounded-lg shadow space-y-4">
+        <form onSubmit={handleSubmit} className="max-w-xl mx-auto bg-light-primary dark:bg-dark-primary text-light-font dark:text-dark-quaternary p-8 rounded-lg shadow space-y-4">
             <h2 className="text-2xl font-bold text-center">Create News Item</h2>
             {message && <p className="text-center text-red-500">{message}</p>}
             <div className="space-y-2">

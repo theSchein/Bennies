@@ -26,6 +26,7 @@ const nextConfig = {
             "logo.moralis.io",
             "lh3.googleusercontent.com",
             "github.com",
+            "i.seadn.io",
                     
         ],
     },
