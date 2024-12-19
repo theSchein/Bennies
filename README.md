@@ -1,6 +1,6 @@
-# Discovry.xyz
+# Bennies.fun
 
-This is the main repo for the Discovry.xyz web app. 
+This is the main repo for the Bennies.fun web app. The goal of this app was to be a wikipedia for NFTs, development it currently on hold for several reasons. Mainly due to a lack of ability to monetize NFT information.
 
 ### The Stack
 
